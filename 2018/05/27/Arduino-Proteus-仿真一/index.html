@@ -20,7 +20,7 @@
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="ATmega16 ADC简单实验"/>
+        <meta property="og:title" content="Arduino + Proteus 仿真（一）"/>
     
 
     <!--Open Graph Description-->
@@ -44,7 +44,7 @@
 
     <!-- Title -->
     
-    <title>ATmega16 ADC简单实验 - DHC Blog</title>
+    <title>Arduino + Proteus 仿真（一） - DHC Blog</title>
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
@@ -136,13 +136,13 @@
 
     <div class="post-header">
         <h1 class="title">
-            <a href="/2018/05/15/ATmega16-ADC简单实验/">
-                ATmega16 ADC简单实验
+            <a href="/2018/05/27/Arduino-Proteus-仿真一/">
+                Arduino + Proteus 仿真（一）
             </a>
         </h1>
         <div class="post-info">
             
-                <span class="date">2018-05-15</span>
+                <span class="date">2018-05-27</span>
             
             
             
@@ -159,21 +159,21 @@
         
 
         <!-- Post Content -->
-        <p>这篇博客的主要内容是讲解常用的 AVR 单片机的 ADC 功能，知识比较基础，代码也很简单，适合新手快速掌握单片机 ADC 的操作，本篇使用的单片机是 ATmega16。</p>
+        <p>玩过单片机的人应该都会知道，有一个系列的单片机叫 Arduino，总所周知的 Arduino 是对对单片机不熟悉，但是对单片机感兴趣的软件开发程序员非常友好的，他有一个专门的软件 Arduino IDE，用于开发 Arduino 系列的产品，他的特点是有许许多多的库和函数，编写程序控制单片机的时候不需要了解太多关于寄存器的知识，直接调用相应的函数就可以控制单片机，这就是为什么说对软件开发的程序员非常友好，他的库可以让你在开发硬件的时候像开发软件一样方便快捷。</p>
 <a id="more"></a>
-<p>最近由于课程需要，学习了一段时间的 AVR 单片机，对于一些简单的端口操作、控制 LED 灯之类的就不另做篇幅去讲解了，因为就跟 Hello, world 一样简单，对于我来说，单片机控制得最多的是各种各样的传感器，而传感器是模拟器件，传到单片机的数据时模拟信号，但是单片机等芯片是数字芯片呀，数字芯片只能处理数字信号，也就是高电平和低电平，所以就需要一个模块来将这两种信号进行转换，就是今天要讲到的 AD 转换，中文是模数转换，作用就是讲模拟信号转化成数字信号，在大部分文档中也会称为 ADC (Analog/Digital Convert)，今天就以一个实例来展示 AVR 的 ADC。</p>
-<p>新手入门单片机大都是学习的 51 单片机，用的最多的芯片是 STC89C52 （或 C51），但是 51 单片机片上资源很少，只有少数够用的功能，其他的一些高级模块都没有，而 AVR 虽然跟 51 单片机都是 8 位的微控制器，但是 AVR 单片机的片上资源多很多，诸如 ADC, I2C 等等，有了这些外设，使用起来就简单很多了，不用自己重新编写复杂的程序，也不用花钱给电路增加额外的硬件。</p>
-<p>先来看看本次实验的电路图：</p>
-<img src="/2018/05/15/ATmega16-ADC简单实验/circute.png" title="电路图">
-<p>其中图片左上角部分连接着 RESET, XTAL1, XTAL2 引脚的那一部分电路是组成单片机最小系统的电路，也是使单片机正常工作的必要条件。我们在 PA0 脚上连接一个电位器，给单片机提供模拟信号的就是这个电位器了，电位器通过改变阻值来改变输入到单片机的电压。右下角有两个引脚 AREF 和 AVCC，其中 AREF 是单片机基准电压外部输入引脚，AVCC 是模拟电源，要使用 ADC 功能这两个引脚就必不可少了。还有最后一部分是连接到 PD 口的 8 个 LED 灯，用来显示单片机 AD 转换后的结果，虽然用 LED 来表示结果不直观，但是是操作最简单的方法了。</p>
-<p>代码比电路更简单，直接贴上代码：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;avr/io.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;avr/interrupt.h&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="comment">/*ADC Conversion Complete Interrupt Service Routine (ISR)*/</span></span><br><span class="line">ISR(ADC_vect)</span><br><span class="line">&#123;</span><br><span class="line"> </span><br><span class="line">	PORTD = ADCH;			<span class="comment">// Output ADCH to PortD</span></span><br><span class="line">	ADCSRA |= <span class="number">1</span>&lt;&lt;ADSC;		<span class="comment">// Start Conversion</span></span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	DDRD = <span class="number">0xFF</span>;			<span class="comment">// Configure PortD as output</span></span><br><span class="line">	DDRA = <span class="number">0x00</span>;			<span class="comment">// Configure PortA as input</span></span><br><span class="line">					<span class="comment">// PA0 is ADC0 input</span></span><br><span class="line"> </span><br><span class="line">	ADCSRA = <span class="number">0x8F</span>;			<span class="comment">// Enable the ADC and its interrupt feature</span></span><br><span class="line">					<span class="comment">// and set the ACD clock pre-scalar to clk/128</span></span><br><span class="line">	ADMUX = <span class="number">0xE0</span>;			<span class="comment">// Select internal 2.56V as Vref, left justify </span></span><br><span class="line">					<span class="comment">// data registers and select ADC0 as input channel </span></span><br><span class="line"> </span><br><span class="line">	sei();				<span class="comment">// Enable Global Interrupts</span></span><br><span class="line">	ADCSRA |= <span class="number">1</span>&lt;&lt;ADSC;		<span class="comment">// Start Conversion</span></span><br><span class="line"> </span><br><span class="line">	<span class="keyword">while</span>(<span class="number">1</span>);			<span class="comment">// Wait forever</span></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
-<p>每一句的作用在代码中的注释都已经很清晰了，要特别讲解的是 ADCSRA 寄存器，事实上关于这个寄存器的操作以及每一位的作用都不需要特别讲解，因为在官方文档都已经说得很清楚了，我就只贴出文档的截图吧</p>
-<img src="/2018/05/15/ATmega16-ADC简单实验/ADCSRA-1.png" title="ADCSRA寄存器介绍">
-<img src="/2018/05/15/ATmega16-ADC简单实验/ADCSRA-2.png" title="ADCSRA寄存器介绍">
-<p><br><br>以上的代码在 ATmel Studio 7.0 中已经验证通过，在 AT Studio 中编译生成 hex 文件之后，电路按照第一张图片的接法，然后将程序写入单片机中运行就能看到接 LED 灯的结果了，AD 转换的结果是 8 位的，每次转换的结果都会存在 ADCH 寄存器中，所以代码中就直接将 ADCH 的值写入 PD 口中，当你改变电位器阻值的时候你就会看到 LED 灯也在变化。</p>
-<p>YouTube 上的演示视频：</p>
-<iframe width="560" height="315" src="https://www.youtube.com/embed/ORkgPxC4p5U?rel=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+<blockquote>
+<font size="1px">可以直接跳到正话部分看。</font>
+</blockquote>
+<p>不过这篇文章不只是要讲 Arduino 的开发，更重要的是用 Arduino 和 Proteus 结合来进行电路仿真，Proteus 是一款电路仿真软件，这款软件可以调用很多的单片机还有很多常用芯片，并且可以运行仿真观察电路的状态，对于数字电路他可以直观地显示出电路中某个引脚的电平，这对于数字电路开发是非常有帮助的。</p>
+<p>那么又为什么要进行仿真呢，如果没有仿真，那么你每次运行和调试程序的时候都需要把程序烧写进单片机内才能看到你程序的运行结果，并且还要根据你画的电路图来搭建外围电路，这很明显就是不现实的，不可能每次突发奇想要设计一个电路就自己动手焊接一个电路嘛，而且这样的话电路还需要单片机，那单片机就很难进行二次开发；第二点就是多次对单片机进行烧写程序会缩短单片机的寿命，这里说的寿命主要是单片机内部程序存储器（flash），每一个（程序）存储器都有他的擦写寿命，擦写的次数越多寿命自然就会减短；第三点就是你有很多电路中要用到的芯片你手头上没有，于是电路无法调试，但是 Proteus 可以找到你想要用的芯片，并且功能和使用方法都是跟实际的芯片一样的。</p>
+<p><strong> 好了，这里才是正话！ </strong> Arduino 通常情况下都是直接在 IDE 上传程序，之后 IDE 会自动完成程序的烧写，但是要使用 Proteus 的仿真必须要有编译器编译出来的 hex、bin、elf 文件，这三种文件都是烧写单片机的程序文件，而 Arduino 每次编译上传的时候都会创建一个临时文件夹存放 hex 文件，你是找不到他编译出来的 hex 文件的，我们需要进行设置，让 Arduino 编译的时候把 hex 文件存放在某个地方。</p>
+<p>Arduino 的设置方法：</p>
+<p>首先打开左上角 文件 -&gt; 首选项</p>
+<img src="/2018/05/27/Arduino-Proteus-仿真一/setting1.png">
+<p><br><br>然后点击下方的首选项编辑文件（如图所示的地方，蓝色字体的文件路径）</p>
+<img src="/2018/05/27/Arduino-Proteus-仿真一/setting2.png">
+<p><br><br>打开文件之后在文件最下方添加一条语句：<code>build.path=XXX</code> 其中 XXX 是你要保存编译后的文件的路径，改成自己的路径就好，注意：编辑改文件要先关闭 Arduino IDE </p>
+<p>然后此时你就可以编写你的程序并编译（验证），然后在你刚设置的路径下找到一个 hex 文件，之后就可以使用 Proteus 仿真了，<a href="/2018/05/27/Arduino-Proteus-仿真二/" title="下一篇">下一篇</a>文章会进行一次实践，编写一个程序并仿真。</p>
 
     </div>
 
@@ -182,7 +182,7 @@
     
         <div class="post-tags">
             <i class="fa fa-tags" aria-hidden="true"></i>
-            <a href="/tags/AVR/">#AVR</a>
+            <a href="/tags/AVR/">#AVR</a> <a href="/tags/Arduino/">#Arduino</a>
         </div>
     
 
