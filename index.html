@@ -1,508 +1,1022 @@
 <!DOCTYPE html>
-<html lang="en">
-
-<!-- Head tag -->
+<html lang="zh-CN">
 <head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/css/main.css">
 
-    <!--Description-->
-    
-        <meta name="description" content="This is a blog, mainly used for sharing technical articles">
-    
 
-    <!--Author-->
-    
-        <meta name="author" content="Wu Jianmin ( DHC )">
-    
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
-    <!--Open Graph Title-->
-    
-        <meta property="og:title" content="DHC Blog"/>
-    
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jimhackking.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
 
-    <!--Open Graph Description-->
-    
-        <meta property="og:description" content="This is a blog, mainly used for sharing technical articles" />
-    
+  <meta name="description" content="知识以一种粗暴的方式进入了我的脑子">
+<meta property="og:type" content="website">
+<meta property="og:title" content="智云知识">
+<meta property="og:url" content="https://jimhackking.github.io/index.html">
+<meta property="og:site_name" content="智云知识">
+<meta property="og:description" content="知识以一种粗暴的方式进入了我的脑子">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="DHC">
+<meta property="article:tag" content="知识库">
+<meta property="article:tag" content="图书馆">
+<meta property="article:tag" content="学习">
+<meta property="article:tag" content="笔记">
+<meta name="twitter:card" content="summary">
 
-    <!--Open Graph Site Name-->
-    <meta property="og:site_name" content="DHC Blog"/>
+<link rel="canonical" href="https://jimhackking.github.io/">
 
-    <!--Type page-->
-    
-        <meta property="og:type" content="website" />
-    
 
-    <!--Page Cover-->
-    
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : true,
+    isPost : false,
+    lang   : 'zh-CN'
+  };
+</script>
 
-    <meta name="twitter:card" content="summary" />
-    
+  <title>智云知识</title>
+  
 
-    <!-- Title -->
-    
-    <title>DHC Blog</title>
 
-    <!-- Bootstrap Core CSS -->
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
 
-    <!-- Custom Fonts -->
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
 
-    <!-- Gallery -->
-    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet" />
 
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/style.css">
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
 
-    <!-- Google Analytics -->
-    
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
 
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
 
 </head>
 
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
 
-<body>
-
-<div class="bg-gradient"></div>
-<div class="bg-pattern"></div>
-
-<!-- Menu -->
-<!--Menu Links and Overlay-->
-<div class="menu-bg">
-    <div class="menu-container">
-        <ul>
-            
-            <li class="menu-item">
-                <a href="/">
-                    Home
-                </a>
-            </li>
-            
-            <li class="menu-item">
-                <a href="/archives">
-                    Archives
-                </a>
-            </li>
-            
-            <li class="menu-item">
-                <a href="/tags">
-                    Tags
-                </a>
-            </li>
-            
-            <li class="menu-item">
-                <a href="/categories">
-                    Categories
-                </a>
-            </li>
-            
-        </ul>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
     </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">智云知识</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">共享知识库</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
 </div>
 
-<!--Hamburger Icon-->
-<nav>
-    <a href="#menu"></a>
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
 </nav>
 
-<div class="container">
 
-    <!-- Main Content -->
-    <div class="row">
-    <div class="col-sm-12">
 
-        <!--Title and Logo-->
-        <header>
-    <div class="logo">
-        <a href="/"><i class="logo-icon fa fa-cube" aria-hidden="true"></i></a>
-        
-            <h1 id="main-title" class="title">DHC Blog</h1>
-        
-    </div>
-</header>
 
-        <section class="main">
-            
-                
-<div class="post">
+</div>
+    </header>
 
-    <div class="post-header index">
-        <h1 class="title">
-            <a href="/2018/05/27/Arduino-Proteus-仿真二/">
-                Arduino + Proteus 仿真（二）
-            </a>
-        </h1>
-        <div class="post-info">
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content index posts-expand">
             
-                <span class="date">2018-05-27</span>
-            
-            
-            
-                <span class="category">
-                    <a href="/categories/单片机/">单片机</a>
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://jimhackking.github.io/%E8%BF%90%E7%BB%B4/%E7%A8%8B%E5%BA%8F%E5%91%98%E6%89%8B%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="DHC">
+      <meta itemprop="description" content="知识以一种粗暴的方式进入了我的脑子">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="智云知识">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/%E8%BF%90%E7%BB%B4/%E7%A8%8B%E5%BA%8F%E5%91%98%E6%89%8B%E8%AE%B0/" class="post-title-link" itemprop="url">程序员手记</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-03-07 00:34:04 / 修改时间：00:39:34" itemprop="dateCreated datePublished" datetime="2024-03-07T00:34:04+08:00">2024-03-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%BF%90%E7%BB%B4/" itemprop="url" rel="index"><span itemprop="name">运维</span></a>
                 </span>
-            
+            </span>
+
+          
+
         </div>
-    </div>
+      </header>
 
     
-        <div class="content">
-            <p>经过上一篇文章的设置之后（如果还没进行设置的，请看<a href="/2018/05/27/Arduino-Proteus-仿真一/" title="上一篇">上一篇</a>文章进行设置）这一篇文章就进行实际的操作，使用两款软件来进行仿真。</p>
-        </div>
-        <a href="/2018/05/27/Arduino-Proteus-仿真二/" class="read-more">Read More</a>
     
-
-</div>
-            
-                
-<div class="post">
-
-    <div class="post-header index">
-        <h1 class="title">
-            <a href="/2018/05/27/Arduino-Proteus-仿真一/">
-                Arduino + Proteus 仿真（一）
-            </a>
-        </h1>
-        <div class="post-info">
-            
-                <span class="date">2018-05-27</span>
-            
-            
-            
-                <span class="category">
-                    <a href="/categories/单片机/">单片机</a>
-                </span>
-            
-        </div>
-    </div>
-
     
-        <div class="content">
-            <p>玩过单片机的人应该都会知道，有一个系列的单片机叫 Arduino，总所周知的 Arduino 是对对单片机不熟悉，但是对单片机感兴趣的软件开发程序员非常友好的，他有一个专门的软件 Arduino IDE，用于开发 Arduino 系列的产品，他的特点是有许许多多的库和函数，编写程序控制单片机的时候不需要了解太多关于寄存器的知识，直接调用相应的函数就可以控制单片机，这就是为什么说对软件开发的程序员非常友好，他的库可以让你在开发硬件的时候像开发软件一样方便快捷。</p>
-        </div>
-        <a href="/2018/05/27/Arduino-Proteus-仿真一/" class="read-more">Read More</a>
-    
+    <div class="post-body" itemprop="articleBody">
 
-</div>
-            
-                
-<div class="post">
-
-    <div class="post-header index">
-        <h1 class="title">
-            <a href="/2018/05/17/天刀基本玩法/">
-                天刀基本玩法
-            </a>
-        </h1>
-        <div class="post-info">
-            
-                <span class="date">2018-05-17</span>
-            
-            
-            
-                <span class="category">
-                    <a href="/categories/游戏/">游戏</a>
-                </span>
-            
-        </div>
-    </div>
-
-    
-        <div class="content">
-            <p>天涯明月刀是我最近开始玩也比较喜欢玩的游戏，我也打算长玩，网上的人都将这个游戏简称为天刀，作为新手，每天上线不知道要做什么，作为一款比较大型的游戏，要想留住玩家，肯定需要有每日的玩法和任务给大家去做，我在网上也看到有人专门录了视频来讲解天刀每日的玩法都有些什么，于是我特意写这篇博客来归纳各种的天刀玩法。</p>
-        </div>
-        <a href="/2018/05/17/天刀基本玩法/" class="read-more">Read More</a>
-    
-
-</div>
-            
-                
-<div class="post">
-
-    <div class="post-header index">
-        <h1 class="title">
-            <a href="/2018/05/15/ATmega16-ADC简单实验/">
-                ATmega16 ADC简单实验
-            </a>
-        </h1>
-        <div class="post-info">
-            
-                <span class="date">2018-05-15</span>
-            
-            
-            
-                <span class="category">
-                    <a href="/categories/单片机/">单片机</a>
-                </span>
-            
-        </div>
-    </div>
-
-    
-        <div class="content">
-            <p>这篇博客的主要内容是讲解常用的 AVR 单片机的 ADC 功能，知识比较基础，代码也很简单，适合新手快速掌握单片机 ADC 的操作，本篇使用的单片机是 ATmega16。</p>
-        </div>
-        <a href="/2018/05/15/ATmega16-ADC简单实验/" class="read-more">Read More</a>
-    
-
-</div>
-            
-                
-<div class="post">
-
-    <div class="post-header index">
-        <h1 class="title">
-            <a href="/2018/05/10/hexo-test/">
-                hexo-test
-            </a>
-        </h1>
-        <div class="post-info">
-            
-                <span class="date">2018-05-10</span>
-            
-            
-            
-        </div>
-    </div>
-
-    
-        <div class="content">
-            <blockquote><p>This is a quote, it’s equal to quote.</p>
-<footer><strong>DHC</strong><cite><a href="https://jimhackking.github.io" target="_blank" rel="noopener">DHC Blog</a></cite></footer></blockquote>
-        </div>
-        <a href="/2018/05/10/hexo-test/" class="read-more">Read More</a>
-    
-
-</div>
-            
-                
-<div class="post">
-
-    <div class="post-header index">
-        <h1 class="title">
-            <a href="/2018/05/07/你好-Hexo/">
-                你好, Hexo!
-            </a>
-        </h1>
-        <div class="post-info">
-            
-                <span class="date">2018-05-07</span>
-            
-            
-            
-        </div>
-    </div>
-
-    
-        <div class="content">
-            <p>网上看到这个博客搭建平台很方便并且很强大，个人弄来试试</p>
-        </div>
-        <a href="/2018/05/07/你好-Hexo/" class="read-more">Read More</a>
-    
-
-</div>
-            
-        </section>
-    </div>
-</div>
-
-
-
-
-
-
-</div>
-
-<!-- Footer -->
-<div class="push"></div>
-
-<footer class="footer-content">
-    <div class="container">
-        <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
-                <h2>关于</h2>
-                <p>
-                    This theme was developed by <a href="https://github.com/klugjo">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
-                </p>
+      
+          <p>各种Linux便捷式操作，可以增加开发效率，也能帮助使用者懂得如何进行简单运维。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/%E8%BF%90%E7%BB%B4/%E7%A8%8B%E5%BA%8F%E5%91%98%E6%89%8B%E8%AE%B0/">
+                阅读全文 &raquo;
+              </a>
             </div>
-            
-    <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3 recent-posts">
-        <h2>最新文章</h2>
-        <ul>
-            
-            <li>
-                <a class="footer-post" href="/2018/05/27/Arduino-Proteus-仿真二/">Arduino + Proteus 仿真（二）</a>
-            </li>
-            
-            <li>
-                <a class="footer-post" href="/2018/05/27/Arduino-Proteus-仿真一/">Arduino + Proteus 仿真（一）</a>
-            </li>
-            
-            <li>
-                <a class="footer-post" href="/2018/05/17/天刀基本玩法/">天刀基本玩法</a>
-            </li>
-            
-            <li>
-                <a class="footer-post" href="/2018/05/15/ATmega16-ADC简单实验/">ATmega16 ADC简单实验</a>
-            </li>
-            
-        </ul>
+          <!--/noindex-->
+        
+      
     </div>
 
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
 
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://jimhackking.github.io/%E8%BF%90%E7%BB%B4/vim%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/">
 
-            
-<div class="col-xs-6 col-sm-6 col-md-3 col-lg-3 footer-categories">
-    <h2>分类</h2>
-    <ul>
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="DHC">
+      <meta itemprop="description" content="知识以一种粗暴的方式进入了我的脑子">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="智云知识">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/%E8%BF%90%E7%BB%B4/vim%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/" class="post-title-link" itemprop="url">VIM使用手册</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-03-07 00:33:58 / 修改时间：00:39:29" itemprop="dateCreated datePublished" datetime="2024-03-07T00:33:58+08:00">2024-03-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%BF%90%E7%BB%B4/" itemprop="url" rel="index"><span itemprop="name">运维</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>VIM的各种使用技巧以及快捷键，包含日常使用中的复制粘贴、查找、替换等操作。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/%E8%BF%90%E7%BB%B4/vim%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
         
-        <li>
-            <a class="footer-post" href="/categories/游戏/">游戏</a>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://jimhackking.github.io/%E5%90%8E%E7%AB%AF/rabbitmq/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="DHC">
+      <meta itemprop="description" content="知识以一种粗暴的方式进入了我的脑子">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="智云知识">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/%E5%90%8E%E7%AB%AF/rabbitmq/" class="post-title-link" itemprop="url">RabbitMQ</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-03-07 00:33:51" itemprop="dateCreated datePublished" datetime="2024-03-07T00:33:51+08:00">2024-03-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%90%8E%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">后端</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h4 id="什么是MQ？"><a href="#什么是MQ？" class="headerlink" title="什么是MQ？"></a>什么是MQ？</h4><p>MQ是消息队列(Message Queue)的缩写，是一种应用程序之间的通信方法。它是一个保存消息的容器，本质上是个队列。消息是指在应用之间传送的数据，可以非常简单，比如只包含文本字符串，也可以更复杂，可能包含嵌入对象。</p>
+<p>MQ的主要特点是异步处理，主要目的是减少请求响应时间，实现非核心流程异步化，提高系统响应性能。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/%E5%90%8E%E7%AB%AF/rabbitmq/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://jimhackking.github.io/%E5%90%8E%E7%AB%AF/django%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E5%BF%AB%E9%80%9F%E6%8C%87%E5%8D%97/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="DHC">
+      <meta itemprop="description" content="知识以一种粗暴的方式进入了我的脑子">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="智云知识">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/%E5%90%8E%E7%AB%AF/django%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E5%BF%AB%E9%80%9F%E6%8C%87%E5%8D%97/" class="post-title-link" itemprop="url">Django单元测试快速指南</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-03-07 00:33:41" itemprop="dateCreated datePublished" datetime="2024-03-07T00:33:41+08:00">2024-03-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%90%8E%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">后端</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><blockquote>
+<p>本文受《Python测试驱动开发》启发，书中内容很详尽，章节也很多，比较偏向于新手向，从如何安装Django1.11到如何使用Git工具都有教，没接触过这些的人都能看懂，有一定基础的人可以略读，值得一看。<br>本文绝大部分内容并不来自该书，更多的是我的个人见解和对官方文档的一些整理。</p>
+</blockquote>
+<p>本文主要介绍Django跟unittest有区别的地方，以及如何去使用Django内置的测试模块进行测试，适合有一定Python基础和Django基础的人。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/%E5%90%8E%E7%AB%AF/django%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E5%BF%AB%E9%80%9F%E6%8C%87%E5%8D%97/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://jimhackking.github.io/%E8%BF%90%E7%BB%B4/mysql/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="DHC">
+      <meta itemprop="description" content="知识以一种粗暴的方式进入了我的脑子">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="智云知识">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/%E8%BF%90%E7%BB%B4/mysql/" class="post-title-link" itemprop="url">MySQL</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-03-06 23:39:27" itemprop="dateCreated datePublished" datetime="2024-03-06T23:39:27+08:00">2024-03-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-03-07 00:47:57" itemprop="dateModified" datetime="2024-03-07T00:47:57+08:00">2024-03-07</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%BF%90%E7%BB%B4/" itemprop="url" rel="index"><span itemprop="name">运维</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <blockquote><p>本篇摘录自黑马程序员的B站教学视频，由本人学习视频内容后总结并提取摘要制作而成的简要笔记。<br>本笔记只记录到进阶篇（大部分），剩下的进阶篇以及运维篇由于本人职业生涯没有用武之地，所以没有进行学习。</p>
+<footer><strong>黑马程序员</strong><cite><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Kr4y1i7ru/?share_source=copy_web&vd_source=e43c1de8e41e1499f7f3fdb03fba0eb6">黑马程序员 MySQL数据库入门到精通，从mysql安装到mysql高级、mysql优化全囊括</a></cite></footer></blockquote>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/%E8%BF%90%E7%BB%B4/mysql/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="DHC">
+      <meta itemprop="description" content="知识以一种粗暴的方式进入了我的脑子">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="智云知识">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89/" class="post-title-link" itemprop="url">Arduino + Proteus 仿真（二）</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-05-27 16:21:08" itemprop="dateCreated datePublished" datetime="2018-05-27T16:21:08+08:00">2018-05-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-03-06 22:40:26" itemprop="dateModified" datetime="2024-03-06T22:40:26+08:00">2024-03-06</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%A1%AC%E4%BB%B6/" itemprop="url" rel="index"><span itemprop="name">硬件</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>经过上一篇文章的设置之后（如果还没进行设置的，请看<a href="/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%B8%80%EF%BC%89/" title="Arduino + Proteus 仿真（一）">上一篇</a>文章进行设置）这一篇文章就进行实际的操作，使用两款软件来进行仿真。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%B8%80%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="DHC">
+      <meta itemprop="description" content="知识以一种粗暴的方式进入了我的脑子">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="智云知识">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%B8%80%EF%BC%89/" class="post-title-link" itemprop="url">Arduino + Proteus 仿真（一）</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-05-27 15:35:12" itemprop="dateCreated datePublished" datetime="2018-05-27T15:35:12+08:00">2018-05-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-03-06 22:40:43" itemprop="dateModified" datetime="2024-03-06T22:40:43+08:00">2024-03-06</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%A1%AC%E4%BB%B6/" itemprop="url" rel="index"><span itemprop="name">硬件</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>玩过单片机的人应该都会知道，有一个系列的单片机叫 Arduino，总所周知的 Arduino 是对对单片机不熟悉，但是对单片机感兴趣的软件开发程序员非常友好的，他有一个专门的软件 Arduino IDE，用于开发 Arduino 系列的产品，他的特点是有许许多多的库和函数，编写程序控制单片机的时候不需要了解太多关于寄存器的知识，直接调用相应的函数就可以控制单片机，这就是为什么说对软件开发的程序员非常友好，他的库可以让你在开发硬件的时候像开发软件一样方便快捷。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%B8%80%EF%BC%89/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://jimhackking.github.io/%E6%B8%B8%E6%88%8F/%E5%A4%A9%E5%88%80%E5%9F%BA%E6%9C%AC%E7%8E%A9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="DHC">
+      <meta itemprop="description" content="知识以一种粗暴的方式进入了我的脑子">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="智云知识">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/%E6%B8%B8%E6%88%8F/%E5%A4%A9%E5%88%80%E5%9F%BA%E6%9C%AC%E7%8E%A9%E6%B3%95/" class="post-title-link" itemprop="url">天刀基本玩法</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-05-17 11:01:35" itemprop="dateCreated datePublished" datetime="2018-05-17T11:01:35+08:00">2018-05-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2018-05-23 22:25:08" itemprop="dateModified" datetime="2018-05-23T22:25:08+08:00">2018-05-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B8%B8%E6%88%8F/" itemprop="url" rel="index"><span itemprop="name">游戏</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>天涯明月刀是我最近开始玩也比较喜欢玩的游戏，我也打算长玩，网上的人都将这个游戏简称为天刀，作为新手，每天上线不知道要做什么，作为一款比较大型的游戏，要想留住玩家，肯定需要有每日的玩法和任务给大家去做，我在网上也看到有人专门录了视频来讲解天刀每日的玩法都有些什么，于是我特意写这篇博客来归纳各种的天刀玩法。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/%E6%B8%B8%E6%88%8F/%E5%A4%A9%E5%88%80%E5%9F%BA%E6%9C%AC%E7%8E%A9%E6%B3%95/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="DHC">
+      <meta itemprop="description" content="知识以一种粗暴的方式进入了我的脑子">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="智云知识">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/" class="post-title-link" itemprop="url">ATmega16 ADC简单实验</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-05-15 20:04:50" itemprop="dateCreated datePublished" datetime="2018-05-15T20:04:50+08:00">2018-05-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-03-06 22:41:00" itemprop="dateModified" datetime="2024-03-06T22:41:00+08:00">2024-03-06</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%A1%AC%E4%BB%B6/" itemprop="url" rel="index"><span itemprop="name">硬件</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>这篇博客的主要内容是讲解常用的 AVR 单片机的 ADC 功能，知识比较基础，代码也很简单，适合新手快速掌握单片机 ADC 的操作，本篇使用的单片机是 ATmega16。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
         </li>
-        
-        <li>
-            <a class="footer-post" href="/categories/单片机/">单片机</a>
+        <li class="sidebar-nav-overview">
+          站点概览
         </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">DHC</p>
+  <div class="site-description" itemprop="description">知识以一种粗暴的方式进入了我的脑子</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
         
-    </ul>
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
 </div>
 
-        </div>
-        <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <ul class="list-inline footer-social-icons">
-                    
-                    <li class="list-inline-item">
-                        <a href="https://github.com/JIMhackKING">
-                            <span class="footer-icon-container">
-                                <i class="fa fa-github"></i>
-                            </span>
-                        </a>
-                    </li>
-                    
-                    
-                    <li class="list-inline-item">
-                        <a href="https://twitter.com/?lang=en">
-                            <span class="footer-icon-container">
-                                <i class="fa fa-twitter"></i>
-                            </span>
-                        </a>
-                    </li>
-                    
-                    
-                    <li class="list-inline-item">
-                        <a href="https://www.facebook.com/">
-                            <span class="footer-icon-container">
-                                <i class="fa fa-facebook"></i>
-                            </span>
-                        </a>
-                    </li>
-                    
-                    
-                    <li class="list-inline-item">
-                        <a href="https://www.instagram.com/">
-                            <span class="footer-icon-container">
-                                <i class="fa fa-instagram"></i>
-                            </span>
-                        </a>
-                    </li>
-                    
-                    
-                    <li class="list-inline-item">
-                        <a href="https://dribbble.com/">
-                            <span class="footer-icon-container">
-                                <i class="fa fa-dribbble"></i>
-                            </span>
-                        </a>
-                    </li>
-                    
-                    
-                    <li class="list-inline-item">
-                        <a href="https://plus.google.com/">
-                            <span class="footer-icon-container">
-                                <i class="fa fa-google-plus"></i>
-                            </span>
-                        </a>
-                    </li>
-                    
-                    
-                    <li class="list-inline-item">
-                        <a href="https://www.behance.net/">
-                            <span class="footer-icon-container">
-                                <i class="fa fa-behance"></i>
-                            </span>
-                        </a>
-                    </li>
-                    
-                    
-                    <li class="list-inline-item">
-                        <a href="https://500px.com/">
-                            <span class="footer-icon-container">
-                                <i class="fa fa-500px"></i>
-                            </span>
-                        </a>
-                    </li>
-                    
-                    
-                    <li class="list-inline-item">
-                        <a href="mailto:test@example.com">
-                            <span class="footer-icon-container">
-                                <i class="fa fa-envelope-o"></i>
-                            </span>
-                        </a>
-                    </li>
-                    
-                    
-                    <li class="list-inline-item">
-                        <a href="\#">
-                            <span class="footer-icon-container">
-                                <i class="fa fa-rss"></i>
-                            </span>
-                        </a>
-                    </li>
-                    
-                </ul>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <div class="footer-copyright">
-                    @Untitled. All right reserved | Design & Hexo <a href="http://www.codeblocq.com/">Jonathan Klughertz</a>
-                </div>
-            </div>
-        </div>
+
+
+      </div>
+
     </div>
-</footer>
-
-<!-- After footer scripts -->
-
-<!-- jQuery -->
-<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
-
-<!-- Tween Max -->
-<script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.18.5/TweenMax.min.js"></script>
-
-<!-- Gallery -->
-<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
-
-<!-- Custom JavaScript -->
-<script src="/js/main.js"></script>
-
-<!-- Disqus Comments -->
+  </aside>
+  <div id="sidebar-dimmer"></div>
 
 
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DHC</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
 
 </body>
-
 </html>

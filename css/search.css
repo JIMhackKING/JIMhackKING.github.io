@@ -1,0 +1,40 @@
+.site-search-form {
+  width: 80%;
+  margin: 2rem auto 4rem;
+}
+.site-search-form .st-search-input {
+  padding: 0.5rem 2%;
+  width: 100%;
+  font-size: 1.3rem;
+  border-radius: 0.3rem;
+  border: 0.1rem solid #b64444;
+}
+.local-search-result-cls .local-search-empty {
+  color: #d14e4e;
+  margin-bottom: 3rem;
+  font-weight: bold;
+  font-size: 1.5rem;
+  text-align: center;
+  display: block;
+}
+.local-search-result-cls li {
+  list-style-type: none;
+  text-align: left;
+  border-top: 1px solid #bbb;
+}
+.local-search-result-cls li a div {
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+}
+.local-search-result-cls li:first-child {
+  padding-top: 0;
+  border-top: none;
+  margin-top: 0;
+}
+.search-keyword {
+  padding-left: 0.2rem;
+  padding-right: 0.2rem;
+  font-size: 1.2rem;
+  font-style: normal;
+  background-color: #d14e4e;
+}

@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jimhackking.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="VIM的各种使用技巧以及快捷键，包含日常使用中的复制粘贴、查找、替换等操作。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="VIM使用手册">
+<meta property="og:url" content="https://jimhackking.github.io/%E8%BF%90%E7%BB%B4/vim%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/index.html">
+<meta property="og:site_name" content="智云知识">
+<meta property="og:description" content="VIM的各种使用技巧以及快捷键，包含日常使用中的复制粘贴、查找、替换等操作。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://jimhackking.github.io/%E8%BF%90%E7%BB%B4/vim%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/%E5%BF%AB%E6%8D%B7%E9%94%AE.png">
+<meta property="article:published_time" content="2024-03-06T16:33:58.000Z">
+<meta property="article:modified_time" content="2024-03-06T16:39:29.049Z">
+<meta property="article:author" content="DHC">
+<meta property="article:tag" content="VIM">
+<meta property="article:tag" content="Linux">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://jimhackking.github.io/%E8%BF%90%E7%BB%B4/vim%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/%E5%BF%AB%E6%8D%B7%E9%94%AE.png">
+
+<link rel="canonical" href="https://jimhackking.github.io/%E8%BF%90%E7%BB%B4/vim%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>VIM使用手册 | 智云知识</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">智云知识</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">共享知识库</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://jimhackking.github.io/%E8%BF%90%E7%BB%B4/vim%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="DHC">
+      <meta itemprop="description" content="知识以一种粗暴的方式进入了我的脑子">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="智云知识">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          VIM使用手册
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-03-07 00:33:58 / 修改时间：00:39:29" itemprop="dateCreated datePublished" datetime="2024-03-07T00:33:58+08:00">2024-03-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%BF%90%E7%BB%B4/" itemprop="url" rel="index"><span itemprop="name">运维</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">VIM的各种使用技巧以及快捷键，包含日常使用中的复制粘贴、查找、替换等操作。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="查找"><a href="#查找" class="headerlink" title="查找"></a>查找</h1><p>在normal模式下按下<code>/</code>即可进入查找模式，输入要查找的字符串并按下回车。 Vim会跳转到第一个匹配。按下<code>n</code>查找下一个，按下<code>N</code>查找上一个。</p>
+<p>Vim查找支持正则表达式，例如<code>/vim$</code>匹配行尾的<code>&quot;vim&quot;</code>。 需要查找特殊字符需要转义，例如<code>/vim\$</code>匹配<code>&quot;vim$&quot;</code>。</p>
+<h2 id="大小写敏感查找"><a href="#大小写敏感查找" class="headerlink" title="大小写敏感查找"></a>大小写敏感查找</h2><p>在查找模式中加入<code>\c</code>表示大小写不敏感查找，<code>\C</code>表示大小写敏感查找。例如：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs vim">/foo\<span class="hljs-keyword">c</span><br></code></pre></td></tr></table></figure>
+
+<p>将会查找所有的<code>&quot;foo&quot;</code>,<code>&quot;FOO&quot;</code>,<code>&quot;Foo&quot;</code>等字符串。</p>
+<h2 id="大小写敏感配置"><a href="#大小写敏感配置" class="headerlink" title="大小写敏感配置"></a>大小写敏感配置</h2><p>Vim 默认采用大小写敏感的查找，为了方便我们常常将其配置为大小写不敏感：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">&quot; 设置默认进行大小写不敏感查找<br>set ignorecase<br>&quot; 如果有一个大写字母，则切换到大小写敏感查找<br>set smartcase<br></code></pre></td></tr></table></figure>
+
+<p>将上述设置粘贴到你的~&#x2F;.vimrc，重新打开Vim即可生效</p>
+<h2 id="查找当前单词"><a href="#查找当前单词" class="headerlink" title="查找当前单词"></a>查找当前单词</h2><p>在normal模式下按下<code>*</code>即可查找光标所在单词（word）， 要求每次出现的前后为空白字符或标点符号。例如当前为<code>foo</code>， 可以匹配<code>foo bar</code>中的<code>foo</code>，但不可匹配<code>foobar</code>中的<code>foo</code>。 这在查找函数名、变量名时非常有用。</p>
+<p>按下<code>g*</code>即可查找光标所在单词的字符序列，每次出现前后字符无要求。 即<code>foo bar</code>和<code>foobar</code>中的<code>foo</code>均可被匹配到。</p>
+<h1 id="替换"><a href="#替换" class="headerlink" title="替换"></a>替换</h1><p>语法为<code>:&#123;作用范围&#125;s/&#123;目标&#125;/&#123;替换&#125;/&#123;替换标志&#125;</code>，<br>全局替换：<code>:%s/源字符串/目的字符串/g</code>。</p>
+<p>例如<code>:%s/foo/bar/g</code>会在全局范围(<code>%</code>)查找<code>foo</code>并替换为<code>bar</code>，所有出现都会被替换（<code>g</code>）</p>
+<h2 id="基本的替换"><a href="#基本的替换" class="headerlink" title="基本的替换"></a>基本的替换</h2><p><code>:s/vivian/sky/</code> 替换当前行第一个 vivian 为 sky<br><code>:s/vivian/sky/g</code> 替换当前行所有 vivian 为 sky<br><code>:n,$s/vivian/sky/</code> 替换第 n 行开始到最后一行中每一行的第一个 vivian 为 sky<br><code>:n,$s/vivian/sky/g</code> 替换第 n 行开始到最后一行中每一行所有 vivian 为 sky<br>（n 为数字，若 n 为 .，表示从当前行开始到最后一行）<br><code>:%s/vivian/sky/</code>（等同于 :g&#x2F;vivian&#x2F;s&#x2F;&#x2F;sky&#x2F;）替换每一行的第一个 vivian 为 sky<br><code>:%s/vivian/sky/g</code>（等同于 :g&#x2F;vivian&#x2F;s&#x2F;&#x2F;sky&#x2F;g） 替换每一行中所有 vivian 为 sky<br>可以使用 # 作为分隔符，此时中间出现的 &#x2F; 不会作为分隔符<br><code>:s#vivian/#sky/#</code> 替换当前行第一个 vivian&#x2F; 为 sky&#x2F;<br><code>:%s+/oradata/apras/+/user01/apras1+</code> （使用+ 来替换 &#x2F; ）： &#x2F;oradata&#x2F;apras&#x2F;替换成&#x2F;user01&#x2F;apras1&#x2F;</p>
+<h2 id="作用范围"><a href="#作用范围" class="headerlink" title="作用范围"></a>作用范围</h2><p>作用范围分为当前行、全文、选区等等。</p>
+<p>当前行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">:s/foo/bar/g<br></code></pre></td></tr></table></figure>
+
+<p>全文：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">:%s/foo/bar/g<br></code></pre></td></tr></table></figure>
+
+<p>选区，在Visual模式下选择区域后输入<code>:</code>，Vim即可自动补全为 <code>:&#39;&lt;,&#39;&gt;</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">:&#x27;&lt;,&#x27;&gt;s/foo/bar/g<br></code></pre></td></tr></table></figure>
+
+<p>2-11行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">:5,12s/foo/bar/g<br></code></pre></td></tr></table></figure>
+
+<p>当前行.与接下来两行+2：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">:.,+2s/foo/bar/g<br></code></pre></td></tr></table></figure>
+
+<h2 id="替换标志"><a href="#替换标志" class="headerlink" title="替换标志"></a>替换标志</h2><p>上文中命令结尾的<code>g</code>即是替换标志之一，表示全局global替换（即替换目标的所有出现）。 还有很多其他有用的替换标志：</p>
+<p>空替换标志表示只替换从光标位置开始，目标的第一次出现：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">:%s/foo/bar<br></code></pre></td></tr></table></figure>
+
+<p><code>i</code>表示大小写不敏感查找，<code>I</code>表示大小写敏感：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">:%s/foo/bar/i<br># 等效于模式中的\c（不敏感）或\C（敏感）<br>:%s/foo\c/bar<br><br></code></pre></td></tr></table></figure>
+
+<p><code>c</code>表示需要确认，例如全局查找<code>&quot;foo&quot;</code>替换为<code>&quot;bar&quot;</code>并且需要确认：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">:%s/foo/bar/gc<br><br></code></pre></td></tr></table></figure>
+
+<p>回车后Vim会将光标移动到每一次<code>&quot;foo&quot;</code>出现的位置，并提示<code>replace with bar (y/n/a/q/l/^E/^Y)?</code>。<br>按下<code>y</code>表示替换，<code>n</code>表示不替换，<code>a</code>表示替换所有，<code>q</code>表示退出查找模式， <code>l</code>表示替换当前位置并退出。<code>^E</code>与<code>^Y</code>是光标移动快捷键，参考： <a target="_blank" rel="noopener" href="http://harttle.com/2015/11/07/vim-cursor.html" title="Vim中如何快速进行光标移动">Vim中如何快速进行光标移动</a></p>
+<h1 id="设置缩进"><a href="#设置缩进" class="headerlink" title="设置缩进"></a>设置缩进</h1><p><code>set autoindent</code>设置自动缩进<br><code>set shiftwidth=4</code>设置自动缩进空格数<br><code>set tabstop=4</code>设置一个tab等于多少个空格的宽度<br><code>set softtabstop=4</code>设置软制表符，软制表符表示在Insert模式的时候按退格键时退回缩进的长度，当使用expandtab 时特别有用。<br><code>set expandtab</code>将tab变成空格<br><code>:%retab!</code>将文件中现有的tab变成空格</p>
+<h1 id="鼠标功能"><a href="#鼠标功能" class="headerlink" title="鼠标功能"></a>鼠标功能</h1><p><code>set mouse=a</code>启用鼠标功能<br><code>set mouse-=a</code>停用鼠标功能</p>
+<p>鼠标模式：</p>
+<ul>
+<li>n：普通模式</li>
+<li>v：可视模式</li>
+<li>i：插入模式</li>
+<li>c：命令行模式</li>
+<li>h：在帮助文件里，以上所有模式</li>
+<li>a：以上所有模式</li>
+<li>r：跳过|lit-enter|提示</li>
+<li>A：在可视模式下自动选择</li>
+</ul>
+<p>解决鼠标模式右键不能粘贴问题<br>用鼠标和可视模式复制&#x2F;粘贴 (‘mouse’ 选项必须设置，见上):</p>
+<ol>
+<li>在文本的第一个字符上按鼠标左键，移动鼠标到文本的最后一个字母，然后释放左<br>键。这会启动可视模式并高亮选择区域。</li>
+<li>按 “y” 抽出可视文本到无名寄存器里。</li>
+<li>在要插入的位置上按鼠标左键。</li>
+<li>按鼠标中键（滚轮）。</li>
+</ol>
+<h1 id="折叠代码"><a href="#折叠代码" class="headerlink" title="折叠代码"></a>折叠代码</h1><p><img src="/%E8%BF%90%E7%BB%B4/vim%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/%E5%BF%AB%E6%8D%B7%E9%94%AE.png"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/VIM/" rel="tag"># VIM</a>
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E5%90%8E%E7%AB%AF/rabbitmq/" rel="prev" title="RabbitMQ">
+      <i class="fa fa-chevron-left"></i> RabbitMQ
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E8%BF%90%E7%BB%B4/%E7%A8%8B%E5%BA%8F%E5%91%98%E6%89%8B%E8%AE%B0/" rel="next" title="程序员手记">
+      程序员手记 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9F%A5%E6%89%BE"><span class="nav-number">1.</span> <span class="nav-text">查找</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%A7%E5%B0%8F%E5%86%99%E6%95%8F%E6%84%9F%E6%9F%A5%E6%89%BE"><span class="nav-number">1.1.</span> <span class="nav-text">大小写敏感查找</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%A7%E5%B0%8F%E5%86%99%E6%95%8F%E6%84%9F%E9%85%8D%E7%BD%AE"><span class="nav-number">1.2.</span> <span class="nav-text">大小写敏感配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E6%89%BE%E5%BD%93%E5%89%8D%E5%8D%95%E8%AF%8D"><span class="nav-number">1.3.</span> <span class="nav-text">查找当前单词</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9B%BF%E6%8D%A2"><span class="nav-number">2.</span> <span class="nav-text">替换</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E7%9A%84%E6%9B%BF%E6%8D%A2"><span class="nav-number">2.1.</span> <span class="nav-text">基本的替换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%9C%E7%94%A8%E8%8C%83%E5%9B%B4"><span class="nav-number">2.2.</span> <span class="nav-text">作用范围</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%BF%E6%8D%A2%E6%A0%87%E5%BF%97"><span class="nav-number">2.3.</span> <span class="nav-text">替换标志</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E7%BC%A9%E8%BF%9B"><span class="nav-number">3.</span> <span class="nav-text">设置缩进</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%BC%A0%E6%A0%87%E5%8A%9F%E8%83%BD"><span class="nav-number">4.</span> <span class="nav-text">鼠标功能</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8A%98%E5%8F%A0%E4%BB%A3%E7%A0%81"><span class="nav-number">5.</span> <span class="nav-text">折叠代码</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">DHC</p>
+  <div class="site-description" itemprop="description">知识以一种粗暴的方式进入了我的脑子</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DHC</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

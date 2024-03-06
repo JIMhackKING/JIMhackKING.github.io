@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jimhackking.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="这篇博客的主要内容是讲解常用的 AVR 单片机的 ADC 功能，知识比较基础，代码也很简单，适合新手快速掌握单片机 ADC 的操作，本篇使用的单片机是 ATmega16。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ATmega16 ADC简单实验">
+<meta property="og:url" content="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/index.html">
+<meta property="og:site_name" content="智云知识">
+<meta property="og:description" content="这篇博客的主要内容是讲解常用的 AVR 单片机的 ADC 功能，知识比较基础，代码也很简单，适合新手快速掌握单片机 ADC 的操作，本篇使用的单片机是 ATmega16。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/circute.png">
+<meta property="og:image" content="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/ADCSRA-1.png">
+<meta property="og:image" content="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/ADCSRA-2.png">
+<meta property="article:published_time" content="2018-05-15T12:04:50.000Z">
+<meta property="article:modified_time" content="2024-03-06T14:41:00.323Z">
+<meta property="article:author" content="DHC">
+<meta property="article:tag" content="AVR">
+<meta property="article:tag" content="单片机">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/circute.png">
+
+<link rel="canonical" href="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>ATmega16 ADC简单实验 | 智云知识</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">智云知识</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">共享知识库</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="DHC">
+      <meta itemprop="description" content="知识以一种粗暴的方式进入了我的脑子">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="智云知识">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ATmega16 ADC简单实验
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-05-15 20:04:50" itemprop="dateCreated datePublished" datetime="2018-05-15T20:04:50+08:00">2018-05-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-03-06 22:41:00" itemprop="dateModified" datetime="2024-03-06T22:41:00+08:00">2024-03-06</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%A1%AC%E4%BB%B6/" itemprop="url" rel="index"><span itemprop="name">硬件</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>这篇博客的主要内容是讲解常用的 AVR 单片机的 ADC 功能，知识比较基础，代码也很简单，适合新手快速掌握单片机 ADC 的操作，本篇使用的单片机是 ATmega16。</p>
+<span id="more"></span>
+
+<p>最近由于课程需要，学习了一段时间的 AVR 单片机，对于一些简单的端口操作、控制 LED 灯之类的就不另做篇幅去讲解了，因为就跟 Hello, world 一样简单，对于我来说，单片机控制得最多的是各种各样的传感器，而传感器是模拟器件，传到单片机的数据时模拟信号，但是单片机等芯片是数字芯片呀，数字芯片只能处理数字信号，也就是高电平和低电平，所以就需要一个模块来将这两种信号进行转换，就是今天要讲到的 AD 转换，中文是模数转换，作用就是讲模拟信号转化成数字信号，在大部分文档中也会称为 ADC (Analog&#x2F;Digital Convert)，今天就以一个实例来展示 AVR 的 ADC。</p>
+<p>新手入门单片机大都是学习的 51 单片机，用的最多的芯片是 STC89C52 （或 C51），但是 51 单片机片上资源很少，只有少数够用的功能，其他的一些高级模块都没有，而 AVR 虽然跟 51 单片机都是 8 位的微控制器，但是 AVR 单片机的片上资源多很多，诸如 ADC, I2C 等等，有了这些外设，使用起来就简单很多了，不用自己重新编写复杂的程序，也不用花钱给电路增加额外的硬件。</p>
+<p>先来看看本次实验的电路图：</p>
+<img src="/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/circute.png" class="" title="电路图">
+
+<p>其中图片左上角部分连接着 RESET, XTAL1, XTAL2 引脚的那一部分电路是组成单片机最小系统的电路，也是使单片机正常工作的必要条件。我们在 PA0 脚上连接一个电位器，给单片机提供模拟信号的就是这个电位器了，电位器通过改变阻值来改变输入到单片机的电压。右下角有两个引脚 AREF 和 AVCC，其中 AREF 是单片机基准电压外部输入引脚，AVCC 是模拟电源，要使用 ADC 功能这两个引脚就必不可少了。还有最后一部分是连接到 PD 口的 8 个 LED 灯，用来显示单片机 AD 转换后的结果，虽然用 LED 来表示结果不直观，但是是操作最简单的方法了。</p>
+<p>代码比电路更简单，直接贴上代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;avr/io.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;avr/interrupt.h&gt;</span></span><br><br><span class="hljs-comment">/*ADC Conversion Complete Interrupt Service Routine (ISR)*/</span><br>ISR(ADC_vect)<br>&#123;<br><br>	PORTD = ADCH;			<span class="hljs-comment">// Output ADCH to PortD</span><br>	ADCSRA |= <span class="hljs-number">1</span>&lt;&lt;ADSC;		<span class="hljs-comment">// Start Conversion</span><br>&#125;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>	DDRD = <span class="hljs-number">0xFF</span>;			<span class="hljs-comment">// Configure PortD as output</span><br>	DDRA = <span class="hljs-number">0x00</span>;			<span class="hljs-comment">// Configure PortA as input</span><br>					<span class="hljs-comment">// PA0 is ADC0 input</span><br><br>	ADCSRA = <span class="hljs-number">0x8F</span>;			<span class="hljs-comment">// Enable the ADC and its interrupt feature</span><br>					<span class="hljs-comment">// and set the ACD clock pre-scalar to clk/128</span><br>	ADMUX = <span class="hljs-number">0xE0</span>;			<span class="hljs-comment">// Select internal 2.56V as Vref, left justify </span><br>					<span class="hljs-comment">// data registers and select ADC0 as input channel </span><br>	 <br>	sei();				<span class="hljs-comment">// Enable Global Interrupts</span><br>	ADCSRA |= <span class="hljs-number">1</span>&lt;&lt;ADSC;		<span class="hljs-comment">// Start Conversion</span><br>	 <br>	<span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>);			<span class="hljs-comment">// Wait forever</span><br>&#125; <br></code></pre></td></tr></table></figure>
+
+<p>每一句的作用在代码中的注释都已经很清晰了，要特别讲解的是 ADCSRA 寄存器，事实上关于这个寄存器的操作以及每一位的作用都不需要特别讲解，因为在官方文档都已经说得很清楚了，我就只贴出文档的截图吧</p>
+<img src="/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/ADCSRA-1.png" class="" title="ADCSRA寄存器介绍">
+<img src="/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/ADCSRA-2.png" class="" title="ADCSRA寄存器介绍">
+
+<br/>
+以上的代码在 ATmel Studio 7.0 中已经验证通过，在 AT Studio 中编译生成 hex 文件之后，电路按照第一张图片的接法，然后将程序写入单片机中运行就能看到接 LED 灯的结果了，AD 转换的结果是 8 位的，每次转换的结果都会存在 ADCH 寄存器中，所以代码中就直接将 ADCH 的值写入 PD 口中，当你改变电位器阻值的时候你就会看到 LED 灯也在变化。
+
+<p>YouTube 上的演示视频：</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/ORkgPxC4p5U?rel=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/AVR/" rel="tag"># AVR</a>
+              <a href="/tags/%E5%8D%95%E7%89%87%E6%9C%BA/" rel="tag"># 单片机</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/%E6%B8%B8%E6%88%8F/%E5%A4%A9%E5%88%80%E5%9F%BA%E6%9C%AC%E7%8E%A9%E6%B3%95/" rel="next" title="天刀基本玩法">
+      天刀基本玩法 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">DHC</p>
+  <div class="site-description" itemprop="description">知识以一种粗暴的方式进入了我的脑子</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DHC</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jimhackking.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="各种Linux便捷式操作，可以增加开发效率，也能帮助使用者懂得如何进行简单运维。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="程序员手记">
+<meta property="og:url" content="https://jimhackking.github.io/%E8%BF%90%E7%BB%B4/%E7%A8%8B%E5%BA%8F%E5%91%98%E6%89%8B%E8%AE%B0/index.html">
+<meta property="og:site_name" content="智云知识">
+<meta property="og:description" content="各种Linux便捷式操作，可以增加开发效率，也能帮助使用者懂得如何进行简单运维。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-03-06T16:34:04.000Z">
+<meta property="article:modified_time" content="2024-03-06T16:39:34.986Z">
+<meta property="article:author" content="DHC">
+<meta property="article:tag" content="Linux">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://jimhackking.github.io/%E8%BF%90%E7%BB%B4/%E7%A8%8B%E5%BA%8F%E5%91%98%E6%89%8B%E8%AE%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>程序员手记 | 智云知识</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">智云知识</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">共享知识库</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://jimhackking.github.io/%E8%BF%90%E7%BB%B4/%E7%A8%8B%E5%BA%8F%E5%91%98%E6%89%8B%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="DHC">
+      <meta itemprop="description" content="知识以一种粗暴的方式进入了我的脑子">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="智云知识">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          程序员手记
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-03-07 00:34:04 / 修改时间：00:39:34" itemprop="dateCreated datePublished" datetime="2024-03-07T00:34:04+08:00">2024-03-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%BF%90%E7%BB%B4/" itemprop="url" rel="index"><span itemprop="name">运维</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">各种Linux便捷式操作，可以增加开发效率，也能帮助使用者懂得如何进行简单运维。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h1><h2 id="终端快捷键"><a href="#终端快捷键" class="headerlink" title="终端快捷键"></a>终端快捷键</h2><h3 id="光标移动"><a href="#光标移动" class="headerlink" title="光标移动"></a>光标移动</h3><table>
+<thead>
+<tr>
+<th>快捷键</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>crtl+a</code></td>
+<td>移动到开头</td>
+</tr>
+<tr>
+<td><code>crtl+e</code></td>
+<td>移动到结尾</td>
+</tr>
+<tr>
+<td><code>alt+b</code></td>
+<td>向左移动一个单词</td>
+</tr>
+<tr>
+<td><code>alt+f</code></td>
+<td>向右移动一个单词</td>
+</tr>
+<tr>
+<td><code>crtl+b</code></td>
+<td>向左移动一个字符</td>
+</tr>
+<tr>
+<td><code>crtl+f</code></td>
+<td>向右移动一个字符</td>
+</tr>
+<tr>
+<td><code>esc+b</code></td>
+<td>向左移动一个单词</td>
+</tr>
+<tr>
+<td><code>esc+f</code></td>
+<td>向右移动一个单词</td>
+</tr>
+<tr>
+<td><code>ctrl+XX</code></td>
+<td>在上次光标和当前光标所在字符间跳转</td>
+</tr>
+<tr>
+<td><code>esc+t</code></td>
+<td>交换光标位置钱的两个单词</td>
+</tr>
+</tbody></table>
+<h3 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h3><table>
+<thead>
+<tr>
+<th>快捷键</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ctrl+k</code></td>
+<td>删除光标后所有字符</td>
+</tr>
+<tr>
+<td><code>ctrl+u</code></td>
+<td>删除光标前所有字符</td>
+</tr>
+<tr>
+<td><code>ctrl+w</code></td>
+<td>删除光标前一个单词</td>
+</tr>
+<tr>
+<td><code>ctrl+d</code></td>
+<td>删除光标所在字符（右侧）</td>
+</tr>
+<tr>
+<td><code>ctrl+h</code></td>
+<td>删除光标前字符（左侧）</td>
+</tr>
+</tbody></table>
+<h3 id="撤销"><a href="#撤销" class="headerlink" title="撤销"></a>撤销</h3><table>
+<thead>
+<tr>
+<th>快捷键</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ctrl+_</code></td>
+<td>撤销操作</td>
+</tr>
+<tr>
+<td><code>ctrl+y</code></td>
+<td>粘贴ctrl+u&#x2F;k剪切的内容</td>
+</tr>
+<tr>
+<td><code>ctrl+?</code></td>
+<td>撤销前一次输入</td>
+</tr>
+<tr>
+<td><code>alt+r</code></td>
+<td>撤销前一次动作</td>
+</tr>
+</tbody></table>
+<h3 id="替换"><a href="#替换" class="headerlink" title="替换"></a>替换</h3><table>
+<thead>
+<tr>
+<th>快捷键</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ctrl+t</code></td>
+<td>将光标当前字符与前一个字符替换</td>
+</tr>
+</tbody></table>
+<h3 id="历史命令编辑"><a href="#历史命令编辑" class="headerlink" title="历史命令编辑"></a>历史命令编辑</h3><table>
+<thead>
+<tr>
+<th>快捷键</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ctrl+p</code></td>
+<td>上一条历史命令</td>
+</tr>
+<tr>
+<td><code>ctrl+n</code></td>
+<td>下一条历史命令</td>
+</tr>
+<tr>
+<td><code>alt+&gt;</code></td>
+<td>上一次执行的命令的最后一个单词</td>
+</tr>
+<tr>
+<td><code>ctrl+r</code></td>
+<td>搜索历史命令</td>
+</tr>
+</tbody></table>
+<h3 id="控制命令"><a href="#控制命令" class="headerlink" title="控制命令"></a>控制命令</h3><table>
+<thead>
+<tr>
+<th>快捷键</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ctrl+l</code></td>
+<td>清除屏幕</td>
+</tr>
+<tr>
+<td><code>ctrl+s</code></td>
+<td>锁住终端，阻止屏幕输出</td>
+</tr>
+<tr>
+<td><code>ctrl+q</code></td>
+<td>解锁终端，允许屏幕输出</td>
+</tr>
+<tr>
+<td><code>ctrl+c</code></td>
+<td>终止命令</td>
+</tr>
+<tr>
+<td><code>ctrl+i</code></td>
+<td>补全，相当于tab</td>
+</tr>
+<tr>
+<td><code>ctrl+o</code></td>
+<td>重复执行命令</td>
+</tr>
+<tr>
+<td><code>alt+&lt;数字&gt;</code></td>
+<td>操作的次数</td>
+</tr>
+<tr>
+<td><code>ctrl+z</code></td>
+<td>挂起</td>
+</tr>
+</tbody></table>
+<h3 id="命令"><a href="#命令" class="headerlink" title="!命令"></a>!命令</h3><table>
+<thead>
+<tr>
+<th>快捷</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>!!</code></td>
+<td>执行上条命令</td>
+</tr>
+<tr>
+<td><code>!-n</code></td>
+<td>执行前n条命令</td>
+</tr>
+</tbody></table>
+<h2 id="shell中的-用法"><a href="#shell中的-用法" class="headerlink" title="shell中的 $ 用法"></a>shell中的 $ 用法</h2><table>
+<thead>
+<tr>
+<th>特殊符号</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>$#</td>
+<td>传给脚本的参数个数</td>
+</tr>
+<tr>
+<td>$0</td>
+<td>shell脚本文件的名字</td>
+</tr>
+<tr>
+<td>$1</td>
+<td>传递给该shell脚本的第一个参数</td>
+</tr>
+<tr>
+<td>$2</td>
+<td>传递给该shell脚本的第二个参数</td>
+</tr>
+<tr>
+<td>$@</td>
+<td>传给脚本的所有参数的列表</td>
+</tr>
+<tr>
+<td>$*</td>
+<td>以一个单字符串显示所有向脚本传递的参数，与位置变量不同，参数可超过9个</td>
+</tr>
+<tr>
+<td>$$</td>
+<td>脚本运行的当前进程ID号，Shell本身的PID</td>
+</tr>
+<tr>
+<td>$?</td>
+<td>显示最后命令的退出状态，0表示没有错误，其他表示有错误</td>
+</tr>
+<tr>
+<td>$!</td>
+<td>Shell最后运行的后台Process的PID</td>
+</tr>
+<tr>
+<td>$-</td>
+<td>使用Set命令设定的Flag一览</td>
+</tr>
+<tr>
+<td>$()</td>
+<td>相当于&#96;&#96;，括号中放的是命令</td>
+</tr>
+<tr>
+<td>${}</td>
+<td>括号中放的是变量。例如echo P A T H 取 P A T H 变 量 的 值 并 打 印 ， 也 可 以 不 加 括 号 比 如 {PATH}取PATH变 量的值并打印，也可以不加括号比如PATH取PATH变量的值并打印，也可以不加括号比如PATH。</td>
+</tr>
+<tr>
+<td>$1~n</td>
+<td>添加到Shell的各参数值。$1是第1参数、$2是第2参数…。</td>
+</tr>
+</tbody></table>
+<h3 id="的特殊用法"><a href="#的特殊用法" class="headerlink" title="${}的特殊用法"></a>${}的特殊用法</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">sh, dash 都不能使用该语法</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">基础语法：<span class="hljs-variable">$&#123;parameter,,pattern&#125;</span> / <span class="hljs-variable">$&#123;parameter^^pattern&#125;</span></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">另外这个语法不会改变原变量</span><br>var=&quot;Hello,World&quot;<br><span class="hljs-meta prompt_"># </span><span class="language-bash">第一个字符变为大写</span><br>echo $&#123;var^&#125;<br><span class="hljs-meta prompt_"># </span><span class="language-bash">所有字符变为大写</span><br>echo $&#123;var^^&#125;<br><span class="hljs-meta prompt_"># </span><span class="language-bash">第一个字符变为小写</span><br>echo $&#123;var,&#125;<br><span class="hljs-meta prompt_"># </span><span class="language-bash">所有字符变为小写</span><br>echo $&#123;var,,&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="判断-比较"><a href="#判断-比较" class="headerlink" title="判断&#x2F;比较"></a>判断&#x2F;比较</h2><h3 id="语法（用例）"><a href="#语法（用例）" class="headerlink" title="语法（用例）"></a>语法（用例）</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs shell">if [ $SYSTEM = &quot;Linux&quot; ] ; then # 如果是linux话输出linux字符串<br>echo &quot;Linux&quot;<br>elif [ $SYSTEM = &quot;FreeBSD&quot; ] ; then<br>echo &quot;FreeBSD&quot;<br>elif [ $SYSTEM = &quot;Solaris&quot; ] ; then<br>echo &quot;Solaris&quot;<br>else<br>echo &quot;What?&quot;<br>fi # 判断结束，以fi结尾<br></code></pre></td></tr></table></figure>
+
+<h3 id="字符串判断"><a href="#字符串判断" class="headerlink" title="字符串判断"></a>字符串判断</h3><table>
+<thead>
+<tr>
+<th>语法</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>str1 &#x3D; str2</td>
+<td>当两个串有相同内容、长度时为真</td>
+</tr>
+<tr>
+<td>str1 !&#x3D; str2</td>
+<td>当串str1和str2不等时为真</td>
+</tr>
+<tr>
+<td>-n str1</td>
+<td>当串的长度大于0时为真(串非空)</td>
+</tr>
+<tr>
+<td>-z str1</td>
+<td>当串的长度为0时为真(空串)</td>
+</tr>
+<tr>
+<td>str1</td>
+<td>当串str1为非空时为真</td>
+</tr>
+</tbody></table>
+<h3 id="数字的判断"><a href="#数字的判断" class="headerlink" title="数字的判断"></a>数字的判断</h3><table>
+<thead>
+<tr>
+<th>语法</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>int1 -eq int2</td>
+<td>两数相等为真</td>
+</tr>
+<tr>
+<td>int1 -ne int2</td>
+<td>两数不等为真</td>
+</tr>
+<tr>
+<td>int1 -gt int2</td>
+<td>int1大于int2为真</td>
+</tr>
+<tr>
+<td>int1 -ge int2</td>
+<td>int1大于等于int2为真</td>
+</tr>
+<tr>
+<td>int1 -lt int2</td>
+<td>int1小于int2为真</td>
+</tr>
+<tr>
+<td>int1 -le int2</td>
+<td>int1小于等于int2为真</td>
+</tr>
+</tbody></table>
+<h3 id="文件相关的if判断条件语句"><a href="#文件相关的if判断条件语句" class="headerlink" title="文件相关的if判断条件语句"></a>文件相关的if判断条件语句</h3><table>
+<thead>
+<tr>
+<th>语法</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-r file</td>
+<td>用户可读为真</td>
+</tr>
+<tr>
+<td>-w file</td>
+<td>用户可写为真</td>
+</tr>
+<tr>
+<td>-x file</td>
+<td>用户可执行为真</td>
+</tr>
+<tr>
+<td>-f file</td>
+<td>文件为正规文件为真</td>
+</tr>
+<tr>
+<td>-d file</td>
+<td>文件为目录为真</td>
+</tr>
+<tr>
+<td>-c file</td>
+<td>文件为字符特殊文件为真</td>
+</tr>
+<tr>
+<td>-b file</td>
+<td>文件为块特殊文件为真</td>
+</tr>
+<tr>
+<td>-s file</td>
+<td>文件大小非0时为真</td>
+</tr>
+<tr>
+<td>-t file</td>
+<td>当文件描述符(默认为1)指定的设备为终端时为真</td>
+</tr>
+</tbody></table>
+<h3 id="复杂逻辑判断"><a href="#复杂逻辑判断" class="headerlink" title="复杂逻辑判断"></a>复杂逻辑判断</h3><table>
+<thead>
+<tr>
+<th>语法</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-a</td>
+<td>与</td>
+</tr>
+<tr>
+<td>-o</td>
+<td>或</td>
+</tr>
+<tr>
+<td>!</td>
+<td>非</td>
+</tr>
+</tbody></table>
+<h2 id="和-的区别"><a href="#和-的区别" class="headerlink" title="[] 和 [[]] 的区别"></a>[] 和 [[]] 的区别</h2><p>if [[]] 要求括号里的表达式前后必须有一个空格，格式如 if [[ xxx ]]。<br>当 if [[]] 用于字符串常量或变量比较时，表达式本身的运算符，如 &lt;、&gt;、&#x3D;&#x3D;、!&#x3D; ，其前后可以不加空格；<br>但当 if [[]] 用于数值比较时，表达式本身的运算符前后必须加空格，否则会得到相反的结果。</p>
+<p>如：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs shell">if [[ $1 != &quot;start&quot;  &amp;&amp;  $1 != &quot;stop&quot; ]]<br><br>在if之后要用空格,[[ 之后要有一个空格,]]之前要有空格,不然会出错.<br><br>elif [[ $1 == &quot;stop&quot; ]] <br><br>双等号两边要有空格不然后会出错.<br></code></pre></td></tr></table></figure>
+
+<h2 id="在shell中查看每条指令实际执行的结果"><a href="#在shell中查看每条指令实际执行的结果" class="headerlink" title="在shell中查看每条指令实际执行的结果"></a>在shell中查看每条指令实际执行的结果</h2><p><code>set +x</code>表示开始记录，<code>set -x</code>表示停止记录。</p>
+<p>例子：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell">set +x<br>name=&quot;test&quot;<br>echo $name<br>set -x<br></code></pre></td></tr></table></figure>
+
+<h2 id="实用小技巧"><a href="#实用小技巧" class="headerlink" title="实用小技巧"></a>实用小技巧</h2><p>查找包含某个字符串的所有文件，可以用于后续的自动处理：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">指令</span><br>grep -r &quot;desktop\.&quot; | awk &#x27;&#123;print $1&#125;&#x27; | sed &#x27;s/://g&#x27; | uniq<br><span class="hljs-meta prompt_"># </span><span class="language-bash">用途</span><br>for script_name in `grep -r &quot;desktop\.&quot; | awk &#x27;&#123;print $1&#125;&#x27; | sed &#x27;s/://g&#x27; | uniq`<br>do<br>	echo y | edopkg pull $script_name<br>done<br></code></pre></td></tr></table></figure>
+
+<h2 id="日志管理"><a href="#日志管理" class="headerlink" title="日志管理"></a>日志管理</h2><p><code>dmesg</code>命令可以查看系统的整个启动日志</p>
+<h1 id="GIT"><a href="#GIT" class="headerlink" title="GIT"></a>GIT</h1><h2 id="批量删除已合并分支"><a href="#批量删除已合并分支" class="headerlink" title="批量删除已合并分支"></a>批量删除已合并分支</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">获取已合并分支</span><br>git branch --merged<br><span class="hljs-meta prompt_"># </span><span class="language-bash">筛选去除指定字符串（正则方式）</span><br>grep -i -v -E &quot;master|dev&quot;<br><span class="hljs-meta prompt_"># </span><span class="language-bash">以字符串结尾的</span><br>grep -i -v -E &quot;x-master$|x-develop$|x-release$&quot;<br><span class="hljs-meta prompt_"># </span><span class="language-bash">批量执行（要用管道）</span><br>xargs git branch -d<br><span class="hljs-meta prompt_"># </span><span class="language-bash">合起来</span><br>git branch --merged | grep -i -v -E &quot;x-master$|x-develop$|x-release$&quot; | xargs git branch -d<br></code></pre></td></tr></table></figure>
+
+<h2 id="删除远程跟踪分支"><a href="#删除远程跟踪分支" class="headerlink" title="删除远程跟踪分支"></a>删除远程跟踪分支</h2><p><code>git remote prune origin</code></p>
+<h2 id="修改当前commit"><a href="#修改当前commit" class="headerlink" title="修改当前commit"></a>修改当前commit</h2><p><code>git add . &amp;&amp; git commit --amend --no-edit</code></p>
+<p>该操作会修改当前最新commit并添加当前目录下所有修改了但未提交的文件。<br>如果最新commit已经push到远端，则需要再次强制推送到远端。</p>
+<h2 id="查找某个commit被哪个branch和tag包含"><a href="#查找某个commit被哪个branch和tag包含" class="headerlink" title="查找某个commit被哪个branch和tag包含"></a>查找某个commit被哪个branch和tag包含</h2><p>查找被包含的branch：<code>git branch --contains commit_id --all</code><br>查找被包含的tag：<code>git tag --contains tag_name</code></p>
+<h2 id="设置命令别名"><a href="#设置命令别名" class="headerlink" title="设置命令别名"></a>设置命令别名</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">git config --global alias.a add<br>git config --global alias.c commit<br>git config --global alias.o checkout<br></code></pre></td></tr></table></figure>
+
+<p>也可以在config文件进行修改和查看，<br>在<code>~/.gitconfig</code>或项目的<code>.git/config</code>文件中，有以下信息，可以进行修改：</p>
+<pre><code>[alias]
+a = add
+c = commit
+o = checkout
+# ...
+</code></pre>
+<p>还可以直接用别人写好的：<br><a target="_blank" rel="noopener" href="https://github.com/GitAlias/gitalias" title="项目地址">项目地址</a><br>使用方法：</p>
+<ol>
+<li>首先将该开源项目中的<code>gitalias.txt</code>文件下载下来</li>
+<li>然后在<code>.gitconfig</code>文件里面加入：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">[include]<br>path = gitalias.txt<br></code></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="获取两个commit之间更改的文件"><a href="#获取两个commit之间更改的文件" class="headerlink" title="获取两个commit之间更改的文件"></a>获取两个commit之间更改的文件</h2><p>可以方便在shell或者bash中执行自动化操作</p>
+<p>以最新的更新为例：<code>git diff --name-only HEAD HEAD^</code><br>执行自动化操作：<code>for fp in `git diff --name-only HEAD HEAD^`; do echo $fp; done</code></p>
+<h1 id="Docker"><a href="#Docker" class="headerlink" title="Docker"></a>Docker</h1><p>删除虚悬镜像：<code>docker images --filter dangling=true</code><br>删除所有虚悬镜像：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell">docker rmi $(docker images --filter dangling=true -q)<br><span class="hljs-meta prompt_"># </span><span class="language-bash">或</span><br>docker image prune<br><span class="hljs-meta prompt_"># </span><span class="language-bash">删除24小时前的虚悬镜像，-a 标签还支持删除所有未使用的镜像</span><br>docker image prune -f --filter until=24h<br></code></pre></td></tr></table></figure>
+
+<p>列出latest镜像之前的所有镜像：<code>docker images aka-gm --filter before=aka-gm:latest</code><br>从以上输出中取出镜像的REPOSITORY与TAG：<code>docker images aka-gm --filter before=aka-gm:latest --format &quot;&#123;&#123;.Repository&#125;&#125;:&#123;&#123;.Tag&#125;&#125;&quot;</code><br>排除TAG为<none>的镜像并删除：<code>docker images aka-gm -f before=aka-gm:latest | grep aka-gm | grep -v &quot;&lt;none&gt;&quot; | awk &#39;&#123;printf &quot;%s:%s\n&quot;,$1,$2&#125;&#39; | xargs -r docker rmi</code><br>删除TAG为<none>的镜像：<code>docker images aka-gm -f before=aka-gm:latest | grep &quot;&lt;none&gt;&quot; | awk &#39;&#123;printf &quot;%s:%s\n&quot;,$1,$2&#125;&#39; | xargs -r docker rmi</code></p>
+<p>找出容器对应的日志滤镜：<code>docker inspect --format=&#39;&#123;&#123;.LogPath&#125;&#125;&#39; containername</code></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E8%BF%90%E7%BB%B4/vim%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/" rel="prev" title="VIM使用手册">
+      <i class="fa fa-chevron-left"></i> VIM使用手册
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Linux"><span class="nav-number">1.</span> <span class="nav-text">Linux</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%88%E7%AB%AF%E5%BF%AB%E6%8D%B7%E9%94%AE"><span class="nav-number">1.1.</span> <span class="nav-text">终端快捷键</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%89%E6%A0%87%E7%A7%BB%E5%8A%A8"><span class="nav-number">1.1.1.</span> <span class="nav-text">光标移动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4"><span class="nav-number">1.1.2.</span> <span class="nav-text">删除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%92%A4%E9%94%80"><span class="nav-number">1.1.3.</span> <span class="nav-text">撤销</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%BF%E6%8D%A2"><span class="nav-number">1.1.4.</span> <span class="nav-text">替换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%86%E5%8F%B2%E5%91%BD%E4%BB%A4%E7%BC%96%E8%BE%91"><span class="nav-number">1.1.5.</span> <span class="nav-text">历史命令编辑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A7%E5%88%B6%E5%91%BD%E4%BB%A4"><span class="nav-number">1.1.6.</span> <span class="nav-text">控制命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4"><span class="nav-number">1.1.7.</span> <span class="nav-text">!命令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#shell%E4%B8%AD%E7%9A%84-%E7%94%A8%E6%B3%95"><span class="nav-number">1.2.</span> <span class="nav-text">shell中的 $ 用法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9A%84%E7%89%B9%E6%AE%8A%E7%94%A8%E6%B3%95"><span class="nav-number">1.2.1.</span> <span class="nav-text">${}的特殊用法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A4%E6%96%AD-%E6%AF%94%E8%BE%83"><span class="nav-number">1.3.</span> <span class="nav-text">判断&#x2F;比较</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95%EF%BC%88%E7%94%A8%E4%BE%8B%EF%BC%89"><span class="nav-number">1.3.1.</span> <span class="nav-text">语法（用例）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%88%A4%E6%96%AD"><span class="nav-number">1.3.2.</span> <span class="nav-text">字符串判断</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E5%AD%97%E7%9A%84%E5%88%A4%E6%96%AD"><span class="nav-number">1.3.3.</span> <span class="nav-text">数字的判断</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E7%9B%B8%E5%85%B3%E7%9A%84if%E5%88%A4%E6%96%AD%E6%9D%A1%E4%BB%B6%E8%AF%AD%E5%8F%A5"><span class="nav-number">1.3.4.</span> <span class="nav-text">文件相关的if判断条件语句</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E6%9D%82%E9%80%BB%E8%BE%91%E5%88%A4%E6%96%AD"><span class="nav-number">1.3.5.</span> <span class="nav-text">复杂逻辑判断</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%92%8C-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.4.</span> <span class="nav-text">[] 和 [[]] 的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8shell%E4%B8%AD%E6%9F%A5%E7%9C%8B%E6%AF%8F%E6%9D%A1%E6%8C%87%E4%BB%A4%E5%AE%9E%E9%99%85%E6%89%A7%E8%A1%8C%E7%9A%84%E7%BB%93%E6%9E%9C"><span class="nav-number">1.5.</span> <span class="nav-text">在shell中查看每条指令实际执行的结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%94%A8%E5%B0%8F%E6%8A%80%E5%B7%A7"><span class="nav-number">1.6.</span> <span class="nav-text">实用小技巧</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A5%E5%BF%97%E7%AE%A1%E7%90%86"><span class="nav-number">1.7.</span> <span class="nav-text">日志管理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GIT"><span class="nav-number">2.</span> <span class="nav-text">GIT</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%B9%E9%87%8F%E5%88%A0%E9%99%A4%E5%B7%B2%E5%90%88%E5%B9%B6%E5%88%86%E6%94%AF"><span class="nav-number">2.1.</span> <span class="nav-text">批量删除已合并分支</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E8%BF%9C%E7%A8%8B%E8%B7%9F%E8%B8%AA%E5%88%86%E6%94%AF"><span class="nav-number">2.2.</span> <span class="nav-text">删除远程跟踪分支</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E5%BD%93%E5%89%8Dcommit"><span class="nav-number">2.3.</span> <span class="nav-text">修改当前commit</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E6%89%BE%E6%9F%90%E4%B8%AAcommit%E8%A2%AB%E5%93%AA%E4%B8%AAbranch%E5%92%8Ctag%E5%8C%85%E5%90%AB"><span class="nav-number">2.4.</span> <span class="nav-text">查找某个commit被哪个branch和tag包含</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E5%91%BD%E4%BB%A4%E5%88%AB%E5%90%8D"><span class="nav-number">2.5.</span> <span class="nav-text">设置命令别名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E4%B8%A4%E4%B8%AAcommit%E4%B9%8B%E9%97%B4%E6%9B%B4%E6%94%B9%E7%9A%84%E6%96%87%E4%BB%B6"><span class="nav-number">2.6.</span> <span class="nav-text">获取两个commit之间更改的文件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Docker"><span class="nav-number">3.</span> <span class="nav-text">Docker</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">DHC</p>
+  <div class="site-description" itemprop="description">知识以一种粗暴的方式进入了我的脑子</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DHC</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

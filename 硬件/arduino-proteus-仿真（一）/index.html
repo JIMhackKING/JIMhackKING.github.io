@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"jimhackking.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="玩过单片机的人应该都会知道，有一个系列的单片机叫 Arduino，总所周知的 Arduino 是对对单片机不熟悉，但是对单片机感兴趣的软件开发程序员非常友好的，他有一个专门的软件 Arduino IDE，用于开发 Arduino 系列的产品，他的特点是有许许多多的库和函数，编写程序控制单片机的时候不需要了解太多关于寄存器的知识，直接调用相应的函数就可以控制单片机，这就是为什么说对软件开发的程序员非">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Arduino + Proteus 仿真（一）">
+<meta property="og:url" content="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%B8%80%EF%BC%89/index.html">
+<meta property="og:site_name" content="智云知识">
+<meta property="og:description" content="玩过单片机的人应该都会知道，有一个系列的单片机叫 Arduino，总所周知的 Arduino 是对对单片机不熟悉，但是对单片机感兴趣的软件开发程序员非常友好的，他有一个专门的软件 Arduino IDE，用于开发 Arduino 系列的产品，他的特点是有许许多多的库和函数，编写程序控制单片机的时候不需要了解太多关于寄存器的知识，直接调用相应的函数就可以控制单片机，这就是为什么说对软件开发的程序员非">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%B8%80%EF%BC%89/setting1.png">
+<meta property="og:image" content="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%B8%80%EF%BC%89/setting2.png">
+<meta property="article:published_time" content="2018-05-27T07:35:12.000Z">
+<meta property="article:modified_time" content="2024-03-06T14:40:43.580Z">
+<meta property="article:author" content="DHC">
+<meta property="article:tag" content="AVR">
+<meta property="article:tag" content="Arduino">
+<meta property="article:tag" content="单片机">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%B8%80%EF%BC%89/setting1.png">
+
+<link rel="canonical" href="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%B8%80%EF%BC%89/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Arduino + Proteus 仿真（一） | 智云知识</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">智云知识</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">共享知识库</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%B8%80%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="DHC">
+      <meta itemprop="description" content="知识以一种粗暴的方式进入了我的脑子">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="智云知识">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Arduino + Proteus 仿真（一）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-05-27 15:35:12" itemprop="dateCreated datePublished" datetime="2018-05-27T15:35:12+08:00">2018-05-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-03-06 22:40:43" itemprop="dateModified" datetime="2024-03-06T22:40:43+08:00">2024-03-06</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%A1%AC%E4%BB%B6/" itemprop="url" rel="index"><span itemprop="name">硬件</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>玩过单片机的人应该都会知道，有一个系列的单片机叫 Arduino，总所周知的 Arduino 是对对单片机不熟悉，但是对单片机感兴趣的软件开发程序员非常友好的，他有一个专门的软件 Arduino IDE，用于开发 Arduino 系列的产品，他的特点是有许许多多的库和函数，编写程序控制单片机的时候不需要了解太多关于寄存器的知识，直接调用相应的函数就可以控制单片机，这就是为什么说对软件开发的程序员非常友好，他的库可以让你在开发硬件的时候像开发软件一样方便快捷。</p>
+<span id="more"></span>
+<blockquote>
+<p><font size="1px">可以直接跳到正话部分看。</font></p>
+</blockquote>
+<p>不过这篇文章不只是要讲 Arduino 的开发，更重要的是用 Arduino 和 Proteus 结合来进行电路仿真，Proteus 是一款电路仿真软件，这款软件可以调用很多的单片机还有很多常用芯片，并且可以运行仿真观察电路的状态，对于数字电路他可以直观地显示出电路中某个引脚的电平，这对于数字电路开发是非常有帮助的。</p>
+<p>那么又为什么要进行仿真呢，如果没有仿真，那么你每次运行和调试程序的时候都需要把程序烧写进单片机内才能看到你程序的运行结果，并且还要根据你画的电路图来搭建外围电路，这很明显就是不现实的，不可能每次突发奇想要设计一个电路就自己动手焊接一个电路嘛，而且这样的话电路还需要单片机，那单片机就很难进行二次开发；第二点就是多次对单片机进行烧写程序会缩短单片机的寿命，这里说的寿命主要是单片机内部程序存储器（flash），每一个（程序）存储器都有他的擦写寿命，擦写的次数越多寿命自然就会减短；第三点就是你有很多电路中要用到的芯片你手头上没有，于是电路无法调试，但是 Proteus 可以找到你想要用的芯片，并且功能和使用方法都是跟实际的芯片一样的。</p>
+<p>** 好了，这里才是正话！ ** Arduino 通常情况下都是直接在 IDE 上传程序，之后 IDE 会自动完成程序的烧写，但是要使用 Proteus 的仿真必须要有编译器编译出来的 hex、bin、elf 文件，这三种文件都是烧写单片机的程序文件，而 Arduino 每次编译上传的时候都会创建一个临时文件夹存放 hex 文件，你是找不到他编译出来的 hex 文件的，我们需要进行设置，让 Arduino 编译的时候把 hex 文件存放在某个地方。</p>
+<p>Arduino 的设置方法：</p>
+<p>首先打开左上角 文件 -&gt; 首选项</p>
+<img src="/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%B8%80%EF%BC%89/setting1.png" class="">
+
+<br>
+然后点击下方的首选项编辑文件（如图所示的地方，蓝色字体的文件路径）
+
+<img src="/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%B8%80%EF%BC%89/setting2.png" class="">
+
+<br>
+打开文件之后在文件最下方添加一条语句：``` build.path=XXX ``` 其中 XXX 是你要保存编译后的文件的路径，改成自己的路径就好，注意：编辑改文件要先关闭 Arduino IDE 
+
+<p>然后此时你就可以编写你的程序并编译（验证），然后在你刚设置的路径下找到一个 hex 文件，之后就可以使用 Proteus 仿真了，<a href="/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89/" title="Arduino + Proteus 仿真（二）">下一篇</a>文章会进行一次实践，编写一个程序并仿真。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/AVR/" rel="tag"># AVR</a>
+              <a href="/tags/Arduino/" rel="tag"># Arduino</a>
+              <a href="/tags/%E5%8D%95%E7%89%87%E6%9C%BA/" rel="tag"># 单片机</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E6%B8%B8%E6%88%8F/%E5%A4%A9%E5%88%80%E5%9F%BA%E6%9C%AC%E7%8E%A9%E6%B3%95/" rel="prev" title="天刀基本玩法">
+      <i class="fa fa-chevron-left"></i> 天刀基本玩法
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89/" rel="next" title="Arduino + Proteus 仿真（二）">
+      Arduino + Proteus 仿真（二） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">DHC</p>
+  <div class="site-description" itemprop="description">知识以一种粗暴的方式进入了我的脑子</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">DHC</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
