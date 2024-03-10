@@ -32,9 +32,9 @@
 <meta property="article:published_time" content="2018-05-27T08:21:08.000Z">
 <meta property="article:modified_time" content="2024-03-06T14:40:26.883Z">
 <meta property="article:author" content="DHC">
+<meta property="article:tag" content="单片机">
 <meta property="article:tag" content="AVR">
 <meta property="article:tag" content="Arduino">
-<meta property="article:tag" content="单片机">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89/circute.png">
 
@@ -163,7 +163,7 @@
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">分类</span>
       </div>
       <div class="site-state-item site-state-tags">
@@ -293,14 +293,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span></span>
+      <span>531</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>NaN:aN</span>
+      <span>2 分钟</span>
     </span>
 </div>
 
@@ -321,7 +321,7 @@
 <li>LCD1602：这是一个液晶屏，买的时候都会带有控制芯片，除非你是只买显示屏的，要控制这个液晶屏显示要对控制芯片发送指令，这个芯片分辨率是 16x2，每一位可以显示一个 ASCII 码</li>
 </ul>
 <p>之后直接编写单片机的控制代码，代码的作用看注释：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs C"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;LiquidCrystal_I2C.h&gt;</span></span><br><br>LiquidCrystal_I2C <span class="hljs-title function_">lcd</span><span class="hljs-params">(<span class="hljs-number">0x3F</span>, <span class="hljs-number">16</span>, <span class="hljs-number">2</span>)</span>;  <span class="hljs-comment">// 参数：IIC地址，显示屏宽、高</span><br><br><span class="hljs-type">void</span> <span class="hljs-title function_">setup</span><span class="hljs-params">()</span><br>&#123;<br>  lcd.init();  <span class="hljs-comment">// 初始化 LCD</span><br>  lcd.backlight();  <span class="hljs-comment">// 打开 LCD 背光</span><br>  lcd.home();  <span class="hljs-comment">// 将 LCD 光标移动到首位</span><br>  lcd.print(<span class="hljs-string">&quot;LCD1602 IIC TEST&quot;</span>);  <span class="hljs-comment">// 显示字符</span><br>&#125;<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">loop</span><span class="hljs-params">()</span><br>&#123;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;LiquidCrystal_I2C.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">LiquidCrystal_I2C <span class="title function_">lcd</span><span class="params">(<span class="number">0x3F</span>, <span class="number">16</span>, <span class="number">2</span>)</span>;  <span class="comment">// 参数：IIC地址，显示屏宽、高</span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">setup</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  lcd.init();  <span class="comment">// 初始化 LCD</span></span><br><span class="line">  lcd.backlight();  <span class="comment">// 打开 LCD 背光</span></span><br><span class="line">  lcd.home();  <span class="comment">// 将 LCD 光标移动到首位</span></span><br><span class="line">  lcd.print(<span class="string">&quot;LCD1602 IIC TEST&quot;</span>);  <span class="comment">// 显示字符</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">loop</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>然后贴出 Proteus 的仿真电路图</p>
 <img src="/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89/circute.png" class="" title="电路图">
@@ -408,9 +408,9 @@
 </div>
 
           <div class="post-tags">
+              <a href="/tags/%E5%8D%95%E7%89%87%E6%9C%BA/" rel="tag"><i class="fa fa-tag"></i> 单片机</a>
               <a href="/tags/AVR/" rel="tag"><i class="fa fa-tag"></i> AVR</a>
               <a href="/tags/Arduino/" rel="tag"><i class="fa fa-tag"></i> Arduino</a>
-              <a href="/tags/%E5%8D%95%E7%89%87%E6%9C%BA/" rel="tag"><i class="fa fa-tag"></i> 单片机</a>
           </div>
 
         
@@ -477,14 +477,14 @@
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">NaNm</span>
+    <span title="站点总字数">26k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">NaN:aN</span>
+    <span title="站点阅读时长">1:34</span>
   </span>
 </div>
 <div class="busuanzi-count">

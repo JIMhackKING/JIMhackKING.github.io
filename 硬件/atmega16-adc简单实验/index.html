@@ -33,8 +33,8 @@
 <meta property="article:published_time" content="2018-05-15T12:04:50.000Z">
 <meta property="article:modified_time" content="2024-03-06T14:41:00.323Z">
 <meta property="article:author" content="DHC">
-<meta property="article:tag" content="AVR">
 <meta property="article:tag" content="单片机">
+<meta property="article:tag" content="AVR">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/circute.png">
 
@@ -163,7 +163,7 @@
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">分类</span>
       </div>
       <div class="site-state-item site-state-tags">
@@ -293,14 +293,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span></span>
+      <span>1k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>NaN:aN</span>
+      <span>4 分钟</span>
     </span>
 </div>
 
@@ -320,7 +320,7 @@
 
 <p>其中图片左上角部分连接着 RESET, XTAL1, XTAL2 引脚的那一部分电路是组成单片机最小系统的电路，也是使单片机正常工作的必要条件。我们在 PA0 脚上连接一个电位器，给单片机提供模拟信号的就是这个电位器了，电位器通过改变阻值来改变输入到单片机的电压。右下角有两个引脚 AREF 和 AVCC，其中 AREF 是单片机基准电压外部输入引脚，AVCC 是模拟电源，要使用 ADC 功能这两个引脚就必不可少了。还有最后一部分是连接到 PD 口的 8 个 LED 灯，用来显示单片机 AD 转换后的结果，虽然用 LED 来表示结果不直观，但是是操作最简单的方法了。</p>
 <p>代码比电路更简单，直接贴上代码：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;avr/io.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;avr/interrupt.h&gt;</span></span><br><br><span class="hljs-comment">/*ADC Conversion Complete Interrupt Service Routine (ISR)*/</span><br>ISR(ADC_vect)<br>&#123;<br><br>	PORTD = ADCH;			<span class="hljs-comment">// Output ADCH to PortD</span><br>	ADCSRA |= <span class="hljs-number">1</span>&lt;&lt;ADSC;		<span class="hljs-comment">// Start Conversion</span><br>&#125;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>	DDRD = <span class="hljs-number">0xFF</span>;			<span class="hljs-comment">// Configure PortD as output</span><br>	DDRA = <span class="hljs-number">0x00</span>;			<span class="hljs-comment">// Configure PortA as input</span><br>					<span class="hljs-comment">// PA0 is ADC0 input</span><br><br>	ADCSRA = <span class="hljs-number">0x8F</span>;			<span class="hljs-comment">// Enable the ADC and its interrupt feature</span><br>					<span class="hljs-comment">// and set the ACD clock pre-scalar to clk/128</span><br>	ADMUX = <span class="hljs-number">0xE0</span>;			<span class="hljs-comment">// Select internal 2.56V as Vref, left justify </span><br>					<span class="hljs-comment">// data registers and select ADC0 as input channel </span><br>	 <br>	sei();				<span class="hljs-comment">// Enable Global Interrupts</span><br>	ADCSRA |= <span class="hljs-number">1</span>&lt;&lt;ADSC;		<span class="hljs-comment">// Start Conversion</span><br>	 <br>	<span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>);			<span class="hljs-comment">// Wait forever</span><br>&#125; <br></code></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;avr/io.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;avr/interrupt.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*ADC Conversion Complete Interrupt Service Routine (ISR)*/</span></span><br><span class="line">ISR(ADC_vect)</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">	PORTD = ADCH;			<span class="comment">// Output ADCH to PortD</span></span><br><span class="line">	ADCSRA |= <span class="number">1</span>&lt;&lt;ADSC;		<span class="comment">// Start Conversion</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">	DDRD = <span class="number">0xFF</span>;			<span class="comment">// Configure PortD as output</span></span><br><span class="line">	DDRA = <span class="number">0x00</span>;			<span class="comment">// Configure PortA as input</span></span><br><span class="line">					<span class="comment">// PA0 is ADC0 input</span></span><br><span class="line"></span><br><span class="line">	ADCSRA = <span class="number">0x8F</span>;			<span class="comment">// Enable the ADC and its interrupt feature</span></span><br><span class="line">					<span class="comment">// and set the ACD clock pre-scalar to clk/128</span></span><br><span class="line">	ADMUX = <span class="number">0xE0</span>;			<span class="comment">// Select internal 2.56V as Vref, left justify </span></span><br><span class="line">					<span class="comment">// data registers and select ADC0 as input channel </span></span><br><span class="line">	 </span><br><span class="line">	sei();				<span class="comment">// Enable Global Interrupts</span></span><br><span class="line">	ADCSRA |= <span class="number">1</span>&lt;&lt;ADSC;		<span class="comment">// Start Conversion</span></span><br><span class="line">	 </span><br><span class="line">	<span class="keyword">while</span>(<span class="number">1</span>);			<span class="comment">// Wait forever</span></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
 
 <p>每一句的作用在代码中的注释都已经很清晰了，要特别讲解的是 ADCSRA 寄存器，事实上关于这个寄存器的操作以及每一位的作用都不需要特别讲解，因为在官方文档都已经说得很清楚了，我就只贴出文档的截图吧</p>
 <img src="/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/ADCSRA-1.png" class="" title="ADCSRA寄存器介绍">
@@ -408,8 +408,8 @@
 </div>
 
           <div class="post-tags">
-              <a href="/tags/AVR/" rel="tag"><i class="fa fa-tag"></i> AVR</a>
               <a href="/tags/%E5%8D%95%E7%89%87%E6%9C%BA/" rel="tag"><i class="fa fa-tag"></i> 单片机</a>
+              <a href="/tags/AVR/" rel="tag"><i class="fa fa-tag"></i> AVR</a>
           </div>
 
         
@@ -473,14 +473,14 @@
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">NaNm</span>
+    <span title="站点总字数">26k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">NaN:aN</span>
+    <span title="站点阅读时长">1:34</span>
   </span>
 </div>
 <div class="busuanzi-count">

@@ -13,7 +13,7 @@
 
 <p>其中图片左上角部分连接着 RESET, XTAL1, XTAL2 引脚的那一部分电路是组成单片机最小系统的电路，也是使单片机正常工作的必要条件。我们在 PA0 脚上连接一个电位器，给单片机提供模拟信号的就是这个电位器了，电位器通过改变阻值来改变输入到单片机的电压。右下角有两个引脚 AREF 和 AVCC，其中 AREF 是单片机基准电压外部输入引脚，AVCC 是模拟电源，要使用 ADC 功能这两个引脚就必不可少了。还有最后一部分是连接到 PD 口的 8 个 LED 灯，用来显示单片机 AD 转换后的结果，虽然用 LED 来表示结果不直观，但是是操作最简单的方法了。</p>
 <p>代码比电路更简单，直接贴上代码：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;avr/io.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;avr/interrupt.h&gt;</span></span><br><br><span class="hljs-comment">/*ADC Conversion Complete Interrupt Service Routine (ISR)*/</span><br>ISR(ADC_vect)<br>&#123;<br><br>	PORTD = ADCH;			<span class="hljs-comment">// Output ADCH to PortD</span><br>	ADCSRA |= <span class="hljs-number">1</span>&lt;&lt;ADSC;		<span class="hljs-comment">// Start Conversion</span><br>&#125;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>	DDRD = <span class="hljs-number">0xFF</span>;			<span class="hljs-comment">// Configure PortD as output</span><br>	DDRA = <span class="hljs-number">0x00</span>;			<span class="hljs-comment">// Configure PortA as input</span><br>					<span class="hljs-comment">// PA0 is ADC0 input</span><br><br>	ADCSRA = <span class="hljs-number">0x8F</span>;			<span class="hljs-comment">// Enable the ADC and its interrupt feature</span><br>					<span class="hljs-comment">// and set the ACD clock pre-scalar to clk/128</span><br>	ADMUX = <span class="hljs-number">0xE0</span>;			<span class="hljs-comment">// Select internal 2.56V as Vref, left justify </span><br>					<span class="hljs-comment">// data registers and select ADC0 as input channel </span><br>	 <br>	sei();				<span class="hljs-comment">// Enable Global Interrupts</span><br>	ADCSRA |= <span class="hljs-number">1</span>&lt;&lt;ADSC;		<span class="hljs-comment">// Start Conversion</span><br>	 <br>	<span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>);			<span class="hljs-comment">// Wait forever</span><br>&#125; <br></code></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;avr/io.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;avr/interrupt.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*ADC Conversion Complete Interrupt Service Routine (ISR)*/</span></span><br><span class="line">ISR(ADC_vect)</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">	PORTD = ADCH;			<span class="comment">// Output ADCH to PortD</span></span><br><span class="line">	ADCSRA |= <span class="number">1</span>&lt;&lt;ADSC;		<span class="comment">// Start Conversion</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">	DDRD = <span class="number">0xFF</span>;			<span class="comment">// Configure PortD as output</span></span><br><span class="line">	DDRA = <span class="number">0x00</span>;			<span class="comment">// Configure PortA as input</span></span><br><span class="line">					<span class="comment">// PA0 is ADC0 input</span></span><br><span class="line"></span><br><span class="line">	ADCSRA = <span class="number">0x8F</span>;			<span class="comment">// Enable the ADC and its interrupt feature</span></span><br><span class="line">					<span class="comment">// and set the ACD clock pre-scalar to clk/128</span></span><br><span class="line">	ADMUX = <span class="number">0xE0</span>;			<span class="comment">// Select internal 2.56V as Vref, left justify </span></span><br><span class="line">					<span class="comment">// data registers and select ADC0 as input channel </span></span><br><span class="line">	 </span><br><span class="line">	sei();				<span class="comment">// Enable Global Interrupts</span></span><br><span class="line">	ADCSRA |= <span class="number">1</span>&lt;&lt;ADSC;		<span class="comment">// Start Conversion</span></span><br><span class="line">	 </span><br><span class="line">	<span class="keyword">while</span>(<span class="number">1</span>);			<span class="comment">// Wait forever</span></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
 
 <p>每一句的作用在代码中的注释都已经很清晰了，要特别讲解的是 ADCSRA 寄存器，事实上关于这个寄存器的操作以及每一位的作用都不需要特别讲解，因为在官方文档都已经说得很清楚了，我就只贴出文档的截图吧</p>
 <img src="/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/ADCSRA-1.png" class="" title="ADCSRA寄存器介绍">
@@ -29,8 +29,8 @@
         <category>硬件</category>
       </categories>
       <tags>
-        <tag>AVR</tag>
         <tag>单片机</tag>
+        <tag>AVR</tag>
       </tags>
   </entry>
   <entry>
@@ -62,9 +62,9 @@
         <category>硬件</category>
       </categories>
       <tags>
+        <tag>单片机</tag>
         <tag>AVR</tag>
         <tag>Arduino</tag>
-        <tag>单片机</tag>
       </tags>
   </entry>
   <entry>
@@ -81,7 +81,7 @@
 <li>LCD1602：这是一个液晶屏，买的时候都会带有控制芯片，除非你是只买显示屏的，要控制这个液晶屏显示要对控制芯片发送指令，这个芯片分辨率是 16x2，每一位可以显示一个 ASCII 码</li>
 </ul>
 <p>之后直接编写单片机的控制代码，代码的作用看注释：</p>
-<figure class="highlight c"><table><tr><td class="code"><pre><code class="hljs C"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;LiquidCrystal_I2C.h&gt;</span></span><br><br>LiquidCrystal_I2C <span class="hljs-title function_">lcd</span><span class="hljs-params">(<span class="hljs-number">0x3F</span>, <span class="hljs-number">16</span>, <span class="hljs-number">2</span>)</span>;  <span class="hljs-comment">// 参数：IIC地址，显示屏宽、高</span><br><br><span class="hljs-type">void</span> <span class="hljs-title function_">setup</span><span class="hljs-params">()</span><br>&#123;<br>  lcd.init();  <span class="hljs-comment">// 初始化 LCD</span><br>  lcd.backlight();  <span class="hljs-comment">// 打开 LCD 背光</span><br>  lcd.home();  <span class="hljs-comment">// 将 LCD 光标移动到首位</span><br>  lcd.print(<span class="hljs-string">&quot;LCD1602 IIC TEST&quot;</span>);  <span class="hljs-comment">// 显示字符</span><br>&#125;<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">loop</span><span class="hljs-params">()</span><br>&#123;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;LiquidCrystal_I2C.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">LiquidCrystal_I2C <span class="title function_">lcd</span><span class="params">(<span class="number">0x3F</span>, <span class="number">16</span>, <span class="number">2</span>)</span>;  <span class="comment">// 参数：IIC地址，显示屏宽、高</span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">setup</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  lcd.init();  <span class="comment">// 初始化 LCD</span></span><br><span class="line">  lcd.backlight();  <span class="comment">// 打开 LCD 背光</span></span><br><span class="line">  lcd.home();  <span class="comment">// 将 LCD 光标移动到首位</span></span><br><span class="line">  lcd.print(<span class="string">&quot;LCD1602 IIC TEST&quot;</span>);  <span class="comment">// 显示字符</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">loop</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>然后贴出 Proteus 的仿真电路图</p>
 <img src="/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89/circute.png" class="" title="电路图">
@@ -96,9 +96,405 @@
         <category>硬件</category>
       </categories>
       <tags>
+        <tag>单片机</tag>
         <tag>AVR</tag>
         <tag>Arduino</tag>
-        <tag>单片机</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Django单元测试快速指南</title>
+    <url>/%E5%90%8E%E7%AB%AF/django%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E5%BF%AB%E9%80%9F%E6%8C%87%E5%8D%97/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><blockquote>
+<p>本文受《Python测试驱动开发》启发，书中内容很详尽，章节也很多，比较偏向于新手向，从如何安装Django1.11到如何使用Git工具都有教，没接触过这些的人都能看懂，有一定基础的人可以略读，值得一看。<br>本文绝大部分内容并不来自该书，更多的是我的个人见解和对官方文档的一些整理。</p>
+</blockquote>
+<p>本文主要介绍Django跟unittest有区别的地方，以及如何去使用Django内置的测试模块进行测试，适合有一定Python基础和Django基础的人。</p>
+<span id="more"></span>
+
+<h2 id="自动测试的理念"><a href="#自动测试的理念" class="headerlink" title="自动测试的理念"></a>自动测试的理念</h2><h3 id="TDD"><a href="#TDD" class="headerlink" title="TDD"></a>TDD</h3><p>TDD(Test Driven Development)，中文名是“测试驱动开发”，这是一个编程理念，类似于面向对象编程，你可以不用，但是如果你用了，你会发现你的开发过程会非常的顺畅，非常的有底气，你对代码所做的每一处修改，都在你的可控范围内，出错也很容易找到问题所在，并且先测试再开发的过程更有利于你设计一个功能或者设计整个产品，在你的大脑中会非常清晰地知道你想要实现什么功能，而不需要先想着代码应该怎么实现，就像API文档一样，每个功能、每个模块都可以一目了然，这就是测试的作用。</p>
+<h2 id="个人见解"><a href="#个人见解" class="headerlink" title="个人见解"></a>个人见解</h2><p>通过这段时间编写测试代码的经历，对自动测试、单元测试有一点小小见解。<br>给Django项目写测试对我来说是一件很痛苦的事情，特别是MTV中的T（Templates），要测试模板是否是对的，就相当于测试前端，不仅要测试UI显示（HTML）是不是对的，（JS）交互是否正常，样式（CSS）是否正确（即UI），还要测试跟Django耦合部分的上下文对不对。<br>测试模板一般都是看期望的DOM有没有渲染出来，还得测试点击某个按钮是不是能正常工作等等。</p>
+<p>然后就是视图或者模型测试，得把所有场景都想象出来，然后对这些场景进行测试，比如权限认证、身份认证、数据库查询等。</p>
+<p>如果把整个项目都做一遍测试，把上述的测试项都测试一遍，那这样下来测试代码要比业务代码要多不少，不过这样也是有他的合理性的，毕竟测试全面了，代码稳定性就高了。</p>
+<p>但是我觉得不应该把所有的测试代码都放到Django项目里面，应该分三个部分进行：</p>
+<ol>
+<li>后端函数、逻辑代码测试</li>
+<li>接口测试</li>
+<li>前端UI和交互测试</li>
+<li>功能测试&#x2F;需求测试</li>
+</ol>
+<p>各部门各司其职，对上述测试点进行测试，用其相对应的专业工具去测，这样效率也能大大提升，并且测试文档也会好写很多，最终提交的项目的结构化也更好。<br>另外我认为测试代码（即用于进行测试的代码，不是被测试的代码）越少越好，因为如果用代码测试代码，那很难保证测试代码本身不会存在逻辑错误或者其他BUG，各种逻辑函数越少越好，越傻瓜越好，哪怕是面向过程模式的测试代码，这样才能更好拟合用户的操作行为，减少依赖性。</p>
+<h2 id="Django中需要测试的部分"><a href="#Django中需要测试的部分" class="headerlink" title="Django中需要测试的部分"></a>Django中需要测试的部分</h2><p><img src="/%E5%90%8E%E7%AB%AF/django%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E5%BF%AB%E9%80%9F%E6%8C%87%E5%8D%97/Django%E6%B5%8B%E8%AF%95.png" alt="Django测试" title="Django测试"></p>
+<h1 id="快速入门"><a href="#快速入门" class="headerlink" title="快速入门"></a>快速入门</h1><h2 id="测试代码"><a href="#测试代码" class="headerlink" title="测试代码"></a>测试代码</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> django.test <span class="keyword">import</span> TestCase</span><br><span class="line"><span class="keyword">from</span> myapp.models <span class="keyword">import</span> Animal</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">AnimalTestCase</span>(<span class="title class_ inherited__">TestCase</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">setUp</span>(<span class="params">self</span>):</span><br><span class="line">        Animal.objects.create(name=<span class="string">&quot;lion&quot;</span>, sound=<span class="string">&quot;roar&quot;</span>)</span><br><span class="line">        Animal.objects.create(name=<span class="string">&quot;cat&quot;</span>, sound=<span class="string">&quot;meow&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_animals_can_speak</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Animals that can speak are correctly identified&quot;&quot;&quot;</span></span><br><span class="line">        lion = Animal.objects.get(name=<span class="string">&quot;lion&quot;</span>)</span><br><span class="line">        cat = Animal.objects.get(name=<span class="string">&quot;cat&quot;</span>)</span><br><span class="line">        self.assertEqual(lion.speak(), <span class="string">&#x27;The lion says &quot;roar&quot;&#x27;</span>)</span><br><span class="line">        self.assertEqual(cat.speak(), <span class="string">&#x27;The cat says &quot;meow&quot;&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="命令行"><a href="#命令行" class="headerlink" title="命令行"></a>命令行</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 运行全部测试</span></span><br><span class="line">python manage.py <span class="built_in">test</span></span><br><span class="line"><span class="comment"># 运行animal.tests模块下的所有测试</span></span><br><span class="line">python manage.py <span class="built_in">test</span> animals.tests</span><br><span class="line"><span class="comment"># 自动搜索animal包下的所有test_开头的测试文件，并运行测试</span></span><br><span class="line">python manage.py <span class="built_in">test</span> animals</span><br><span class="line"><span class="comment"># 仅运行一个测试用例</span></span><br><span class="line">python manage.py <span class="built_in">test</span> animals.tests.AnimalTestCase</span><br><span class="line"><span class="comment"># 仅运行一个测试用例下的测试点</span></span><br><span class="line">python manage.py <span class="built_in">test</span> animals.tests.AnimalTestCase.test_animals_can_speak</span><br><span class="line"><span class="comment"># 也可以自动搜索一个目录下的测试文件，并运行测试，跟第三个示例相似</span></span><br><span class="line">python manage.py <span class="built_in">test</span> animals/</span><br><span class="line"><span class="comment"># 甚至可以指定一个前缀，然后自动运行对应前缀的测试代码</span></span><br><span class="line">python manage.py <span class="built_in">test</span> --pattern=<span class="string">&quot;tests_*.py&quot;</span></span><br><span class="line"><span class="comment"># 并行运行测试</span></span><br><span class="line">python manage.py <span class="built_in">test</span> --parallel</span><br><span class="line"><span class="comment"># 运行测试并保存临时数据库</span></span><br><span class="line">python manage.py <span class="built_in">test</span> --keepdb</span><br></pre></td></tr></table></figure>
+
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ul>
+<li>测试时不会使用真实数据库，测试运行完之后会自动删除临时数据库，除非指定一个参数<code>--keepdb</code>，指定了这个参数之后数据库会保存下来（SQLite数据库后端会保存为test_开头的文件），方便查看运行结果</li>
+</ul>
+<h1 id="接口和工具"><a href="#接口和工具" class="headerlink" title="接口和工具"></a>接口和工具</h1><h2 id="请求客户端"><a href="#请求客户端" class="headerlink" title="请求客户端"></a>请求客户端</h2><p>模拟浏览器发起请求，跟用requests模块类似，用来测试RestfulAPI很方便</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> django.test <span class="keyword">import</span> Client</span><br><span class="line">c = Client()</span><br><span class="line">response = c.post(<span class="string">&#x27;/login/&#x27;</span>, &#123;<span class="string">&#x27;username&#x27;</span>: <span class="string">&#x27;john&#x27;</span>, <span class="string">&#x27;password&#x27;</span>: <span class="string">&#x27;smith&#x27;</span>&#125;)</span><br><span class="line">response.status_code  <span class="comment"># 200</span></span><br><span class="line">response = c.get(<span class="string">&#x27;/customer/details/&#x27;</span>)</span><br><span class="line">response.content  <span class="comment"># b&#x27;&lt;!DOCTYPE html...&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h3><ul>
+<li>enforce_csrf_checks：启用csrf检查</li>
+<li>HTTP_USER_AGENT：指定UA</li>
+<li>包括其他的HTTP_HEADERS都可以传递到Client</li>
+</ul>
+<h3 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h3><ul>
+<li><code>.get(path, data=None, follow=False, secure=False, **extra)</code></li>
+<li><code>.post(path, data=None, content_type=MULTIPART_CONTENT, follow=False, secure=False, **extra)</code></li>
+<li><code>.head(path, data=None, follow=False, secure=False, **extra)</code></li>
+<li><code>.options(path, data=&#39;&#39;, content_type=&#39;application/octet-stream&#39;, follow=False, secure=False, **extra)</code></li>
+<li><code>.put(path, data=&#39;&#39;, content_type=&#39;application/octet-stream&#39;, follow=False, secure=False, **extra)</code></li>
+<li><code>.patch(path, data=&#39;&#39;, content_type=&#39;application/octet-stream&#39;, follow=False, secure=False, **extra)</code></li>
+<li><code>.delete(path, data=&#39;&#39;, content_type=&#39;application/octet-stream&#39;, follow=False, secure=False, **extra)</code></li>
+<li><code>.trace(path, follow=False, secure=False, **extra)</code></li>
+<li><code>.login(**credentials)</code></li>
+<li><code>.force_login(user, backend=None)</code></li>
+<li><code>.logout()</code></li>
+</ul>
+<h4 id="get"><a href="#get" class="headerlink" title="get"></a>get</h4><ul>
+<li>data：传递一个字典，会将请求URL拼接成 ?a&#x3D;1&amp;b&#x3D;2 这种类型</li>
+<li>follow：跟踪重定向返回，此时返回值response会带有一个属性redirect_chain，这个属性可以看到所有重定向中经过的URL</li>
+<li>secure：设置成True时会模拟成一个HTTPS请求</li>
+</ul>
+<h4 id="post"><a href="#post" class="headerlink" title="post"></a>post</h4><ul>
+<li>data：请求的数据，可以传递文件对象</li>
+<li>content_type：这个值会设置Content-Type请求头，具体可以设置的值参考Content-Type</li>
+</ul>
+<h4 id="trace"><a href="#trace" class="headerlink" title="trace"></a>trace</h4><p>用于模拟浏览器的diagnostic探针（Chrome浏览器会有这个请求，跟OPTIONS请求一起的）</p>
+<h4 id="login"><a href="#login" class="headerlink" title="login"></a>login</h4><p>用于登录，登录之后client会带有cookies和session，之后可以用于测试所有需要登录的视图，要想提高这个接口的速度可以添加配置项：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">PASSWORD_HASHERS = [</span><br><span class="line">    <span class="string">&#x27;django.contrib.auth.hashers.MD5PasswordHasher&#x27;</span>,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h4 id="force-login"><a href="#force-login" class="headerlink" title="force_login"></a>force_login</h4><p>也是用于登录，而且is_active&#x3D;False的用户也可以登录，甚至不需要提供凭证也能登录。<br>在不做其他任何设置的话，这个接口速度也会比login快（因为密码哈希算法是很耗时的）</p>
+<h3 id="持久化-属性"><a href="#持久化-属性" class="headerlink" title="持久化 属性"></a>持久化 属性</h3><ul>
+<li>Client.cookies</li>
+<li>Client.session</li>
+</ul>
+<h3 id="注意事项-1"><a href="#注意事项-1" class="headerlink" title="注意事项"></a>注意事项</h3><ul>
+<li>不需要运行服务器也可以工作</li>
+<li>请求路径不需要包含全路径，只需要url路由就行</li>
+</ul>
+<h2 id="请求响应Response"><a href="#请求响应Response" class="headerlink" title="请求响应Response"></a>请求响应Response</h2><p>响应对象来源于上一节中的请求方法</p>
+<h3 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h3><ul>
+<li>client：请求的客户端，来源于上一节中的客户端对象</li>
+<li>content：返回的内容，是一个bytes类型</li>
+<li>context：渲染模板时传入的context值，是用于测试模板是否正确渲染的最重要属性。如果用的是其他的模板引擎，就要用context_data来访问</li>
+<li>request：触发响应的请求对象，跟wsgi_request的不同是这个参数是一个字典，只包含一些基本的请求数据，比如端口、请求方法等</li>
+<li>wsgi_request：生成响应的测试处理程序生成的WSGIRequest实例。（跟views.py里面定义的那些视图函数的request参数是一样的）</li>
+<li>status_code：状态码</li>
+<li>templates：响应所使用的模板对象，可以用<code>.name</code>获取模板文件名（路径）</li>
+<li>resolver_match：响应所使用的视图函数，可以用<code>.func</code>获取视图函数，然后可以用<code>self.assertEqual(response.resolver_match.func, my_view)</code>来进行比对</li>
+</ul>
+<h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><ul>
+<li><code>.json(**kwargs)</code>：返回json格式</li>
+</ul>
+<h3 id="注意事项-2"><a href="#注意事项-2" class="headerlink" title="注意事项"></a>注意事项</h3><ul>
+<li>响应对象还可以像字典那样取值</li>
+</ul>
+<h2 id="测试用例类"><a href="#测试用例类" class="headerlink" title="测试用例类"></a>测试用例类</h2><h3 id="SimpleTestCase"><a href="#SimpleTestCase" class="headerlink" title="SimpleTestCase"></a>SimpleTestCase</h3><p>一个非常简单的测试用例类，是unittest.TestCase的一个子类。<br>如果你要做很多的数据库查询操作，就不要用这个类了，改为用 TransactionTestCase 或 TestCase（django的TestCase）</p>
+<h4 id="属性-1"><a href="#属性-1" class="headerlink" title="属性"></a>属性</h4><ul>
+<li>allow_database_queries：是否允许数据库查询操作，默认是False。防止其他SimpleTestCase运行数据库查询的时候不在一个事务里面，可能是防冲突</li>
+</ul>
+<h4 id="注意事项-3"><a href="#注意事项-3" class="headerlink" title="注意事项"></a>注意事项</h4><ul>
+<li>要设置类变量，要用setUpClass和tearDownClass方法</li>
+</ul>
+<h3 id="TransactionTestCase"><a href="#TransactionTestCase" class="headerlink" title="TransactionTestCase"></a>TransactionTestCase</h3><p>继承自SimpleTestCase，多了一些数据库的操作。在每次测试开始时将数据库重置为已知状态，以便于测试和使用ORM。</p>
+<h3 id="TestCase"><a href="#TestCase" class="headerlink" title="TestCase"></a>TestCase</h3><p>最常用的类，继承自TransactionTestCase，如果你的Django项目没有用到数据库，用SimpleTestCase会好很多。<br>里面的测试会封装在两个<code>atomic()</code>块中（一个便捷的在事务里面操作数据库的方法），一个包在TestCase外面，一个包在所有的test方法外。<br>如果要测试某些特定的数据库事务行为，请使用TransactionTestCase。</p>
+<h4 id="方法-1"><a href="#方法-1" class="headerlink" title="方法"></a>方法</h4><ul>
+<li>setUpTestData：这个方法专门用于往数据库插入数据（创建模型数据），用这个方法会比用setUp快</li>
+</ul>
+<h4 id="注意事项-4"><a href="#注意事项-4" class="headerlink" title="注意事项"></a>注意事项</h4><ul>
+<li>如果测试在没有事务支持的数据库上运行（例如，使用MyISAM引擎的MySQL），则在每次测试之前都会调用setUpTestData()，从而抵消了速度优势。</li>
+<li>不要在测试方法中修改setUpTestData()中创建的任何对象。在类中完成设置工作后，再对内存对象的修改将会在其他测试方法之间持续。如果确实需要修改它们，可以在setUp中使用refresh_from_db()重新加载它们。（暂时没用过，不确保解释准确性，只做简单翻译）</li>
+</ul>
+<h3 id="LiveServerTestCase"><a href="#LiveServerTestCase" class="headerlink" title="LiveServerTestCase"></a>LiveServerTestCase</h3><p>这是一个比较特殊的类，他会在setUp的时候把服务器启动，tearDown的时候关闭服务器，从名字上也可以看出来，这个类下面的测试都是跟服务相关联的，用这个类可以使得Django的虚拟客户端（上面说的那个）或者<strong>Selenium客户端</strong>测试起来更加的快捷方便，这个类可以用在功能测试上（官方也是说很适合用在功能测试上）</p>
+<h4 id="属性-2"><a href="#属性-2" class="headerlink" title="属性"></a>属性</h4><ul>
+<li>live_server_url：服务器的监听地址，IP都是localhost，端口会用一个可以使用的端口</li>
+</ul>
+<h4 id="官方示例"><a href="#官方示例" class="headerlink" title="官方示例"></a>官方示例</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> django.contrib.staticfiles.testing <span class="keyword">import</span> StaticLiveServerTestCase</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.firefox.webdriver <span class="keyword">import</span> WebDriver</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MySeleniumTests</span>(<span class="title class_ inherited__">StaticLiveServerTestCase</span>):</span><br><span class="line">    fixtures = [<span class="string">&#x27;user-data.json&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="meta">    @classmethod</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">setUpClass</span>(<span class="params">cls</span>):</span><br><span class="line">        <span class="built_in">super</span>(MySeleniumTests, cls).setUpClass()</span><br><span class="line">        cls.selenium = WebDriver()</span><br><span class="line">        cls.selenium.implicitly_wait(<span class="number">10</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">    @classmethod</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">tearDownClass</span>(<span class="params">cls</span>):</span><br><span class="line">        cls.selenium.quit()</span><br><span class="line">        <span class="built_in">super</span>(MySeleniumTests, cls).tearDownClass()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_login</span>(<span class="params">self</span>):</span><br><span class="line">        self.selenium.get(<span class="string">&#x27;%s%s&#x27;</span> % (self.live_server_url, <span class="string">&#x27;/login/&#x27;</span>))</span><br><span class="line">        username_input = self.selenium.find_element_by_name(<span class="string">&quot;username&quot;</span>)</span><br><span class="line">        username_input.send_keys(<span class="string">&#x27;myuser&#x27;</span>)</span><br><span class="line">        password_input = self.selenium.find_element_by_name(<span class="string">&quot;password&quot;</span>)</span><br><span class="line">        password_input.send_keys(<span class="string">&#x27;secret&#x27;</span>)</span><br><span class="line">        self.selenium.find_element_by_xpath(<span class="string">&#x27;//input[@value=&quot;Log in&quot;]&#x27;</span>).click()</span><br></pre></td></tr></table></figure>
+
+<h4 id="注意事项-5"><a href="#注意事项-5" class="headerlink" title="注意事项"></a>注意事项</h4><ul>
+<li>尽量避免在多个测试中同时操作数据库（在并行测试的模式下）</li>
+</ul>
+<h3 id="特殊事项"><a href="#特殊事项" class="headerlink" title="特殊事项"></a>特殊事项</h3><h4 id="client对象自动初始化"><a href="#client对象自动初始化" class="headerlink" title="client对象自动初始化"></a>client对象自动初始化</h4><p>任何的测试用例类都会自带一个<code>self.client</code>属性，所以你不需要每次都自己定义一个client，除非你要在一个测试里面用多个客户端来进行测试。并且每个测试的client对象是互不干扰的，不用担心session和cookie会影响到别的测试。</p>
+<h4 id="自定义client对象"><a href="#自定义client对象" class="headerlink" title="自定义client对象"></a>自定义client对象</h4><p>你可以定义一个继承自Client类的子类，然后在你的TestCase下设置一个类变量<code>client_class</code>赋值为你的自定义Client类</p>
+<h4 id="预加载数据"><a href="#预加载数据" class="headerlink" title="预加载数据"></a>预加载数据</h4><p>可以设置TransactionTestCase类的一个类变量值<code>fixtures</code>，这个值是一个列表类型，里面的元素可以是一个文件名，或者是一个含有fixtures的Django APP。<br>这个功能暂时不做过多解释，知道有什么用就行。</p>
+<h4 id="在不同的跟路由配置下运行"><a href="#在不同的跟路由配置下运行" class="headerlink" title="在不同的跟路由配置下运行"></a>在不同的跟路由配置下运行</h4><p>你的程序（或者说项目）如果要给其他人用，或者允许别人部署的时候可以做很多的自定义配置，那你就不能只单纯地认为你的测试或者说你的项目在你自己配置好的路由下能正常运行就算是验收通过了，你还要去确认在别的路由配置下，仍能正常访问和使用各个功能，所以做其他的路由测试非常重要。一般如果又要在自己的配置下能正常运行，又要在自定义配置下运行，那你的测试只需要测试自定义配置下的情况就可以了。自定义配置的话，能配多奇葩就多奇葩，因为你无法预测用户的行为，你只能去预防最坏的情况。</p>
+<p>要设置其他的路由（或者其他配置项也可以，修改参数就行），就要在你的TestCase或者其下的测试方法用一个装饰器<code>@override_settings(ROOT_URLCONF=...)</code>。</p>
+<h4 id="多数据库"><a href="#多数据库" class="headerlink" title="多数据库"></a>多数据库</h4><p>如果你的项目用到了多个数据库，就要设置一个类变量<code>multi_db = True</code>，他会在每次测试之前清空所有数据库。如果为False，则整个测试流程只会用到<code>settings.py</code>里面的default数据库。</p>
+<h4 id="覆盖配置项"><a href="#覆盖配置项" class="headerlink" title="覆盖配置项"></a>覆盖配置项</h4><p><strong>不要直接修改<code>django.conf.settings</code>里面的配置项</strong>，否则你剩下的测试都会使用新的配置项。</p>
+<p>代码示例：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">with</span> self.settings(LOGIN_URL=<span class="string">&#x27;/other/login/&#x27;</span>):</span><br><span class="line">    response = self.client.get(<span class="string">&#x27;/sekrit/&#x27;</span>)</span><br><span class="line">    self.assertRedirects(response, <span class="string">&#x27;/other/login/?next=/sekrit/&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>或者仅添加（后添加、前添加）、修改某个值（对于列表类型的配置项有用），可以使用另一个方法（注意里面的key的含义）：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">with</span> self.modify_settings(MIDDLEWARE=&#123;</span><br><span class="line">    <span class="string">&#x27;append&#x27;</span>: <span class="string">&#x27;django.middleware.cache.FetchFromCacheMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;prepend&#x27;</span>: <span class="string">&#x27;django.middleware.cache.UpdateCacheMiddleware&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;remove&#x27;</span>: [</span><br><span class="line">        <span class="string">&#x27;django.contrib.sessions.middleware.SessionMiddleware&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;django.contrib.auth.middleware.AuthenticationMiddleware&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;django.contrib.messages.middleware.MessageMiddleware&#x27;</span>,</span><br><span class="line">    ],</span><br><span class="line">&#125;):</span><br><span class="line">    response = self.client.get(<span class="string">&#x27;/&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>还有如前面所说的<code>@override_settings</code>装饰器，前面已做过介绍，这里不再赘述。<br>另外还有一个跟<code>modify_settings</code>一样用法的装饰器<code>@modify_settings</code>，就是对整个test或TestCase都进行修改的方法。</p>
+<p><strong>override_settings要在modify_settings之前。</strong></p>
+<p>重写设置时，请确保正确处理应用程序代码使用缓存或类似功能的情况，即使更改了设置，该功能也会保留状态。Django提供<code>django.test.signals.setting_changed</code>信号，允许您注册回调以在设置更改时清除或重置状态。<br>Django本身使用此信号重置各种数据：</p>
+<table>
+<thead>
+<tr>
+<th>Overridden settings</th>
+<th>Data reset</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>TEMPLATES</td>
+<td>Template engines</td>
+</tr>
+<tr>
+<td>SERIALIZATION_MODULES</td>
+<td>Serializers cache</td>
+</tr>
+<tr>
+<td>LOCALE_PATHS, LANGUAGE_CODE</td>
+<td>Default translation and loaded translations</td>
+</tr>
+<tr>
+<td>MEDIA_ROOT, DEFAULT_FILE_STORAGE</td>
+<td>Default file storage</td>
+</tr>
+</tbody></table>
+<h4 id="邮件"><a href="#邮件" class="headerlink" title="邮件"></a>邮件</h4><p>如果你用的是Django的TestCase类（包括子类），那所有类运行前都会清空测试邮件的outbox</p>
+<h2 id="Assertions断言"><a href="#Assertions断言" class="headerlink" title="Assertions断言"></a>Assertions断言</h2><p>除了Python标准库unittest里面的那些断言之外，Django还提供了很多特有的断言方法。</p>
+<p>SimpleTestCase（及其子类）方法：</p>
+<ul>
+<li><code>.assertRaisesMessage(expected_exception, expected_message, callable, *args, **kwargs)</code></li>
+<li><code>.assertFieldOutput(fieldclass, valid, invalid, field_args=None, field_kwargs=None, empty_value=&#39;&#39;)</code></li>
+<li><code>.assertFormError(response, form, field, errors, msg_prefix=&#39;&#39;)</code></li>
+<li><code>.assertFormsetError(response, formset, form_index, field, errors, msg_prefix=&#39;&#39;)</code></li>
+<li><code>.assertContains(response, text, count=None, status_code=200, msg_prefix=&#39;&#39;, html=False)</code></li>
+<li><code>.assertNotContains(response, text, status_code=200, msg_prefix=&#39;&#39;, html=False)</code></li>
+<li><code>.assertTemplateUsed(response, template_name, msg_prefix=&#39;&#39;, count=None)</code></li>
+<li><code>.assertTemplateNotUsed(response, template_name, msg_prefix=&#39;&#39;)</code></li>
+<li><code>.assertRedirects(response, expected_url, status_code=302, target_status_code=200, msg_prefix=&#39;&#39;, fetch_redirect_response=True)</code></li>
+<li><code>.assertHTMLEqual(html1, html2, msg=None)</code></li>
+<li><code>.assertHTMLNotEqual(html1, html2, msg=None)</code></li>
+<li><code>.assertXMLEqual(xml1, xml2, msg=None)</code></li>
+<li><code>.assertXMLNotEqual(xml1, xml2, msg=None)</code></li>
+<li><code>.assertInHTML(needle, haystack, count=None, msg_prefix=&#39;&#39;)</code></li>
+<li><code>.assertJSONEqual(raw, expected_data, msg=None)</code></li>
+<li><code>.assertJSONNotEqual(raw, expected_data, msg=None)</code></li>
+</ul>
+<p>TransactionTestCase（及其子类）方法：</p>
+<ul>
+<li><code>.assertQuerysetEqual(qs, values, transform=repr, ordered=True, msg=None)</code></li>
+<li><code>.assertNumQueries(num, func, *args, **kwargs)</code></li>
+</ul>
+<h3 id="assertRaisesMessage"><a href="#assertRaisesMessage" class="headerlink" title="assertRaisesMessage"></a>assertRaisesMessage</h3><p>调用callable并且匹配exception类型和exception的message，如果匹配不到就是fail。<br>这个方法是<code>unittest.TestCase.assertRaisesRegex()</code>的简单实现，这个方法的<code>expected_message</code>参数不是一个正则表达式。<br>可以不传callable参数，这时候他就变成一个上下文管理器，示例：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">with</span> self.assertRaisesMessage(ValueError, <span class="string">&#x27;invalid literal for int()&#x27;</span>):</span><br><span class="line">    <span class="built_in">int</span>(<span class="string">&#x27;a&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="assertFieldOutput"><a href="#assertFieldOutput" class="headerlink" title="assertFieldOutput"></a>assertFieldOutput</h3><p>判断表单的输入是否正确。</p>
+<p>参数：</p>
+<ul>
+<li>fieldclass：需要测试的字段类</li>
+<li>valid：期望的字段值，字典类型</li>
+<li>invalid：当数据不正确时的提示信息，字典类型</li>
+<li>field_args：实例化字段类时要传递的参数，根据你要测试的字段类填写</li>
+<li>field_kwargs：跟field_args相同作用，传递关键字参数</li>
+<li>empty_value：当字段为空时期望得到的信息</li>
+</ul>
+<p>示例代码：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">self.assertFieldOutput(EmailField, &#123;<span class="string">&#x27;a@a.com&#x27;</span>: <span class="string">&#x27;a@a.com&#x27;</span>&#125;, &#123;<span class="string">&#x27;aaa&#x27;</span>: [<span class="string">&#x27;Enter a valid email address.&#x27;</span>]&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="assertFormError"><a href="#assertFormError" class="headerlink" title="assertFormError"></a>assertFormError</h3><p>判断表单的某个字段是不是会报<code>errors</code>（列表）参数种的错误。</p>
+<p>参数：</p>
+<ul>
+<li>form：Form对象</li>
+<li>field：字段的name，就是定义字段时的变量名，如果field有一个值是None的话，就会去检查non-field错误，你可以通过<code>form.non_field_errors()</code>获取那些non-field错误</li>
+<li>errors：错误信息，是一个字符串类型，或者包含你想要测试的所有错误信息的列表</li>
+</ul>
+<h3 id="assertFormsetError"><a href="#assertFormsetError" class="headerlink" title="assertFormsetError"></a>assertFormsetError</h3><p>跟<code>assertFormError</code>差不多，不过是对FormSet对象的一个断言。</p>
+<p>参数：</p>
+<ul>
+<li>form_index：FormSet中的表单索引，如果为None，就会去检查non-form错误，你可以通过<code>formset.non_form_errors()</code>获取那些non-form错误</li>
+<li>field：与assertFormError一样</li>
+<li>errors：与assertFormError一样</li>
+</ul>
+<h3 id="assertContains"><a href="#assertContains" class="headerlink" title="assertContains"></a>assertContains</h3><p>用来判断Response对象的状态码和是否包含<code>text</code>参数的内容。</p>
+<p>参数：</p>
+<ul>
+<li>text：预期包含的内容</li>
+<li>count：如果不为None，则表示预期会包含多少个text的内容</li>
+<li>html：如果为True，代表对比的内容为HTML格式字符串，在大多数情况下，空格被忽略，属性排序不重要</li>
+</ul>
+<h3 id="assertNotContains"><a href="#assertNotContains" class="headerlink" title="assertNotContains"></a>assertNotContains</h3><p>作用跟assertContains相反。除了没有count参数之外，其他的参数含义跟assertContains一样。</p>
+<h3 id="assertTemplateUsed"><a href="#assertTemplateUsed" class="headerlink" title="assertTemplateUsed"></a>assertTemplateUsed</h3><p>判断response所使用的模板是不是预期中的模板。<br>count参数是一个整数，表示应该呈现模板的次数。默认值为None，这意味着模板应渲染一次或多次。</p>
+<p>也可以用上下文管理器的方式调用，如：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">with</span> self.assertTemplateUsed(<span class="string">&#x27;index.html&#x27;</span>):</span><br><span class="line">    render_to_string(<span class="string">&#x27;index.html&#x27;</span>)</span><br><span class="line"><span class="keyword">with</span> self.assertTemplateUsed(template_name=<span class="string">&#x27;index.html&#x27;</span>):</span><br><span class="line">    render_to_string(<span class="string">&#x27;index.html&#x27;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="assertTemplateNotUsed"><a href="#assertTemplateNotUsed" class="headerlink" title="assertTemplateNotUsed"></a>assertTemplateNotUsed</h3><p>与assertTemplateUsed的作用相反。</p>
+<h3 id="assertRedirects"><a href="#assertRedirects" class="headerlink" title="assertRedirects"></a>assertRedirects</h3><p>用于判断response是否如预期一样进行了重定向。<br>如果你的请求使用了<code>follow</code>参数，则<code>expect_url</code>和<code>target_status_code</code>会是最终重定向到的url和状态码。</p>
+<p>参数：</p>
+<ul>
+<li>expected_url：期望跳转到的目标地址</li>
+<li>status_code：期望访问原始url时返回的状态码，默认是302</li>
+<li>target_status_code：期望跳转后的url返回的状态码，默认是200</li>
+<li>fetch_redirect_response：如果为False，则不会加载最终页面。由于测试客户端无法获取外部url，如果expected_url不是Django应用程序的一部分，这个就很有用。</li>
+</ul>
+<h3 id="assertHTMLEqual"><a href="#assertHTMLEqual" class="headerlink" title="assertHTMLEqual"></a>assertHTMLEqual</h3><p>判断两个html文本是否一样，有一些注意事项：</p>
+<ul>
+<li>HTML的节点tag前后的空格和换行会被忽略</li>
+<li>所有类型的空白符都是一样的，比如tab和空格</li>
+<li>所有的标签都是隐式闭合的</li>
+<li>HTML节点的属性排序不重要</li>
+<li>没有值的属性，他的值等于他的名字</li>
+</ul>
+<p>以下的例子是正确的例子，不会触发AssertionError：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">self.assertHTMLEqual(</span><br><span class="line">    <span class="string">&#x27;&lt;p&gt;Hello &lt;b&gt;world!&lt;/p&gt;&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;&lt;p&gt;</span></span><br><span class="line"><span class="string">        Hello   &lt;b&gt;world! &lt;b/&gt;</span></span><br><span class="line"><span class="string">    &lt;/p&gt;&#x27;&#x27;&#x27;</span></span><br><span class="line">)</span><br><span class="line">self.assertHTMLEqual(</span><br><span class="line">    <span class="string">&#x27;&lt;input type=&quot;checkbox&quot; checked=&quot;checked&quot; id=&quot;id_accept_terms&quot; /&gt;&#x27;</span>,</span><br><span class="line">    <span class="string">&#x27;&lt;input id=&quot;id_accept_terms&quot; type=&quot;checkbox&quot; checked&gt;&#x27;</span></span><br><span class="line">)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>传递的两个参数都必须是有效的HTML格式字符串，否则会触发AssertionError</strong></p>
+<h3 id="assertHTMLNotEqual"><a href="#assertHTMLNotEqual" class="headerlink" title="assertHTMLNotEqual"></a>assertHTMLNotEqual</h3><p>跟assertHTMLEqual作用相反。</p>
+<h3 id="assertQuerysetEqual"><a href="#assertQuerysetEqual" class="headerlink" title="assertQuerysetEqual"></a>assertQuerysetEqual</h3><p>判断QuerySet是不是返回了特定的列表</p>
+<p>参数：</p>
+<ul>
+<li>transform：用于转换qs和期望值的函数，默认是repr，就变成了字符串对比</li>
+<li>ordered：默认是True， 如果qs的排序没定义，且这个值为False，且比较的是多个值，则会抛出ValueError错误</li>
+</ul>
+<h3 id="assertNumQueries"><a href="#assertNumQueries" class="headerlink" title="assertNumQueries"></a>assertNumQueries</h3><p>声明当用*args和**kwargs调用func时，将执行num个数据库查询。</p>
+<p>如果kwargs中存在一个“using”键，它将用作检查查询数的数据库别名。如果希望使用using参数调用函数，可以通过使用lambda包装调用来添加额外的参数：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">self.assertNumQueries(<span class="number">7</span>, <span class="keyword">lambda</span>: my_function(using=<span class="number">7</span>))</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>也可以用上下文管理器</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">with</span> self.assertNumQueries(<span class="number">2</span>):</span><br><span class="line">    Person.objects.create(name=<span class="string">&quot;Aaron&quot;</span>)</span><br><span class="line">    Person.objects.create(name=<span class="string">&quot;Daniel&quot;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="注意事项-6"><a href="#注意事项-6" class="headerlink" title="注意事项"></a>注意事项</h3><ul>
+<li>大部分断言方法可以用<code>msg_prefix</code>参数指定断言失败时的提示消息前缀</li>
+</ul>
+<h2 id="给测试方法打标签"><a href="#给测试方法打标签" class="headerlink" title="给测试方法打标签"></a>给测试方法打标签</h2><p>没什么特别需要说明的地方，直接上例子：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> django.test <span class="keyword">import</span> tag</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">SampleTestCase</span>(<span class="title class_ inherited__">TestCase</span>):</span><br><span class="line"></span><br><span class="line"><span class="meta">    @tag(<span class="params"><span class="string">&#x27;fast&#x27;</span></span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_fast</span>(<span class="params">self</span>):</span><br><span class="line">        ...</span><br><span class="line"></span><br><span class="line"><span class="meta">    @tag(<span class="params"><span class="string">&#x27;slow&#x27;</span></span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_slow</span>(<span class="params">self</span>):</span><br><span class="line">        ...</span><br><span class="line"></span><br><span class="line"><span class="meta">    @tag(<span class="params"><span class="string">&#x27;slow&#x27;</span>, <span class="string">&#x27;core&#x27;</span></span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_slow_but_core</span>(<span class="params">self</span>):</span><br><span class="line"></span><br><span class="line"><span class="meta">@tag(<span class="params"><span class="string">&#x27;slow&#x27;</span>, <span class="string">&#x27;core&#x27;</span></span>)</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">SampleTestCase</span>(<span class="title class_ inherited__">TestCase</span>):</span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>然后可以在命令行运行测试的时候传递参数筛选需要测试的那些测试方法：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">只运行fast标签的测试</span></span><br><span class="line">python manage.py test --tag=fast</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">运行fast和core测试</span></span><br><span class="line">python manage.py test --tag=fast --tag=core</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">排除slow测试</span></span><br><span class="line">python manage.py test --tag=core --exclude-tag=slow</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>exclude-tag比tag的优先级要高，所以如果你的某个测试含有了tag的标签，并且也包含了exclude-tag的标签，那这个测试就不会运行。</p>
+<h2 id="邮件发送测试"><a href="#邮件发送测试" class="headerlink" title="邮件发送测试"></a>邮件发送测试</h2><p>测试的时候肯定不会想要每次运行测试都发一封真实的邮件，所以Django的邮件测试会运行在一个虚拟的outbox。<br>在测试运行期间，每个传出的电子邮件都保存在<code>django.core.mail.outbox</code>中。这是已发送的所有EmailMessage实例的简单列表。<code>outbox</code>是一个特殊的属性，仅在使用locmem邮件后端时才创建。它通常不作为<code>django.core.mail</code>模块的一部分存在，您不能直接导入它。下面的代码显示了如何正确访问此属性：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> django.core <span class="keyword">import</span> mail</span><br><span class="line"><span class="keyword">from</span> django.test <span class="keyword">import</span> TestCase</span><br><span class="line"></span><br><span class="line"><span class="comment"># 每个TestCase运行前都会清空outbox，也可以像下面的代码一样手动清空</span></span><br><span class="line">mail.outbox = []</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">EmailTest</span>(<span class="title class_ inherited__">TestCase</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_send_email</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="comment"># Send message.</span></span><br><span class="line">        mail.send_mail(</span><br><span class="line">            <span class="string">&#x27;Subject here&#x27;</span>, <span class="string">&#x27;Here is the message.&#x27;</span>,</span><br><span class="line">            <span class="string">&#x27;from@example.com&#x27;</span>, [<span class="string">&#x27;to@example.com&#x27;</span>],</span><br><span class="line">            fail_silently=<span class="literal">False</span>,</span><br><span class="line">        )</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Test that one message has been sent.</span></span><br><span class="line">        self.assertEqual(<span class="built_in">len</span>(mail.outbox), <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Verify that the subject of the first message is correct.</span></span><br><span class="line">        self.assertEqual(mail.outbox[<span class="number">0</span>].subject, <span class="string">&#x27;Subject here&#x27;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="服务器命令行管理命令"><a href="#服务器命令行管理命令" class="headerlink" title="服务器命令行管理命令"></a>服务器命令行管理命令</h2><p>就是运行<code>python manage.py</code>的那些命令，官方文档也没有过多介绍，直接看代码示例：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> django.core.management <span class="keyword">import</span> call_command</span><br><span class="line"><span class="keyword">from</span> django.test <span class="keyword">import</span> TestCase</span><br><span class="line"><span class="keyword">from</span> django.utils.six <span class="keyword">import</span> StringIO</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ClosepollTest</span>(<span class="title class_ inherited__">TestCase</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_command_output</span>(<span class="params">self</span>):</span><br><span class="line">        out = StringIO()</span><br><span class="line">        call_command(<span class="string">&#x27;closepoll&#x27;</span>, stdout=out)</span><br><span class="line">        self.assertIn(<span class="string">&#x27;Expected output&#x27;</span>, out.getvalue())</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="跳过部分测试"><a href="#跳过部分测试" class="headerlink" title="跳过部分测试"></a>跳过部分测试</h2><p>当你提前知道你的某些测试会测试失败的时候你就可以用这个功能。比如你的某个测试需要特定的库才能正常运行，这时你就可以用<code>@skipIf</code>装饰器装饰你的测试，并且测试的时候会报告给你哪个测试被跳过了还有跳过的原因。</p>
+<p>除了<code>unittest</code>内置的一些跳过装饰器（<code>.skipIf</code>，<code>.skipUnless</code>）之外，Django还内置了其他的装饰器，这些装饰器不是用来检测布尔值，而是用来检测数据库功能的，如果测试的数据库不支持你指定的功能，那就会跳过测试。要想查看数据库的所有特性（功能），可以去看一下<code>django.db.backends.BaseDatabaseFeatures</code>这个类</p>
+<p>示例代码：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyTests</span>(<span class="title class_ inherited__">TestCase</span>):</span><br><span class="line"><span class="meta">    @skipIfDBFeature(<span class="params"><span class="string">&#x27;supports_transactions&#x27;</span></span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_transaction_behavior</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="comment"># ... conditional test code</span></span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyTests</span>(<span class="title class_ inherited__">TestCase</span>):</span><br><span class="line"><span class="meta">    @skipUnlessDBFeature(<span class="params"><span class="string">&#x27;supports_transactions&#x27;</span></span>)</span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_transaction_behavior</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="comment"># ... conditional test code</span></span><br><span class="line">        <span class="keyword">pass</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h1><p>这篇文档中可能有一些接口或者方法没有介绍到，常用或者有用的都介绍到了，剩下一些适用面较少、不常见的内容，需要移步到官方文档查看其介绍：<a href="https://docs.djangoproject.com/en/1.11/topics/testing/" title="Django Testing">Django Testing</a></p>
+]]></content>
+      <categories>
+        <category>后端</category>
+      </categories>
+      <tags>
+        <tag>Django</tag>
+        <tag>测试</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>RabbitMQ</title>
+    <url>/%E5%90%8E%E7%AB%AF/rabbitmq/</url>
+    <content><![CDATA[<h4 id="什么是MQ？"><a href="#什么是MQ？" class="headerlink" title="什么是MQ？"></a>什么是MQ？</h4><p>MQ是消息队列(Message Queue)的缩写，是一种应用程序之间的通信方法。它是一个保存消息的容器，本质上是个队列。消息是指在应用之间传送的数据，可以非常简单，比如只包含文本字符串，也可以更复杂，可能包含嵌入对象。</p>
+<p>MQ的主要特点是异步处理，主要目的是减少请求响应时间，实现非核心流程异步化，提高系统响应性能。</p>
+<h4 id="常见的消息队列"><a href="#常见的消息队列" class="headerlink" title="常见的消息队列"></a>常见的消息队列</h4><ul>
+<li>ActiveMQ</li>
+<li>RabbitMQ</li>
+<li>ZeroMQ</li>
+<li>Kafka</li>
+<li>RocketMQ</li>
+</ul>
+<h4 id="什么是rabbitmq？"><a href="#什么是rabbitmq？" class="headerlink" title="什么是rabbitmq？"></a>什么是rabbitmq？</h4><p>RabbitMQ是一款使用Erlang语言开发的，实现AMQP (高级消息队列协议)的开源消息中间件。它是一个由Erlang语言开发的AMQP的开源实现。</p>
+<p>RabbitMQ的主要特点是可靠性、灵活的分发消息策略和支持集群。</p>
+<p>优点：</p>
+<ol>
+<li>高可靠性：RabbitMQ支持多种消息持久化方式，如内存、磁盘等，保证消息不会丢失。同时，它也支持消息的死信队列和消息的优先级设置，可以有效避免消息丢失和重复处理的问题。</li>
+<li>高可用性：RabbitMQ采用集群的方式部署，可以实现负载均衡和故障转移，保证系统的高可用性。</li>
+<li>高性能：RabbitMQ采用Erlang语言编写，具有出色的性能表现。同时，它还支持多种交换机类型和路由策略，可以根据实际需求进行优化。</li>
+<li>易扩展性：RabbitMQ支持插件机制，可以通过插件来扩展其功能。同时，它还支持集群、镜像队列等高级特性，可以满足不同场景下的需求。</li>
+<li>灵活性：RabbitMQ支持多种协议，如AMQP、STOMP等，可以与其他系统集成。同时，它还支持多种编程语言的开发，如Java、Python等，可以满足不同开发人员的需求。</li>
+</ol>
+<p>缺点：</p>
+<ol>
+<li>系统可用性降低：系统引入的外部依赖增多，系统的稳定性就会变差。一旦MQ宕机，就会对业务产生影响。需要考虑如何保证MQ的高可用。</li>
+<li>系统的复杂度提高：引入MQ后系统的复杂度会大大提高。以前服务之间可以进行同步的服务调用，引入MQ后，会变成异步调用，数据链路会变得更复杂。并且还会带来一系列的问题。如如何保证消息不会丢失？不会被重复调用？怎么保证消息的顺序性？</li>
+<li>并发量大时性能下降：如果有大量的消息堆积在队列中，性能会急剧下降。</li>
+</ol>
+]]></content>
+      <categories>
+        <category>后端</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>VIM使用手册</title>
+    <url>/%E8%BF%90%E7%BB%B4/vim%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/</url>
+    <content><![CDATA[<h1 id="查找"><a href="#查找" class="headerlink" title="查找"></a>查找</h1><p>在normal模式下按下<code>/</code>即可进入查找模式，输入要查找的字符串并按下回车。 Vim会跳转到第一个匹配。按下<code>n</code>查找下一个，按下<code>N</code>查找上一个。</p>
+<p>Vim查找支持正则表达式，例如<code>/vim$</code>匹配行尾的<code>&quot;vim&quot;</code>。 需要查找特殊字符需要转义，例如<code>/vim\$</code>匹配<code>&quot;vim$&quot;</code>。</p>
+<h2 id="大小写敏感查找"><a href="#大小写敏感查找" class="headerlink" title="大小写敏感查找"></a>大小写敏感查找</h2><p>在查找模式中加入<code>\c</code>表示大小写不敏感查找，<code>\C</code>表示大小写敏感查找。例如：</p>
+<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line">/foo\<span class="keyword">c</span></span><br></pre></td></tr></table></figure>
+
+<p>将会查找所有的<code>&quot;foo&quot;</code>,<code>&quot;FOO&quot;</code>,<code>&quot;Foo&quot;</code>等字符串。</p>
+<h2 id="大小写敏感配置"><a href="#大小写敏感配置" class="headerlink" title="大小写敏感配置"></a>大小写敏感配置</h2><p>Vim 默认采用大小写敏感的查找，为了方便我们常常将其配置为大小写不敏感：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot; 设置默认进行大小写不敏感查找</span><br><span class="line">set ignorecase</span><br><span class="line">&quot; 如果有一个大写字母，则切换到大小写敏感查找</span><br><span class="line">set smartcase</span><br></pre></td></tr></table></figure>
+
+<p>将上述设置粘贴到你的~&#x2F;.vimrc，重新打开Vim即可生效</p>
+<h2 id="查找当前单词"><a href="#查找当前单词" class="headerlink" title="查找当前单词"></a>查找当前单词</h2><p>在normal模式下按下<code>*</code>即可查找光标所在单词（word）， 要求每次出现的前后为空白字符或标点符号。例如当前为<code>foo</code>， 可以匹配<code>foo bar</code>中的<code>foo</code>，但不可匹配<code>foobar</code>中的<code>foo</code>。 这在查找函数名、变量名时非常有用。</p>
+<p>按下<code>g*</code>即可查找光标所在单词的字符序列，每次出现前后字符无要求。 即<code>foo bar</code>和<code>foobar</code>中的<code>foo</code>均可被匹配到。</p>
+<h1 id="替换"><a href="#替换" class="headerlink" title="替换"></a>替换</h1><p>语法为<code>:&#123;作用范围&#125;s/&#123;目标&#125;/&#123;替换&#125;/&#123;替换标志&#125;</code>，<br>全局替换：<code>:%s/源字符串/目的字符串/g</code>。</p>
+<p>例如<code>:%s/foo/bar/g</code>会在全局范围(<code>%</code>)查找<code>foo</code>并替换为<code>bar</code>，所有出现都会被替换（<code>g</code>）</p>
+<h2 id="基本的替换"><a href="#基本的替换" class="headerlink" title="基本的替换"></a>基本的替换</h2><p><code>:s/vivian/sky/</code> 替换当前行第一个 vivian 为 sky<br><code>:s/vivian/sky/g</code> 替换当前行所有 vivian 为 sky<br><code>:n,$s/vivian/sky/</code> 替换第 n 行开始到最后一行中每一行的第一个 vivian 为 sky<br><code>:n,$s/vivian/sky/g</code> 替换第 n 行开始到最后一行中每一行所有 vivian 为 sky<br>（n 为数字，若 n 为 .，表示从当前行开始到最后一行）<br><code>:%s/vivian/sky/</code>（等同于 :g&#x2F;vivian&#x2F;s&#x2F;&#x2F;sky&#x2F;）替换每一行的第一个 vivian 为 sky<br><code>:%s/vivian/sky/g</code>（等同于 :g&#x2F;vivian&#x2F;s&#x2F;&#x2F;sky&#x2F;g） 替换每一行中所有 vivian 为 sky<br>可以使用 # 作为分隔符，此时中间出现的 &#x2F; 不会作为分隔符<br><code>:s#vivian/#sky/#</code> 替换当前行第一个 vivian&#x2F; 为 sky&#x2F;<br><code>:%s+/oradata/apras/+/user01/apras1+</code> （使用+ 来替换 &#x2F; ）： &#x2F;oradata&#x2F;apras&#x2F;替换成&#x2F;user01&#x2F;apras1&#x2F;</p>
+<h2 id="作用范围"><a href="#作用范围" class="headerlink" title="作用范围"></a>作用范围</h2><p>作用范围分为当前行、全文、选区等等。</p>
+<p>当前行：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:s/foo/bar/g</span><br></pre></td></tr></table></figure>
+
+<p>全文：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:%s/foo/bar/g</span><br></pre></td></tr></table></figure>
+
+<p>选区，在Visual模式下选择区域后输入<code>:</code>，Vim即可自动补全为 <code>:&#39;&lt;,&#39;&gt;</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:&#x27;&lt;,&#x27;&gt;s/foo/bar/g</span><br></pre></td></tr></table></figure>
+
+<p>2-11行：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:5,12s/foo/bar/g</span><br></pre></td></tr></table></figure>
+
+<p>当前行.与接下来两行+2：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:.,+2s/foo/bar/g</span><br></pre></td></tr></table></figure>
+
+<h2 id="替换标志"><a href="#替换标志" class="headerlink" title="替换标志"></a>替换标志</h2><p>上文中命令结尾的<code>g</code>即是替换标志之一，表示全局global替换（即替换目标的所有出现）。 还有很多其他有用的替换标志：</p>
+<p>空替换标志表示只替换从光标位置开始，目标的第一次出现：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:%s/foo/bar</span><br></pre></td></tr></table></figure>
+
+<p><code>i</code>表示大小写不敏感查找，<code>I</code>表示大小写敏感：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:%s/foo/bar/i</span><br><span class="line"># 等效于模式中的\c（不敏感）或\C（敏感）</span><br><span class="line">:%s/foo\c/bar</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><code>c</code>表示需要确认，例如全局查找<code>&quot;foo&quot;</code>替换为<code>&quot;bar&quot;</code>并且需要确认：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:%s/foo/bar/gc</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>回车后Vim会将光标移动到每一次<code>&quot;foo&quot;</code>出现的位置，并提示<code>replace with bar (y/n/a/q/l/^E/^Y)?</code>。<br>按下<code>y</code>表示替换，<code>n</code>表示不替换，<code>a</code>表示替换所有，<code>q</code>表示退出查找模式， <code>l</code>表示替换当前位置并退出。<code>^E</code>与<code>^Y</code>是光标移动快捷键，参考： <a href="http://harttle.com/2015/11/07/vim-cursor.html" title="Vim中如何快速进行光标移动">Vim中如何快速进行光标移动</a></p>
+<h1 id="设置缩进"><a href="#设置缩进" class="headerlink" title="设置缩进"></a>设置缩进</h1><p><code>set autoindent</code>设置自动缩进<br><code>set shiftwidth=4</code>设置自动缩进空格数<br><code>set tabstop=4</code>设置一个tab等于多少个空格的宽度<br><code>set softtabstop=4</code>设置软制表符，软制表符表示在Insert模式的时候按退格键时退回缩进的长度，当使用expandtab 时特别有用。<br><code>set expandtab</code>将tab变成空格<br><code>:%retab!</code>将文件中现有的tab变成空格</p>
+<h1 id="鼠标功能"><a href="#鼠标功能" class="headerlink" title="鼠标功能"></a>鼠标功能</h1><p><code>set mouse=a</code>启用鼠标功能<br><code>set mouse-=a</code>停用鼠标功能</p>
+<p>鼠标模式：</p>
+<ul>
+<li>n：普通模式</li>
+<li>v：可视模式</li>
+<li>i：插入模式</li>
+<li>c：命令行模式</li>
+<li>h：在帮助文件里，以上所有模式</li>
+<li>a：以上所有模式</li>
+<li>r：跳过|lit-enter|提示</li>
+<li>A：在可视模式下自动选择</li>
+</ul>
+<p>解决鼠标模式右键不能粘贴问题<br>用鼠标和可视模式复制&#x2F;粘贴 (‘mouse’ 选项必须设置，见上):</p>
+<ol>
+<li>在文本的第一个字符上按鼠标左键，移动鼠标到文本的最后一个字母，然后释放左<br>键。这会启动可视模式并高亮选择区域。</li>
+<li>按 “y” 抽出可视文本到无名寄存器里。</li>
+<li>在要插入的位置上按鼠标左键。</li>
+<li>按鼠标中键（滚轮）。</li>
+</ol>
+<h1 id="折叠代码"><a href="#折叠代码" class="headerlink" title="折叠代码"></a>折叠代码</h1><p><img src="/%E8%BF%90%E7%BB%B4/vim%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/%E5%BF%AB%E6%8D%B7%E9%94%AE.png"></p>
+]]></content>
+      <categories>
+        <category>运维</category>
+      </categories>
+      <tags>
+        <tag>VIM</tag>
+        <tag>Linux</tag>
       </tags>
   </entry>
   <entry>
@@ -1799,402 +2195,6 @@
       </categories>
       <tags>
         <tag>MySQL</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Django单元测试快速指南</title>
-    <url>/%E5%90%8E%E7%AB%AF/django%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E5%BF%AB%E9%80%9F%E6%8C%87%E5%8D%97/</url>
-    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><blockquote>
-<p>本文受《Python测试驱动开发》启发，书中内容很详尽，章节也很多，比较偏向于新手向，从如何安装Django1.11到如何使用Git工具都有教，没接触过这些的人都能看懂，有一定基础的人可以略读，值得一看。<br>本文绝大部分内容并不来自该书，更多的是我的个人见解和对官方文档的一些整理。</p>
-</blockquote>
-<p>本文主要介绍Django跟unittest有区别的地方，以及如何去使用Django内置的测试模块进行测试，适合有一定Python基础和Django基础的人。</p>
-<span id="more"></span>
-
-<h2 id="自动测试的理念"><a href="#自动测试的理念" class="headerlink" title="自动测试的理念"></a>自动测试的理念</h2><h3 id="TDD"><a href="#TDD" class="headerlink" title="TDD"></a>TDD</h3><p>TDD(Test Driven Development)，中文名是“测试驱动开发”，这是一个编程理念，类似于面向对象编程，你可以不用，但是如果你用了，你会发现你的开发过程会非常的顺畅，非常的有底气，你对代码所做的每一处修改，都在你的可控范围内，出错也很容易找到问题所在，并且先测试再开发的过程更有利于你设计一个功能或者设计整个产品，在你的大脑中会非常清晰地知道你想要实现什么功能，而不需要先想着代码应该怎么实现，就像API文档一样，每个功能、每个模块都可以一目了然，这就是测试的作用。</p>
-<h2 id="个人见解"><a href="#个人见解" class="headerlink" title="个人见解"></a>个人见解</h2><p>通过这段时间编写测试代码的经历，对自动测试、单元测试有一点小小见解。<br>给Django项目写测试对我来说是一件很痛苦的事情，特别是MTV中的T（Templates），要测试模板是否是对的，就相当于测试前端，不仅要测试UI显示（HTML）是不是对的，（JS）交互是否正常，样式（CSS）是否正确（即UI），还要测试跟Django耦合部分的上下文对不对。<br>测试模板一般都是看期望的DOM有没有渲染出来，还得测试点击某个按钮是不是能正常工作等等。</p>
-<p>然后就是视图或者模型测试，得把所有场景都想象出来，然后对这些场景进行测试，比如权限认证、身份认证、数据库查询等。</p>
-<p>如果把整个项目都做一遍测试，把上述的测试项都测试一遍，那这样下来测试代码要比业务代码要多不少，不过这样也是有他的合理性的，毕竟测试全面了，代码稳定性就高了。</p>
-<p>但是我觉得不应该把所有的测试代码都放到Django项目里面，应该分三个部分进行：</p>
-<ol>
-<li>后端函数、逻辑代码测试</li>
-<li>接口测试</li>
-<li>前端UI和交互测试</li>
-<li>功能测试&#x2F;需求测试</li>
-</ol>
-<p>各部门各司其职，对上述测试点进行测试，用其相对应的专业工具去测，这样效率也能大大提升，并且测试文档也会好写很多，最终提交的项目的结构化也更好。<br>另外我认为测试代码（即用于进行测试的代码，不是被测试的代码）越少越好，因为如果用代码测试代码，那很难保证测试代码本身不会存在逻辑错误或者其他BUG，各种逻辑函数越少越好，越傻瓜越好，哪怕是面向过程模式的测试代码，这样才能更好拟合用户的操作行为，减少依赖性。</p>
-<h2 id="Django中需要测试的部分"><a href="#Django中需要测试的部分" class="headerlink" title="Django中需要测试的部分"></a>Django中需要测试的部分</h2><p><img src="/%E5%90%8E%E7%AB%AF/django%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E5%BF%AB%E9%80%9F%E6%8C%87%E5%8D%97/Django%E6%B5%8B%E8%AF%95.png" alt="Django测试" title="Django测试"></p>
-<h1 id="快速入门"><a href="#快速入门" class="headerlink" title="快速入门"></a>快速入门</h1><h2 id="测试代码"><a href="#测试代码" class="headerlink" title="测试代码"></a>测试代码</h2><figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> django.test <span class="hljs-keyword">import</span> TestCase<br><span class="hljs-keyword">from</span> myapp.models <span class="hljs-keyword">import</span> Animal<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">AnimalTestCase</span>(<span class="hljs-title class_ inherited__">TestCase</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">setUp</span>(<span class="hljs-params">self</span>):<br>        Animal.objects.create(name=<span class="hljs-string">&quot;lion&quot;</span>, sound=<span class="hljs-string">&quot;roar&quot;</span>)<br>        Animal.objects.create(name=<span class="hljs-string">&quot;cat&quot;</span>, sound=<span class="hljs-string">&quot;meow&quot;</span>)<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">test_animals_can_speak</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-string">&quot;&quot;&quot;Animals that can speak are correctly identified&quot;&quot;&quot;</span><br>        lion = Animal.objects.get(name=<span class="hljs-string">&quot;lion&quot;</span>)<br>        cat = Animal.objects.get(name=<span class="hljs-string">&quot;cat&quot;</span>)<br>        self.assertEqual(lion.speak(), <span class="hljs-string">&#x27;The lion says &quot;roar&quot;&#x27;</span>)<br>        self.assertEqual(cat.speak(), <span class="hljs-string">&#x27;The cat says &quot;meow&quot;&#x27;</span>)<br></code></pre></td></tr></table></figure>
-
-<h2 id="命令行"><a href="#命令行" class="headerlink" title="命令行"></a>命令行</h2><figure class="highlight bash"><table><tr><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 运行全部测试</span><br>python manage.py <span class="hljs-built_in">test</span><br><span class="hljs-comment"># 运行animal.tests模块下的所有测试</span><br>python manage.py <span class="hljs-built_in">test</span> animals.tests<br><span class="hljs-comment"># 自动搜索animal包下的所有test_开头的测试文件，并运行测试</span><br>python manage.py <span class="hljs-built_in">test</span> animals<br><span class="hljs-comment"># 仅运行一个测试用例</span><br>python manage.py <span class="hljs-built_in">test</span> animals.tests.AnimalTestCase<br><span class="hljs-comment"># 仅运行一个测试用例下的测试点</span><br>python manage.py <span class="hljs-built_in">test</span> animals.tests.AnimalTestCase.test_animals_can_speak<br><span class="hljs-comment"># 也可以自动搜索一个目录下的测试文件，并运行测试，跟第三个示例相似</span><br>python manage.py <span class="hljs-built_in">test</span> animals/<br><span class="hljs-comment"># 甚至可以指定一个前缀，然后自动运行对应前缀的测试代码</span><br>python manage.py <span class="hljs-built_in">test</span> --pattern=<span class="hljs-string">&quot;tests_*.py&quot;</span><br><span class="hljs-comment"># 并行运行测试</span><br>python manage.py <span class="hljs-built_in">test</span> --parallel<br><span class="hljs-comment"># 运行测试并保存临时数据库</span><br>python manage.py <span class="hljs-built_in">test</span> --keepdb<br></code></pre></td></tr></table></figure>
-
-<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ul>
-<li>测试时不会使用真实数据库，测试运行完之后会自动删除临时数据库，除非指定一个参数<code>--keepdb</code>，指定了这个参数之后数据库会保存下来（SQLite数据库后端会保存为test_开头的文件），方便查看运行结果</li>
-</ul>
-<h1 id="接口和工具"><a href="#接口和工具" class="headerlink" title="接口和工具"></a>接口和工具</h1><h2 id="请求客户端"><a href="#请求客户端" class="headerlink" title="请求客户端"></a>请求客户端</h2><p>模拟浏览器发起请求，跟用requests模块类似，用来测试RestfulAPI很方便</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> django.test <span class="hljs-keyword">import</span> Client<br>c = Client()<br>response = c.post(<span class="hljs-string">&#x27;/login/&#x27;</span>, &#123;<span class="hljs-string">&#x27;username&#x27;</span>: <span class="hljs-string">&#x27;john&#x27;</span>, <span class="hljs-string">&#x27;password&#x27;</span>: <span class="hljs-string">&#x27;smith&#x27;</span>&#125;)<br>response.status_code  <span class="hljs-comment"># 200</span><br>response = c.get(<span class="hljs-string">&#x27;/customer/details/&#x27;</span>)<br>response.content  <span class="hljs-comment"># b&#x27;&lt;!DOCTYPE html...&#x27;</span><br></code></pre></td></tr></table></figure>
-
-<h3 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h3><ul>
-<li>enforce_csrf_checks：启用csrf检查</li>
-<li>HTTP_USER_AGENT：指定UA</li>
-<li>包括其他的HTTP_HEADERS都可以传递到Client</li>
-</ul>
-<h3 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h3><ul>
-<li><code>.get(path, data=None, follow=False, secure=False, **extra)</code></li>
-<li><code>.post(path, data=None, content_type=MULTIPART_CONTENT, follow=False, secure=False, **extra)</code></li>
-<li><code>.head(path, data=None, follow=False, secure=False, **extra)</code></li>
-<li><code>.options(path, data=&#39;&#39;, content_type=&#39;application/octet-stream&#39;, follow=False, secure=False, **extra)</code></li>
-<li><code>.put(path, data=&#39;&#39;, content_type=&#39;application/octet-stream&#39;, follow=False, secure=False, **extra)</code></li>
-<li><code>.patch(path, data=&#39;&#39;, content_type=&#39;application/octet-stream&#39;, follow=False, secure=False, **extra)</code></li>
-<li><code>.delete(path, data=&#39;&#39;, content_type=&#39;application/octet-stream&#39;, follow=False, secure=False, **extra)</code></li>
-<li><code>.trace(path, follow=False, secure=False, **extra)</code></li>
-<li><code>.login(**credentials)</code></li>
-<li><code>.force_login(user, backend=None)</code></li>
-<li><code>.logout()</code></li>
-</ul>
-<h4 id="get"><a href="#get" class="headerlink" title="get"></a>get</h4><ul>
-<li>data：传递一个字典，会将请求URL拼接成 ?a&#x3D;1&amp;b&#x3D;2 这种类型</li>
-<li>follow：跟踪重定向返回，此时返回值response会带有一个属性redirect_chain，这个属性可以看到所有重定向中经过的URL</li>
-<li>secure：设置成True时会模拟成一个HTTPS请求</li>
-</ul>
-<h4 id="post"><a href="#post" class="headerlink" title="post"></a>post</h4><ul>
-<li>data：请求的数据，可以传递文件对象</li>
-<li>content_type：这个值会设置Content-Type请求头，具体可以设置的值参考Content-Type</li>
-</ul>
-<h4 id="trace"><a href="#trace" class="headerlink" title="trace"></a>trace</h4><p>用于模拟浏览器的diagnostic探针（Chrome浏览器会有这个请求，跟OPTIONS请求一起的）</p>
-<h4 id="login"><a href="#login" class="headerlink" title="login"></a>login</h4><p>用于登录，登录之后client会带有cookies和session，之后可以用于测试所有需要登录的视图，要想提高这个接口的速度可以添加配置项：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python">PASSWORD_HASHERS = [<br>    <span class="hljs-string">&#x27;django.contrib.auth.hashers.MD5PasswordHasher&#x27;</span>,<br>]<br></code></pre></td></tr></table></figure>
-
-<h4 id="force-login"><a href="#force-login" class="headerlink" title="force_login"></a>force_login</h4><p>也是用于登录，而且is_active&#x3D;False的用户也可以登录，甚至不需要提供凭证也能登录。<br>在不做其他任何设置的话，这个接口速度也会比login快（因为密码哈希算法是很耗时的）</p>
-<h3 id="持久化-属性"><a href="#持久化-属性" class="headerlink" title="持久化 属性"></a>持久化 属性</h3><ul>
-<li>Client.cookies</li>
-<li>Client.session</li>
-</ul>
-<h3 id="注意事项-1"><a href="#注意事项-1" class="headerlink" title="注意事项"></a>注意事项</h3><ul>
-<li>不需要运行服务器也可以工作</li>
-<li>请求路径不需要包含全路径，只需要url路由就行</li>
-</ul>
-<h2 id="请求响应Response"><a href="#请求响应Response" class="headerlink" title="请求响应Response"></a>请求响应Response</h2><p>响应对象来源于上一节中的请求方法</p>
-<h3 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h3><ul>
-<li>client：请求的客户端，来源于上一节中的客户端对象</li>
-<li>content：返回的内容，是一个bytes类型</li>
-<li>context：渲染模板时传入的context值，是用于测试模板是否正确渲染的最重要属性。如果用的是其他的模板引擎，就要用context_data来访问</li>
-<li>request：触发响应的请求对象，跟wsgi_request的不同是这个参数是一个字典，只包含一些基本的请求数据，比如端口、请求方法等</li>
-<li>wsgi_request：生成响应的测试处理程序生成的WSGIRequest实例。（跟views.py里面定义的那些视图函数的request参数是一样的）</li>
-<li>status_code：状态码</li>
-<li>templates：响应所使用的模板对象，可以用<code>.name</code>获取模板文件名（路径）</li>
-<li>resolver_match：响应所使用的视图函数，可以用<code>.func</code>获取视图函数，然后可以用<code>self.assertEqual(response.resolver_match.func, my_view)</code>来进行比对</li>
-</ul>
-<h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><ul>
-<li><code>.json(**kwargs)</code>：返回json格式</li>
-</ul>
-<h3 id="注意事项-2"><a href="#注意事项-2" class="headerlink" title="注意事项"></a>注意事项</h3><ul>
-<li>响应对象还可以像字典那样取值</li>
-</ul>
-<h2 id="测试用例类"><a href="#测试用例类" class="headerlink" title="测试用例类"></a>测试用例类</h2><h3 id="SimpleTestCase"><a href="#SimpleTestCase" class="headerlink" title="SimpleTestCase"></a>SimpleTestCase</h3><p>一个非常简单的测试用例类，是unittest.TestCase的一个子类。<br>如果你要做很多的数据库查询操作，就不要用这个类了，改为用 TransactionTestCase 或 TestCase（django的TestCase）</p>
-<h4 id="属性-1"><a href="#属性-1" class="headerlink" title="属性"></a>属性</h4><ul>
-<li>allow_database_queries：是否允许数据库查询操作，默认是False。防止其他SimpleTestCase运行数据库查询的时候不在一个事务里面，可能是防冲突</li>
-</ul>
-<h4 id="注意事项-3"><a href="#注意事项-3" class="headerlink" title="注意事项"></a>注意事项</h4><ul>
-<li>要设置类变量，要用setUpClass和tearDownClass方法</li>
-</ul>
-<h3 id="TransactionTestCase"><a href="#TransactionTestCase" class="headerlink" title="TransactionTestCase"></a>TransactionTestCase</h3><p>继承自SimpleTestCase，多了一些数据库的操作。在每次测试开始时将数据库重置为已知状态，以便于测试和使用ORM。</p>
-<h3 id="TestCase"><a href="#TestCase" class="headerlink" title="TestCase"></a>TestCase</h3><p>最常用的类，继承自TransactionTestCase，如果你的Django项目没有用到数据库，用SimpleTestCase会好很多。<br>里面的测试会封装在两个<code>atomic()</code>块中（一个便捷的在事务里面操作数据库的方法），一个包在TestCase外面，一个包在所有的test方法外。<br>如果要测试某些特定的数据库事务行为，请使用TransactionTestCase。</p>
-<h4 id="方法-1"><a href="#方法-1" class="headerlink" title="方法"></a>方法</h4><ul>
-<li>setUpTestData：这个方法专门用于往数据库插入数据（创建模型数据），用这个方法会比用setUp快</li>
-</ul>
-<h4 id="注意事项-4"><a href="#注意事项-4" class="headerlink" title="注意事项"></a>注意事项</h4><ul>
-<li>如果测试在没有事务支持的数据库上运行（例如，使用MyISAM引擎的MySQL），则在每次测试之前都会调用setUpTestData()，从而抵消了速度优势。</li>
-<li>不要在测试方法中修改setUpTestData()中创建的任何对象。在类中完成设置工作后，再对内存对象的修改将会在其他测试方法之间持续。如果确实需要修改它们，可以在setUp中使用refresh_from_db()重新加载它们。（暂时没用过，不确保解释准确性，只做简单翻译）</li>
-</ul>
-<h3 id="LiveServerTestCase"><a href="#LiveServerTestCase" class="headerlink" title="LiveServerTestCase"></a>LiveServerTestCase</h3><p>这是一个比较特殊的类，他会在setUp的时候把服务器启动，tearDown的时候关闭服务器，从名字上也可以看出来，这个类下面的测试都是跟服务相关联的，用这个类可以使得Django的虚拟客户端（上面说的那个）或者<strong>Selenium客户端</strong>测试起来更加的快捷方便，这个类可以用在功能测试上（官方也是说很适合用在功能测试上）</p>
-<h4 id="属性-2"><a href="#属性-2" class="headerlink" title="属性"></a>属性</h4><ul>
-<li>live_server_url：服务器的监听地址，IP都是localhost，端口会用一个可以使用的端口</li>
-</ul>
-<h4 id="官方示例"><a href="#官方示例" class="headerlink" title="官方示例"></a>官方示例</h4><figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> django.contrib.staticfiles.testing <span class="hljs-keyword">import</span> StaticLiveServerTestCase<br><span class="hljs-keyword">from</span> selenium.webdriver.firefox.webdriver <span class="hljs-keyword">import</span> WebDriver<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">MySeleniumTests</span>(<span class="hljs-title class_ inherited__">StaticLiveServerTestCase</span>):<br>    fixtures = [<span class="hljs-string">&#x27;user-data.json&#x27;</span>]<br><br><span class="hljs-meta">    @classmethod</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">setUpClass</span>(<span class="hljs-params">cls</span>):<br>        <span class="hljs-built_in">super</span>(MySeleniumTests, cls).setUpClass()<br>        cls.selenium = WebDriver()<br>        cls.selenium.implicitly_wait(<span class="hljs-number">10</span>)<br><br><span class="hljs-meta">    @classmethod</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">tearDownClass</span>(<span class="hljs-params">cls</span>):<br>        cls.selenium.quit()<br>        <span class="hljs-built_in">super</span>(MySeleniumTests, cls).tearDownClass()<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">test_login</span>(<span class="hljs-params">self</span>):<br>        self.selenium.get(<span class="hljs-string">&#x27;%s%s&#x27;</span> % (self.live_server_url, <span class="hljs-string">&#x27;/login/&#x27;</span>))<br>        username_input = self.selenium.find_element_by_name(<span class="hljs-string">&quot;username&quot;</span>)<br>        username_input.send_keys(<span class="hljs-string">&#x27;myuser&#x27;</span>)<br>        password_input = self.selenium.find_element_by_name(<span class="hljs-string">&quot;password&quot;</span>)<br>        password_input.send_keys(<span class="hljs-string">&#x27;secret&#x27;</span>)<br>        self.selenium.find_element_by_xpath(<span class="hljs-string">&#x27;//input[@value=&quot;Log in&quot;]&#x27;</span>).click()<br></code></pre></td></tr></table></figure>
-
-<h4 id="注意事项-5"><a href="#注意事项-5" class="headerlink" title="注意事项"></a>注意事项</h4><ul>
-<li>尽量避免在多个测试中同时操作数据库（在并行测试的模式下）</li>
-</ul>
-<h3 id="特殊事项"><a href="#特殊事项" class="headerlink" title="特殊事项"></a>特殊事项</h3><h4 id="client对象自动初始化"><a href="#client对象自动初始化" class="headerlink" title="client对象自动初始化"></a>client对象自动初始化</h4><p>任何的测试用例类都会自带一个<code>self.client</code>属性，所以你不需要每次都自己定义一个client，除非你要在一个测试里面用多个客户端来进行测试。并且每个测试的client对象是互不干扰的，不用担心session和cookie会影响到别的测试。</p>
-<h4 id="自定义client对象"><a href="#自定义client对象" class="headerlink" title="自定义client对象"></a>自定义client对象</h4><p>你可以定义一个继承自Client类的子类，然后在你的TestCase下设置一个类变量<code>client_class</code>赋值为你的自定义Client类</p>
-<h4 id="预加载数据"><a href="#预加载数据" class="headerlink" title="预加载数据"></a>预加载数据</h4><p>可以设置TransactionTestCase类的一个类变量值<code>fixtures</code>，这个值是一个列表类型，里面的元素可以是一个文件名，或者是一个含有fixtures的Django APP。<br>这个功能暂时不做过多解释，知道有什么用就行。</p>
-<h4 id="在不同的跟路由配置下运行"><a href="#在不同的跟路由配置下运行" class="headerlink" title="在不同的跟路由配置下运行"></a>在不同的跟路由配置下运行</h4><p>你的程序（或者说项目）如果要给其他人用，或者允许别人部署的时候可以做很多的自定义配置，那你就不能只单纯地认为你的测试或者说你的项目在你自己配置好的路由下能正常运行就算是验收通过了，你还要去确认在别的路由配置下，仍能正常访问和使用各个功能，所以做其他的路由测试非常重要。一般如果又要在自己的配置下能正常运行，又要在自定义配置下运行，那你的测试只需要测试自定义配置下的情况就可以了。自定义配置的话，能配多奇葩就多奇葩，因为你无法预测用户的行为，你只能去预防最坏的情况。</p>
-<p>要设置其他的路由（或者其他配置项也可以，修改参数就行），就要在你的TestCase或者其下的测试方法用一个装饰器<code>@override_settings(ROOT_URLCONF=...)</code>。</p>
-<h4 id="多数据库"><a href="#多数据库" class="headerlink" title="多数据库"></a>多数据库</h4><p>如果你的项目用到了多个数据库，就要设置一个类变量<code>multi_db = True</code>，他会在每次测试之前清空所有数据库。如果为False，则整个测试流程只会用到<code>settings.py</code>里面的default数据库。</p>
-<h4 id="覆盖配置项"><a href="#覆盖配置项" class="headerlink" title="覆盖配置项"></a>覆盖配置项</h4><p><strong>不要直接修改<code>django.conf.settings</code>里面的配置项</strong>，否则你剩下的测试都会使用新的配置项。</p>
-<p>代码示例：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">with</span> self.settings(LOGIN_URL=<span class="hljs-string">&#x27;/other/login/&#x27;</span>):<br>    response = self.client.get(<span class="hljs-string">&#x27;/sekrit/&#x27;</span>)<br>    self.assertRedirects(response, <span class="hljs-string">&#x27;/other/login/?next=/sekrit/&#x27;</span>)<br></code></pre></td></tr></table></figure>
-
-<p>或者仅添加（后添加、前添加）、修改某个值（对于列表类型的配置项有用），可以使用另一个方法（注意里面的key的含义）：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">with</span> self.modify_settings(MIDDLEWARE=&#123;<br>    <span class="hljs-string">&#x27;append&#x27;</span>: <span class="hljs-string">&#x27;django.middleware.cache.FetchFromCacheMiddleware&#x27;</span>,<br>    <span class="hljs-string">&#x27;prepend&#x27;</span>: <span class="hljs-string">&#x27;django.middleware.cache.UpdateCacheMiddleware&#x27;</span>,<br>    <span class="hljs-string">&#x27;remove&#x27;</span>: [<br>        <span class="hljs-string">&#x27;django.contrib.sessions.middleware.SessionMiddleware&#x27;</span>,<br>        <span class="hljs-string">&#x27;django.contrib.auth.middleware.AuthenticationMiddleware&#x27;</span>,<br>        <span class="hljs-string">&#x27;django.contrib.messages.middleware.MessageMiddleware&#x27;</span>,<br>    ],<br>&#125;):<br>    response = self.client.get(<span class="hljs-string">&#x27;/&#x27;</span>)<br></code></pre></td></tr></table></figure>
-
-<p>还有如前面所说的<code>@override_settings</code>装饰器，前面已做过介绍，这里不再赘述。<br>另外还有一个跟<code>modify_settings</code>一样用法的装饰器<code>@modify_settings</code>，就是对整个test或TestCase都进行修改的方法。</p>
-<p><strong>override_settings要在modify_settings之前。</strong></p>
-<p>重写设置时，请确保正确处理应用程序代码使用缓存或类似功能的情况，即使更改了设置，该功能也会保留状态。Django提供<code>django.test.signals.setting_changed</code>信号，允许您注册回调以在设置更改时清除或重置状态。<br>Django本身使用此信号重置各种数据：</p>
-<table>
-<thead>
-<tr>
-<th>Overridden settings</th>
-<th>Data reset</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>TEMPLATES</td>
-<td>Template engines</td>
-</tr>
-<tr>
-<td>SERIALIZATION_MODULES</td>
-<td>Serializers cache</td>
-</tr>
-<tr>
-<td>LOCALE_PATHS, LANGUAGE_CODE</td>
-<td>Default translation and loaded translations</td>
-</tr>
-<tr>
-<td>MEDIA_ROOT, DEFAULT_FILE_STORAGE</td>
-<td>Default file storage</td>
-</tr>
-</tbody></table>
-<h4 id="邮件"><a href="#邮件" class="headerlink" title="邮件"></a>邮件</h4><p>如果你用的是Django的TestCase类（包括子类），那所有类运行前都会清空测试邮件的outbox</p>
-<h2 id="Assertions断言"><a href="#Assertions断言" class="headerlink" title="Assertions断言"></a>Assertions断言</h2><p>除了Python标准库unittest里面的那些断言之外，Django还提供了很多特有的断言方法。</p>
-<p>SimpleTestCase（及其子类）方法：</p>
-<ul>
-<li><code>.assertRaisesMessage(expected_exception, expected_message, callable, *args, **kwargs)</code></li>
-<li><code>.assertFieldOutput(fieldclass, valid, invalid, field_args=None, field_kwargs=None, empty_value=&#39;&#39;)</code></li>
-<li><code>.assertFormError(response, form, field, errors, msg_prefix=&#39;&#39;)</code></li>
-<li><code>.assertFormsetError(response, formset, form_index, field, errors, msg_prefix=&#39;&#39;)</code></li>
-<li><code>.assertContains(response, text, count=None, status_code=200, msg_prefix=&#39;&#39;, html=False)</code></li>
-<li><code>.assertNotContains(response, text, status_code=200, msg_prefix=&#39;&#39;, html=False)</code></li>
-<li><code>.assertTemplateUsed(response, template_name, msg_prefix=&#39;&#39;, count=None)</code></li>
-<li><code>.assertTemplateNotUsed(response, template_name, msg_prefix=&#39;&#39;)</code></li>
-<li><code>.assertRedirects(response, expected_url, status_code=302, target_status_code=200, msg_prefix=&#39;&#39;, fetch_redirect_response=True)</code></li>
-<li><code>.assertHTMLEqual(html1, html2, msg=None)</code></li>
-<li><code>.assertHTMLNotEqual(html1, html2, msg=None)</code></li>
-<li><code>.assertXMLEqual(xml1, xml2, msg=None)</code></li>
-<li><code>.assertXMLNotEqual(xml1, xml2, msg=None)</code></li>
-<li><code>.assertInHTML(needle, haystack, count=None, msg_prefix=&#39;&#39;)</code></li>
-<li><code>.assertJSONEqual(raw, expected_data, msg=None)</code></li>
-<li><code>.assertJSONNotEqual(raw, expected_data, msg=None)</code></li>
-</ul>
-<p>TransactionTestCase（及其子类）方法：</p>
-<ul>
-<li><code>.assertQuerysetEqual(qs, values, transform=repr, ordered=True, msg=None)</code></li>
-<li><code>.assertNumQueries(num, func, *args, **kwargs)</code></li>
-</ul>
-<h3 id="assertRaisesMessage"><a href="#assertRaisesMessage" class="headerlink" title="assertRaisesMessage"></a>assertRaisesMessage</h3><p>调用callable并且匹配exception类型和exception的message，如果匹配不到就是fail。<br>这个方法是<code>unittest.TestCase.assertRaisesRegex()</code>的简单实现，这个方法的<code>expected_message</code>参数不是一个正则表达式。<br>可以不传callable参数，这时候他就变成一个上下文管理器，示例：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">with</span> self.assertRaisesMessage(ValueError, <span class="hljs-string">&#x27;invalid literal for int()&#x27;</span>):<br>    <span class="hljs-built_in">int</span>(<span class="hljs-string">&#x27;a&#x27;</span>)<br></code></pre></td></tr></table></figure>
-
-<h3 id="assertFieldOutput"><a href="#assertFieldOutput" class="headerlink" title="assertFieldOutput"></a>assertFieldOutput</h3><p>判断表单的输入是否正确。</p>
-<p>参数：</p>
-<ul>
-<li>fieldclass：需要测试的字段类</li>
-<li>valid：期望的字段值，字典类型</li>
-<li>invalid：当数据不正确时的提示信息，字典类型</li>
-<li>field_args：实例化字段类时要传递的参数，根据你要测试的字段类填写</li>
-<li>field_kwargs：跟field_args相同作用，传递关键字参数</li>
-<li>empty_value：当字段为空时期望得到的信息</li>
-</ul>
-<p>示例代码：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python">self.assertFieldOutput(EmailField, &#123;<span class="hljs-string">&#x27;a@a.com&#x27;</span>: <span class="hljs-string">&#x27;a@a.com&#x27;</span>&#125;, &#123;<span class="hljs-string">&#x27;aaa&#x27;</span>: [<span class="hljs-string">&#x27;Enter a valid email address.&#x27;</span>]&#125;)<br><br></code></pre></td></tr></table></figure>
-
-<h3 id="assertFormError"><a href="#assertFormError" class="headerlink" title="assertFormError"></a>assertFormError</h3><p>判断表单的某个字段是不是会报<code>errors</code>（列表）参数种的错误。</p>
-<p>参数：</p>
-<ul>
-<li>form：Form对象</li>
-<li>field：字段的name，就是定义字段时的变量名，如果field有一个值是None的话，就会去检查non-field错误，你可以通过<code>form.non_field_errors()</code>获取那些non-field错误</li>
-<li>errors：错误信息，是一个字符串类型，或者包含你想要测试的所有错误信息的列表</li>
-</ul>
-<h3 id="assertFormsetError"><a href="#assertFormsetError" class="headerlink" title="assertFormsetError"></a>assertFormsetError</h3><p>跟<code>assertFormError</code>差不多，不过是对FormSet对象的一个断言。</p>
-<p>参数：</p>
-<ul>
-<li>form_index：FormSet中的表单索引，如果为None，就会去检查non-form错误，你可以通过<code>formset.non_form_errors()</code>获取那些non-form错误</li>
-<li>field：与assertFormError一样</li>
-<li>errors：与assertFormError一样</li>
-</ul>
-<h3 id="assertContains"><a href="#assertContains" class="headerlink" title="assertContains"></a>assertContains</h3><p>用来判断Response对象的状态码和是否包含<code>text</code>参数的内容。</p>
-<p>参数：</p>
-<ul>
-<li>text：预期包含的内容</li>
-<li>count：如果不为None，则表示预期会包含多少个text的内容</li>
-<li>html：如果为True，代表对比的内容为HTML格式字符串，在大多数情况下，空格被忽略，属性排序不重要</li>
-</ul>
-<h3 id="assertNotContains"><a href="#assertNotContains" class="headerlink" title="assertNotContains"></a>assertNotContains</h3><p>作用跟assertContains相反。除了没有count参数之外，其他的参数含义跟assertContains一样。</p>
-<h3 id="assertTemplateUsed"><a href="#assertTemplateUsed" class="headerlink" title="assertTemplateUsed"></a>assertTemplateUsed</h3><p>判断response所使用的模板是不是预期中的模板。<br>count参数是一个整数，表示应该呈现模板的次数。默认值为None，这意味着模板应渲染一次或多次。</p>
-<p>也可以用上下文管理器的方式调用，如：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">with</span> self.assertTemplateUsed(<span class="hljs-string">&#x27;index.html&#x27;</span>):<br>    render_to_string(<span class="hljs-string">&#x27;index.html&#x27;</span>)<br><span class="hljs-keyword">with</span> self.assertTemplateUsed(template_name=<span class="hljs-string">&#x27;index.html&#x27;</span>):<br>    render_to_string(<span class="hljs-string">&#x27;index.html&#x27;</span>)<br><br></code></pre></td></tr></table></figure>
-
-<h3 id="assertTemplateNotUsed"><a href="#assertTemplateNotUsed" class="headerlink" title="assertTemplateNotUsed"></a>assertTemplateNotUsed</h3><p>与assertTemplateUsed的作用相反。</p>
-<h3 id="assertRedirects"><a href="#assertRedirects" class="headerlink" title="assertRedirects"></a>assertRedirects</h3><p>用于判断response是否如预期一样进行了重定向。<br>如果你的请求使用了<code>follow</code>参数，则<code>expect_url</code>和<code>target_status_code</code>会是最终重定向到的url和状态码。</p>
-<p>参数：</p>
-<ul>
-<li>expected_url：期望跳转到的目标地址</li>
-<li>status_code：期望访问原始url时返回的状态码，默认是302</li>
-<li>target_status_code：期望跳转后的url返回的状态码，默认是200</li>
-<li>fetch_redirect_response：如果为False，则不会加载最终页面。由于测试客户端无法获取外部url，如果expected_url不是Django应用程序的一部分，这个就很有用。</li>
-</ul>
-<h3 id="assertHTMLEqual"><a href="#assertHTMLEqual" class="headerlink" title="assertHTMLEqual"></a>assertHTMLEqual</h3><p>判断两个html文本是否一样，有一些注意事项：</p>
-<ul>
-<li>HTML的节点tag前后的空格和换行会被忽略</li>
-<li>所有类型的空白符都是一样的，比如tab和空格</li>
-<li>所有的标签都是隐式闭合的</li>
-<li>HTML节点的属性排序不重要</li>
-<li>没有值的属性，他的值等于他的名字</li>
-</ul>
-<p>以下的例子是正确的例子，不会触发AssertionError：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python">self.assertHTMLEqual(<br>    <span class="hljs-string">&#x27;&lt;p&gt;Hello &lt;b&gt;world!&lt;/p&gt;&#x27;</span>,<br>    <span class="hljs-string">&#x27;&#x27;&#x27;&lt;p&gt;</span><br><span class="hljs-string">        Hello   &lt;b&gt;world! &lt;b/&gt;</span><br><span class="hljs-string">    &lt;/p&gt;&#x27;&#x27;&#x27;</span><br>)<br>self.assertHTMLEqual(<br>    <span class="hljs-string">&#x27;&lt;input type=&quot;checkbox&quot; checked=&quot;checked&quot; id=&quot;id_accept_terms&quot; /&gt;&#x27;</span>,<br>    <span class="hljs-string">&#x27;&lt;input id=&quot;id_accept_terms&quot; type=&quot;checkbox&quot; checked&gt;&#x27;</span><br>)<br><br></code></pre></td></tr></table></figure>
-
-<p><strong>传递的两个参数都必须是有效的HTML格式字符串，否则会触发AssertionError</strong></p>
-<h3 id="assertHTMLNotEqual"><a href="#assertHTMLNotEqual" class="headerlink" title="assertHTMLNotEqual"></a>assertHTMLNotEqual</h3><p>跟assertHTMLEqual作用相反。</p>
-<h3 id="assertQuerysetEqual"><a href="#assertQuerysetEqual" class="headerlink" title="assertQuerysetEqual"></a>assertQuerysetEqual</h3><p>判断QuerySet是不是返回了特定的列表</p>
-<p>参数：</p>
-<ul>
-<li>transform：用于转换qs和期望值的函数，默认是repr，就变成了字符串对比</li>
-<li>ordered：默认是True， 如果qs的排序没定义，且这个值为False，且比较的是多个值，则会抛出ValueError错误</li>
-</ul>
-<h3 id="assertNumQueries"><a href="#assertNumQueries" class="headerlink" title="assertNumQueries"></a>assertNumQueries</h3><p>声明当用*args和**kwargs调用func时，将执行num个数据库查询。</p>
-<p>如果kwargs中存在一个“using”键，它将用作检查查询数的数据库别名。如果希望使用using参数调用函数，可以通过使用lambda包装调用来添加额外的参数：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python">self.assertNumQueries(<span class="hljs-number">7</span>, <span class="hljs-keyword">lambda</span>: my_function(using=<span class="hljs-number">7</span>))<br><br></code></pre></td></tr></table></figure>
-
-<p>也可以用上下文管理器</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">with</span> self.assertNumQueries(<span class="hljs-number">2</span>):<br>    Person.objects.create(name=<span class="hljs-string">&quot;Aaron&quot;</span>)<br>    Person.objects.create(name=<span class="hljs-string">&quot;Daniel&quot;</span>)<br><br></code></pre></td></tr></table></figure>
-
-<h3 id="注意事项-6"><a href="#注意事项-6" class="headerlink" title="注意事项"></a>注意事项</h3><ul>
-<li>大部分断言方法可以用<code>msg_prefix</code>参数指定断言失败时的提示消息前缀</li>
-</ul>
-<h2 id="给测试方法打标签"><a href="#给测试方法打标签" class="headerlink" title="给测试方法打标签"></a>给测试方法打标签</h2><p>没什么特别需要说明的地方，直接上例子：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> django.test <span class="hljs-keyword">import</span> tag<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">SampleTestCase</span>(<span class="hljs-title class_ inherited__">TestCase</span>):<br><br><span class="hljs-meta">    @tag(<span class="hljs-params"><span class="hljs-string">&#x27;fast&#x27;</span></span>)</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">test_fast</span>(<span class="hljs-params">self</span>):<br>        ...<br><br><span class="hljs-meta">    @tag(<span class="hljs-params"><span class="hljs-string">&#x27;slow&#x27;</span></span>)</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">test_slow</span>(<span class="hljs-params">self</span>):<br>        ...<br><br><span class="hljs-meta">    @tag(<span class="hljs-params"><span class="hljs-string">&#x27;slow&#x27;</span>, <span class="hljs-string">&#x27;core&#x27;</span></span>)</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">test_slow_but_core</span>(<span class="hljs-params">self</span>):<br><br><span class="hljs-meta">@tag(<span class="hljs-params"><span class="hljs-string">&#x27;slow&#x27;</span>, <span class="hljs-string">&#x27;core&#x27;</span></span>)</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">SampleTestCase</span>(<span class="hljs-title class_ inherited__">TestCase</span>):<br>    <span class="hljs-keyword">pass</span><br><br></code></pre></td></tr></table></figure>
-
-<p>然后可以在命令行运行测试的时候传递参数筛选需要测试的那些测试方法：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">只运行fast标签的测试</span><br>python manage.py test --tag=fast<br><span class="hljs-meta prompt_"># </span><span class="language-bash">运行fast和core测试</span><br>python manage.py test --tag=fast --tag=core<br><span class="hljs-meta prompt_"># </span><span class="language-bash">排除slow测试</span><br>python manage.py test --tag=core --exclude-tag=slow<br><br></code></pre></td></tr></table></figure>
-
-<p>exclude-tag比tag的优先级要高，所以如果你的某个测试含有了tag的标签，并且也包含了exclude-tag的标签，那这个测试就不会运行。</p>
-<h2 id="邮件发送测试"><a href="#邮件发送测试" class="headerlink" title="邮件发送测试"></a>邮件发送测试</h2><p>测试的时候肯定不会想要每次运行测试都发一封真实的邮件，所以Django的邮件测试会运行在一个虚拟的outbox。<br>在测试运行期间，每个传出的电子邮件都保存在<code>django.core.mail.outbox</code>中。这是已发送的所有EmailMessage实例的简单列表。<code>outbox</code>是一个特殊的属性，仅在使用locmem邮件后端时才创建。它通常不作为<code>django.core.mail</code>模块的一部分存在，您不能直接导入它。下面的代码显示了如何正确访问此属性：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> django.core <span class="hljs-keyword">import</span> mail<br><span class="hljs-keyword">from</span> django.test <span class="hljs-keyword">import</span> TestCase<br><br><span class="hljs-comment"># 每个TestCase运行前都会清空outbox，也可以像下面的代码一样手动清空</span><br>mail.outbox = []<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">EmailTest</span>(<span class="hljs-title class_ inherited__">TestCase</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">test_send_email</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-comment"># Send message.</span><br>        mail.send_mail(<br>            <span class="hljs-string">&#x27;Subject here&#x27;</span>, <span class="hljs-string">&#x27;Here is the message.&#x27;</span>,<br>            <span class="hljs-string">&#x27;from@example.com&#x27;</span>, [<span class="hljs-string">&#x27;to@example.com&#x27;</span>],<br>            fail_silently=<span class="hljs-literal">False</span>,<br>        )<br><br>        <span class="hljs-comment"># Test that one message has been sent.</span><br>        self.assertEqual(<span class="hljs-built_in">len</span>(mail.outbox), <span class="hljs-number">1</span>)<br><br>        <span class="hljs-comment"># Verify that the subject of the first message is correct.</span><br>        self.assertEqual(mail.outbox[<span class="hljs-number">0</span>].subject, <span class="hljs-string">&#x27;Subject here&#x27;</span>)<br><br></code></pre></td></tr></table></figure>
-
-<h2 id="服务器命令行管理命令"><a href="#服务器命令行管理命令" class="headerlink" title="服务器命令行管理命令"></a>服务器命令行管理命令</h2><p>就是运行<code>python manage.py</code>的那些命令，官方文档也没有过多介绍，直接看代码示例：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> django.core.management <span class="hljs-keyword">import</span> call_command<br><span class="hljs-keyword">from</span> django.test <span class="hljs-keyword">import</span> TestCase<br><span class="hljs-keyword">from</span> django.utils.six <span class="hljs-keyword">import</span> StringIO<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">ClosepollTest</span>(<span class="hljs-title class_ inherited__">TestCase</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">test_command_output</span>(<span class="hljs-params">self</span>):<br>        out = StringIO()<br>        call_command(<span class="hljs-string">&#x27;closepoll&#x27;</span>, stdout=out)<br>        self.assertIn(<span class="hljs-string">&#x27;Expected output&#x27;</span>, out.getvalue())<br><br></code></pre></td></tr></table></figure>
-
-<h2 id="跳过部分测试"><a href="#跳过部分测试" class="headerlink" title="跳过部分测试"></a>跳过部分测试</h2><p>当你提前知道你的某些测试会测试失败的时候你就可以用这个功能。比如你的某个测试需要特定的库才能正常运行，这时你就可以用<code>@skipIf</code>装饰器装饰你的测试，并且测试的时候会报告给你哪个测试被跳过了还有跳过的原因。</p>
-<p>除了<code>unittest</code>内置的一些跳过装饰器（<code>.skipIf</code>，<code>.skipUnless</code>）之外，Django还内置了其他的装饰器，这些装饰器不是用来检测布尔值，而是用来检测数据库功能的，如果测试的数据库不支持你指定的功能，那就会跳过测试。要想查看数据库的所有特性（功能），可以去看一下<code>django.db.backends.BaseDatabaseFeatures</code>这个类</p>
-<p>示例代码：</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">MyTests</span>(<span class="hljs-title class_ inherited__">TestCase</span>):<br><span class="hljs-meta">    @skipIfDBFeature(<span class="hljs-params"><span class="hljs-string">&#x27;supports_transactions&#x27;</span></span>)</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">test_transaction_behavior</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-comment"># ... conditional test code</span><br>        <span class="hljs-keyword">pass</span><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">MyTests</span>(<span class="hljs-title class_ inherited__">TestCase</span>):<br><span class="hljs-meta">    @skipUnlessDBFeature(<span class="hljs-params"><span class="hljs-string">&#x27;supports_transactions&#x27;</span></span>)</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">test_transaction_behavior</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-comment"># ... conditional test code</span><br>        <span class="hljs-keyword">pass</span><br><br></code></pre></td></tr></table></figure>
-
-<h1 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h1><p>这篇文档中可能有一些接口或者方法没有介绍到，常用或者有用的都介绍到了，剩下一些适用面较少、不常见的内容，需要移步到官方文档查看其介绍：<a href="https://docs.djangoproject.com/en/1.11/topics/testing/" title="Django Testing">Django Testing</a></p>
-]]></content>
-      <categories>
-        <category>后端</category>
-      </categories>
-      <tags>
-        <tag>Django</tag>
-        <tag>测试</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>RabbitMQ</title>
-    <url>/%E5%90%8E%E7%AB%AF/rabbitmq/</url>
-    <content><![CDATA[<h4 id="什么是MQ？"><a href="#什么是MQ？" class="headerlink" title="什么是MQ？"></a>什么是MQ？</h4><p>MQ是消息队列(Message Queue)的缩写，是一种应用程序之间的通信方法。它是一个保存消息的容器，本质上是个队列。消息是指在应用之间传送的数据，可以非常简单，比如只包含文本字符串，也可以更复杂，可能包含嵌入对象。</p>
-<p>MQ的主要特点是异步处理，主要目的是减少请求响应时间，实现非核心流程异步化，提高系统响应性能。</p>
-<h4 id="常见的消息队列"><a href="#常见的消息队列" class="headerlink" title="常见的消息队列"></a>常见的消息队列</h4><ul>
-<li>ActiveMQ</li>
-<li>RabbitMQ</li>
-<li>ZeroMQ</li>
-<li>Kafka</li>
-<li>RocketMQ</li>
-</ul>
-<h4 id="什么是rabbitmq？"><a href="#什么是rabbitmq？" class="headerlink" title="什么是rabbitmq？"></a>什么是rabbitmq？</h4><p>RabbitMQ是一款使用Erlang语言开发的，实现AMQP (高级消息队列协议)的开源消息中间件。它是一个由Erlang语言开发的AMQP的开源实现。</p>
-<p>RabbitMQ的主要特点是可靠性、灵活的分发消息策略和支持集群。</p>
-<p>优点：</p>
-<ol>
-<li>高可靠性：RabbitMQ支持多种消息持久化方式，如内存、磁盘等，保证消息不会丢失。同时，它也支持消息的死信队列和消息的优先级设置，可以有效避免消息丢失和重复处理的问题。</li>
-<li>高可用性：RabbitMQ采用集群的方式部署，可以实现负载均衡和故障转移，保证系统的高可用性。</li>
-<li>高性能：RabbitMQ采用Erlang语言编写，具有出色的性能表现。同时，它还支持多种交换机类型和路由策略，可以根据实际需求进行优化。</li>
-<li>易扩展性：RabbitMQ支持插件机制，可以通过插件来扩展其功能。同时，它还支持集群、镜像队列等高级特性，可以满足不同场景下的需求。</li>
-<li>灵活性：RabbitMQ支持多种协议，如AMQP、STOMP等，可以与其他系统集成。同时，它还支持多种编程语言的开发，如Java、Python等，可以满足不同开发人员的需求。</li>
-</ol>
-<p>缺点：</p>
-<ol>
-<li>系统可用性降低：系统引入的外部依赖增多，系统的稳定性就会变差。一旦MQ宕机，就会对业务产生影响。需要考虑如何保证MQ的高可用。</li>
-<li>系统的复杂度提高：引入MQ后系统的复杂度会大大提高。以前服务之间可以进行同步的服务调用，引入MQ后，会变成异步调用，数据链路会变得更复杂。并且还会带来一系列的问题。如如何保证消息不会丢失？不会被重复调用？怎么保证消息的顺序性？</li>
-<li>并发量大时性能下降：如果有大量的消息堆积在队列中，性能会急剧下降。</li>
-</ol>
-]]></content>
-      <categories>
-        <category>后端</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>VIM使用手册</title>
-    <url>/%E8%BF%90%E7%BB%B4/vim%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/</url>
-    <content><![CDATA[<h1 id="查找"><a href="#查找" class="headerlink" title="查找"></a>查找</h1><p>在normal模式下按下<code>/</code>即可进入查找模式，输入要查找的字符串并按下回车。 Vim会跳转到第一个匹配。按下<code>n</code>查找下一个，按下<code>N</code>查找上一个。</p>
-<p>Vim查找支持正则表达式，例如<code>/vim$</code>匹配行尾的<code>&quot;vim&quot;</code>。 需要查找特殊字符需要转义，例如<code>/vim\$</code>匹配<code>&quot;vim$&quot;</code>。</p>
-<h2 id="大小写敏感查找"><a href="#大小写敏感查找" class="headerlink" title="大小写敏感查找"></a>大小写敏感查找</h2><p>在查找模式中加入<code>\c</code>表示大小写不敏感查找，<code>\C</code>表示大小写敏感查找。例如：</p>
-<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line">/foo\<span class="keyword">c</span></span><br></pre></td></tr></table></figure>
-
-<p>将会查找所有的<code>&quot;foo&quot;</code>,<code>&quot;FOO&quot;</code>,<code>&quot;Foo&quot;</code>等字符串。</p>
-<h2 id="大小写敏感配置"><a href="#大小写敏感配置" class="headerlink" title="大小写敏感配置"></a>大小写敏感配置</h2><p>Vim 默认采用大小写敏感的查找，为了方便我们常常将其配置为大小写不敏感：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot; 设置默认进行大小写不敏感查找</span><br><span class="line">set ignorecase</span><br><span class="line">&quot; 如果有一个大写字母，则切换到大小写敏感查找</span><br><span class="line">set smartcase</span><br></pre></td></tr></table></figure>
-
-<p>将上述设置粘贴到你的~&#x2F;.vimrc，重新打开Vim即可生效</p>
-<h2 id="查找当前单词"><a href="#查找当前单词" class="headerlink" title="查找当前单词"></a>查找当前单词</h2><p>在normal模式下按下<code>*</code>即可查找光标所在单词（word）， 要求每次出现的前后为空白字符或标点符号。例如当前为<code>foo</code>， 可以匹配<code>foo bar</code>中的<code>foo</code>，但不可匹配<code>foobar</code>中的<code>foo</code>。 这在查找函数名、变量名时非常有用。</p>
-<p>按下<code>g*</code>即可查找光标所在单词的字符序列，每次出现前后字符无要求。 即<code>foo bar</code>和<code>foobar</code>中的<code>foo</code>均可被匹配到。</p>
-<h1 id="替换"><a href="#替换" class="headerlink" title="替换"></a>替换</h1><p>语法为<code>:&#123;作用范围&#125;s/&#123;目标&#125;/&#123;替换&#125;/&#123;替换标志&#125;</code>，<br>全局替换：<code>:%s/源字符串/目的字符串/g</code>。</p>
-<p>例如<code>:%s/foo/bar/g</code>会在全局范围(<code>%</code>)查找<code>foo</code>并替换为<code>bar</code>，所有出现都会被替换（<code>g</code>）</p>
-<h2 id="基本的替换"><a href="#基本的替换" class="headerlink" title="基本的替换"></a>基本的替换</h2><p><code>:s/vivian/sky/</code> 替换当前行第一个 vivian 为 sky<br><code>:s/vivian/sky/g</code> 替换当前行所有 vivian 为 sky<br><code>:n,$s/vivian/sky/</code> 替换第 n 行开始到最后一行中每一行的第一个 vivian 为 sky<br><code>:n,$s/vivian/sky/g</code> 替换第 n 行开始到最后一行中每一行所有 vivian 为 sky<br>（n 为数字，若 n 为 .，表示从当前行开始到最后一行）<br><code>:%s/vivian/sky/</code>（等同于 :g&#x2F;vivian&#x2F;s&#x2F;&#x2F;sky&#x2F;）替换每一行的第一个 vivian 为 sky<br><code>:%s/vivian/sky/g</code>（等同于 :g&#x2F;vivian&#x2F;s&#x2F;&#x2F;sky&#x2F;g） 替换每一行中所有 vivian 为 sky<br>可以使用 # 作为分隔符，此时中间出现的 &#x2F; 不会作为分隔符<br><code>:s#vivian/#sky/#</code> 替换当前行第一个 vivian&#x2F; 为 sky&#x2F;<br><code>:%s+/oradata/apras/+/user01/apras1+</code> （使用+ 来替换 &#x2F; ）： &#x2F;oradata&#x2F;apras&#x2F;替换成&#x2F;user01&#x2F;apras1&#x2F;</p>
-<h2 id="作用范围"><a href="#作用范围" class="headerlink" title="作用范围"></a>作用范围</h2><p>作用范围分为当前行、全文、选区等等。</p>
-<p>当前行：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:s/foo/bar/g</span><br></pre></td></tr></table></figure>
-
-<p>全文：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:%s/foo/bar/g</span><br></pre></td></tr></table></figure>
-
-<p>选区，在Visual模式下选择区域后输入<code>:</code>，Vim即可自动补全为 <code>:&#39;&lt;,&#39;&gt;</code>。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:&#x27;&lt;,&#x27;&gt;s/foo/bar/g</span><br></pre></td></tr></table></figure>
-
-<p>2-11行：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:5,12s/foo/bar/g</span><br></pre></td></tr></table></figure>
-
-<p>当前行.与接下来两行+2：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:.,+2s/foo/bar/g</span><br></pre></td></tr></table></figure>
-
-<h2 id="替换标志"><a href="#替换标志" class="headerlink" title="替换标志"></a>替换标志</h2><p>上文中命令结尾的<code>g</code>即是替换标志之一，表示全局global替换（即替换目标的所有出现）。 还有很多其他有用的替换标志：</p>
-<p>空替换标志表示只替换从光标位置开始，目标的第一次出现：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:%s/foo/bar</span><br></pre></td></tr></table></figure>
-
-<p><code>i</code>表示大小写不敏感查找，<code>I</code>表示大小写敏感：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:%s/foo/bar/i</span><br><span class="line"># 等效于模式中的\c（不敏感）或\C（敏感）</span><br><span class="line">:%s/foo\c/bar</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p><code>c</code>表示需要确认，例如全局查找<code>&quot;foo&quot;</code>替换为<code>&quot;bar&quot;</code>并且需要确认：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:%s/foo/bar/gc</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>回车后Vim会将光标移动到每一次<code>&quot;foo&quot;</code>出现的位置，并提示<code>replace with bar (y/n/a/q/l/^E/^Y)?</code>。<br>按下<code>y</code>表示替换，<code>n</code>表示不替换，<code>a</code>表示替换所有，<code>q</code>表示退出查找模式， <code>l</code>表示替换当前位置并退出。<code>^E</code>与<code>^Y</code>是光标移动快捷键，参考： <a href="http://harttle.com/2015/11/07/vim-cursor.html" title="Vim中如何快速进行光标移动">Vim中如何快速进行光标移动</a></p>
-<h1 id="设置缩进"><a href="#设置缩进" class="headerlink" title="设置缩进"></a>设置缩进</h1><p><code>set autoindent</code>设置自动缩进<br><code>set shiftwidth=4</code>设置自动缩进空格数<br><code>set tabstop=4</code>设置一个tab等于多少个空格的宽度<br><code>set softtabstop=4</code>设置软制表符，软制表符表示在Insert模式的时候按退格键时退回缩进的长度，当使用expandtab 时特别有用。<br><code>set expandtab</code>将tab变成空格<br><code>:%retab!</code>将文件中现有的tab变成空格</p>
-<h1 id="鼠标功能"><a href="#鼠标功能" class="headerlink" title="鼠标功能"></a>鼠标功能</h1><p><code>set mouse=a</code>启用鼠标功能<br><code>set mouse-=a</code>停用鼠标功能</p>
-<p>鼠标模式：</p>
-<ul>
-<li>n：普通模式</li>
-<li>v：可视模式</li>
-<li>i：插入模式</li>
-<li>c：命令行模式</li>
-<li>h：在帮助文件里，以上所有模式</li>
-<li>a：以上所有模式</li>
-<li>r：跳过|lit-enter|提示</li>
-<li>A：在可视模式下自动选择</li>
-</ul>
-<p>解决鼠标模式右键不能粘贴问题<br>用鼠标和可视模式复制&#x2F;粘贴 (‘mouse’ 选项必须设置，见上):</p>
-<ol>
-<li>在文本的第一个字符上按鼠标左键，移动鼠标到文本的最后一个字母，然后释放左<br>键。这会启动可视模式并高亮选择区域。</li>
-<li>按 “y” 抽出可视文本到无名寄存器里。</li>
-<li>在要插入的位置上按鼠标左键。</li>
-<li>按鼠标中键（滚轮）。</li>
-</ol>
-<h1 id="折叠代码"><a href="#折叠代码" class="headerlink" title="折叠代码"></a>折叠代码</h1><p><img src="/%E8%BF%90%E7%BB%B4/vim%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/%E5%BF%AB%E6%8D%B7%E9%94%AE.png"></p>
-]]></content>
-      <categories>
-        <category>运维</category>
-      </categories>
-      <tags>
-        <tag>VIM</tag>
-        <tag>Linux</tag>
       </tags>
   </entry>
   <entry>
