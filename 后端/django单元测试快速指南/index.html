@@ -2,25 +2,25 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 7.1.1">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
 
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"jimhackking.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
-  </script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-  <meta name="description" content="前言 本文受《Python测试驱动开发》启发，书中内容很详尽，章节也很多，比较偏向于新手向，从如何安装Django1.11到如何使用Git工具都有教，没接触过这些的人都能看懂，有一定基础的人可以略读，值得一看。本文绝大部分内容并不来自该书，更多的是我的个人见解和对官方文档的一些整理。  本文主要介绍Django跟unittest有区别的地方，以及如何去使用Django内置的测试模块进行测试，适合有">
+<script class="next-config" data-name="main" type="application/json">{"hostname":"jimhackking.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":true,"version":"8.19.2","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"changyan","storage":true,"lazyload":false,"nav":{"changyan":{"text":"畅言云评","order":-1},"gitalk":{"text":"GitTalk","order":-2}},"activeClass":"changyan"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言 本文受《Python测试驱动开发》启发，书中内容很详尽，章节也很多，比较偏向于新手向，从如何安装Django1.11到如何使用Git工具都有教，没接触过这些的人都能看懂，有一定基础的人可以略读，值得一看。本文绝大部分内容并不来自该书，更多的是我的个人见解和对官方文档的一些整理。  本文主要介绍Django跟unittest有区别的地方，以及如何去使用Django内置的测试模块进行测试，适合有">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Django单元测试快速指南">
 <meta property="og:url" content="https://jimhackking.github.io/%E5%90%8E%E7%AB%AF/django%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E5%BF%AB%E9%80%9F%E6%8C%87%E5%8D%97/index.html">
@@ -29,28 +29,25 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://jimhackking.github.io/%E5%90%8E%E7%AB%AF/django%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E5%BF%AB%E9%80%9F%E6%8C%87%E5%8D%97/Django%E6%B5%8B%E8%AF%95.png">
 <meta property="article:published_time" content="2024-03-06T16:33:41.000Z">
-<meta property="article:modified_time" content="2024-03-06T16:33:41.788Z">
+<meta property="article:modified_time" content="2024-03-07T15:00:28.692Z">
 <meta property="article:author" content="DHC">
 <meta property="article:tag" content="Django">
 <meta property="article:tag" content="测试">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://jimhackking.github.io/%E5%90%8E%E7%AB%AF/django%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E5%BF%AB%E9%80%9F%E6%8C%87%E5%8D%97/Django%E6%B5%8B%E8%AF%95.png">
 
+
 <link rel="canonical" href="https://jimhackking.github.io/%E5%90%8E%E7%AB%AF/django%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E5%BF%AB%E9%80%9F%E6%8C%87%E5%8D%97/">
 
 
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'zh-CN'
-  };
-</script>
 
-  <title>Django单元测试快速指南 | 智云知识</title>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://jimhackking.github.io/%E5%90%8E%E7%AB%AF/django%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E5%BF%AB%E9%80%9F%E6%8C%87%E5%8D%97/","path":"后端/django单元测试快速指南/","title":"Django单元测试快速指南"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Django单元测试快速指南 | 智云知识</title>
   
+
+
 
 
 
@@ -58,139 +55,249 @@
 
 
   <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
 
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
     </div>
   </div>
 
   <div class="site-meta">
 
     <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">智云知识</h1>
-      <span class="logo-line-after"><i></i></span>
+      <i class="logo-line"></i>
+      <p class="site-title">智云知识</p>
+      <i class="logo-line"></i>
     </a>
       <p class="site-subtitle" itemprop="description">共享知识库</p>
   </div>
 
   <div class="site-nav-right">
-    <div class="toggle popup-trigger">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
 
 
 
-
 <nav class="site-nav">
-  <ul id="menu" class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
-
-  </li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">8</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">9</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">9</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
   </ul>
 </nav>
 
 
 
-
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
 </div>
-    </header>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
 
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
+    </div>
   </div>
 
+</header>
+        
+  
+  <aside class="sidebar">
 
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
 
-          <div class="content post posts-expand">
-            
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E6%B5%8B%E8%AF%95%E7%9A%84%E7%90%86%E5%BF%B5"><span class="nav-number">1.1.</span> <span class="nav-text">自动测试的理念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#TDD"><span class="nav-number">1.1.1.</span> <span class="nav-text">TDD</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%AA%E4%BA%BA%E8%A7%81%E8%A7%A3"><span class="nav-number">1.2.</span> <span class="nav-text">个人见解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Django%E4%B8%AD%E9%9C%80%E8%A6%81%E6%B5%8B%E8%AF%95%E7%9A%84%E9%83%A8%E5%88%86"><span class="nav-number">1.3.</span> <span class="nav-text">Django中需要测试的部分</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8"><span class="nav-number">2.</span> <span class="nav-text">快速入门</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E4%BB%A3%E7%A0%81"><span class="nav-number">2.1.</span> <span class="nav-text">测试代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C"><span class="nav-number">2.2.</span> <span class="nav-text">命令行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">2.3.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8E%A5%E5%8F%A3%E5%92%8C%E5%B7%A5%E5%85%B7"><span class="nav-number">3.</span> <span class="nav-text">接口和工具</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">3.1.</span> <span class="nav-text">请求客户端</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E6%95%B0"><span class="nav-number">3.1.1.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A5%E5%8F%A3"><span class="nav-number">3.1.2.</span> <span class="nav-text">接口</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#get"><span class="nav-number">3.1.2.1.</span> <span class="nav-text">get</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#post"><span class="nav-number">3.1.2.2.</span> <span class="nav-text">post</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#trace"><span class="nav-number">3.1.2.3.</span> <span class="nav-text">trace</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#login"><span class="nav-number">3.1.2.4.</span> <span class="nav-text">login</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#force-login"><span class="nav-number">3.1.2.5.</span> <span class="nav-text">force_login</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%81%E4%B9%85%E5%8C%96-%E5%B1%9E%E6%80%A7"><span class="nav-number">3.1.3.</span> <span class="nav-text">持久化 属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9-1"><span class="nav-number">3.1.4.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E5%93%8D%E5%BA%94Response"><span class="nav-number">3.2.</span> <span class="nav-text">请求响应Response</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%9E%E6%80%A7"><span class="nav-number">3.2.1.</span> <span class="nav-text">属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95"><span class="nav-number">3.2.2.</span> <span class="nav-text">方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9-2"><span class="nav-number">3.2.3.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B%E7%B1%BB"><span class="nav-number">3.3.</span> <span class="nav-text">测试用例类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SimpleTestCase"><span class="nav-number">3.3.1.</span> <span class="nav-text">SimpleTestCase</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B1%9E%E6%80%A7-1"><span class="nav-number">3.3.1.1.</span> <span class="nav-text">属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9-3"><span class="nav-number">3.3.1.2.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TransactionTestCase"><span class="nav-number">3.3.2.</span> <span class="nav-text">TransactionTestCase</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TestCase"><span class="nav-number">3.3.3.</span> <span class="nav-text">TestCase</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%95-1"><span class="nav-number">3.3.3.1.</span> <span class="nav-text">方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9-4"><span class="nav-number">3.3.3.2.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LiveServerTestCase"><span class="nav-number">3.3.4.</span> <span class="nav-text">LiveServerTestCase</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B1%9E%E6%80%A7-2"><span class="nav-number">3.3.4.1.</span> <span class="nav-text">属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%98%E6%96%B9%E7%A4%BA%E4%BE%8B"><span class="nav-number">3.3.4.2.</span> <span class="nav-text">官方示例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9-5"><span class="nav-number">3.3.4.3.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E6%AE%8A%E4%BA%8B%E9%A1%B9"><span class="nav-number">3.3.5.</span> <span class="nav-text">特殊事项</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#client%E5%AF%B9%E8%B1%A1%E8%87%AA%E5%8A%A8%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">3.3.5.1.</span> <span class="nav-text">client对象自动初始化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89client%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.3.5.2.</span> <span class="nav-text">自定义client对象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%84%E5%8A%A0%E8%BD%BD%E6%95%B0%E6%8D%AE"><span class="nav-number">3.3.5.3.</span> <span class="nav-text">预加载数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8%E4%B8%8D%E5%90%8C%E7%9A%84%E8%B7%9F%E8%B7%AF%E7%94%B1%E9%85%8D%E7%BD%AE%E4%B8%8B%E8%BF%90%E8%A1%8C"><span class="nav-number">3.3.5.4.</span> <span class="nav-text">在不同的跟路由配置下运行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%9A%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">3.3.5.5.</span> <span class="nav-text">多数据库</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A6%86%E7%9B%96%E9%85%8D%E7%BD%AE%E9%A1%B9"><span class="nav-number">3.3.5.6.</span> <span class="nav-text">覆盖配置项</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%82%AE%E4%BB%B6"><span class="nav-number">3.3.5.7.</span> <span class="nav-text">邮件</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Assertions%E6%96%AD%E8%A8%80"><span class="nav-number">3.4.</span> <span class="nav-text">Assertions断言</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#assertRaisesMessage"><span class="nav-number">3.4.1.</span> <span class="nav-text">assertRaisesMessage</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#assertFieldOutput"><span class="nav-number">3.4.2.</span> <span class="nav-text">assertFieldOutput</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#assertFormError"><span class="nav-number">3.4.3.</span> <span class="nav-text">assertFormError</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#assertFormsetError"><span class="nav-number">3.4.4.</span> <span class="nav-text">assertFormsetError</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#assertContains"><span class="nav-number">3.4.5.</span> <span class="nav-text">assertContains</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#assertNotContains"><span class="nav-number">3.4.6.</span> <span class="nav-text">assertNotContains</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#assertTemplateUsed"><span class="nav-number">3.4.7.</span> <span class="nav-text">assertTemplateUsed</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#assertTemplateNotUsed"><span class="nav-number">3.4.8.</span> <span class="nav-text">assertTemplateNotUsed</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#assertRedirects"><span class="nav-number">3.4.9.</span> <span class="nav-text">assertRedirects</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#assertHTMLEqual"><span class="nav-number">3.4.10.</span> <span class="nav-text">assertHTMLEqual</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#assertHTMLNotEqual"><span class="nav-number">3.4.11.</span> <span class="nav-text">assertHTMLNotEqual</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#assertQuerysetEqual"><span class="nav-number">3.4.12.</span> <span class="nav-text">assertQuerysetEqual</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#assertNumQueries"><span class="nav-number">3.4.13.</span> <span class="nav-text">assertNumQueries</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9-6"><span class="nav-number">3.4.14.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%99%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95%E6%89%93%E6%A0%87%E7%AD%BE"><span class="nav-number">3.5.</span> <span class="nav-text">给测试方法打标签</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%82%AE%E4%BB%B6%E5%8F%91%E9%80%81%E6%B5%8B%E8%AF%95"><span class="nav-number">3.6.</span> <span class="nav-text">邮件发送测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%91%BD%E4%BB%A4%E8%A1%8C%E7%AE%A1%E7%90%86%E5%91%BD%E4%BB%A4"><span class="nav-number">3.7.</span> <span class="nav-text">服务器命令行管理命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%B3%E8%BF%87%E9%83%A8%E5%88%86%E6%B5%8B%E8%AF%95"><span class="nav-number">3.8.</span> <span class="nav-text">跳过部分测试</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B6%E4%BB%96"><span class="nav-number">4.</span> <span class="nav-text">其他</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">DHC</p>
+  <div class="site-description" itemprop="description">知识以一种粗暴的方式进入了我的脑子</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/JIMhackKING" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;JIMhackKING" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/dhc_king" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;dhc_king" rel="noopener me" target="_blank"><i class="fa-brands fa-git-alt fa-fw"></i>Gitee</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
 
     
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa-solid fa-earth-americas fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://dhc.pythonanywhere.com/" title="https:&#x2F;&#x2F;dhc.pythonanywhere.com&#x2F;" rel="noopener" target="_blank">自建知识库</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://jimhackking.github.io/%E5%90%8E%E7%AB%AF/django%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E5%BF%AB%E9%80%9F%E6%8C%87%E5%8D%97/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
       <meta itemprop="name" content="DHC">
-      <meta itemprop="description" content="知识以一种粗暴的方式进入了我的脑子">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="智云知识">
+      <meta itemprop="description" content="知识以一种粗暴的方式进入了我的脑子">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Django单元测试快速指南 | 智云知识">
+      <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           Django单元测试快速指南
         </h1>
 
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
 
-              <time title="创建时间：2024-03-07 00:33:41" itemprop="dateCreated datePublished" datetime="2024-03-07T00:33:41+08:00">2024-03-07</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%90%8E%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">后端</span></a>
-                </span>
-            </span>
+      <time title="创建时间：2024-03-07 00:33:41 / 修改时间：23:00:28" itemprop="dateCreated datePublished" datetime="2024-03-07T00:33:41+08:00">2024-03-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%90%8E%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">后端</span></a>
+        </span>
+    </span>
 
-          
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Changyan：</span>
+    
+    <a title="Django单元测试快速指南" href="/%E5%90%8E%E7%AB%AF/django%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E5%BF%AB%E9%80%9F%E6%8C%87%E5%8D%97/#SOHUCS" itemprop="discussionUrl">
+      <span id="sourceId::6cbfed3db7da30d5420bfb61cfc0928c" class="cy_cmt_count" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span></span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>NaN:aN</span>
+    </span>
+</div>
 
         </div>
       </header>
@@ -198,10 +305,7 @@
     
     
     
-    <div class="post-body" itemprop="articleBody">
-
-      
-        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><blockquote>
+    <div class="post-body" itemprop="articleBody"><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><blockquote>
 <p>本文受《Python测试驱动开发》启发，书中内容很详尽，章节也很多，比较偏向于新手向，从如何安装Django1.11到如何使用Git工具都有教，没接触过这些的人都能看懂，有一定基础的人可以略读，值得一看。<br>本文绝大部分内容并不来自该书，更多的是我的个人见解和对官方文档的一些整理。</p>
 </blockquote>
 <p>本文主要介绍Django跟unittest有区别的地方，以及如何去使用Django内置的测试模块进行测试，适合有一定Python基础和Django基础的人。</p>
@@ -484,192 +588,222 @@
     
     
 
-      <footer class="post-footer">
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="DHC 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>DHC
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://jimhackking.github.io/%E5%90%8E%E7%AB%AF/django%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E5%BF%AB%E9%80%9F%E6%8C%87%E5%8D%97/" title="Django单元测试快速指南">https://jimhackking.github.io/后端/django单元测试快速指南/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="https://github.com/JIMhackKING">
+            <span class="icon">
+              <i class="fab fa-github"></i>
+            </span>
+
+            <span class="label">GitHub</span>
+          </a>
+      </div>
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="https://gitee.com/dhc_king">
+            <span class="icon">
+              <i class="fa-brands fa-git-alt"></i>
+            </span>
+
+            <span class="label">Gitee</span>
+          </a>
+      </div>
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="https://space.bilibili.com/384955267">
+            <span class="icon">
+              <i class="fa-brands fa-bilibili"></i>
+            </span>
+
+            <span class="label">BiliBili</span>
+          </a>
+      </div>
+  </div>
+</div>
+
           <div class="post-tags">
-              <a href="/tags/Django/" rel="tag"># Django</a>
-              <a href="/tags/%E6%B5%8B%E8%AF%95/" rel="tag"># 测试</a>
+              <a href="/tags/Django/" rel="tag"><i class="fa fa-tag"></i> Django</a>
+              <a href="/tags/%E6%B5%8B%E8%AF%95/" rel="tag"><i class="fa fa-tag"></i> 测试</a>
           </div>
 
         
+  <div class="social-like a2a_kit a2a_kit_size_32 a2a_default_style">
+    <a class="a2a_dd" target="_blank" rel="noopener" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_twitter"></a>
+      <a class="a2a_button_wechat"></a>
+      <a class="a2a_button_qzone"></a>
+  </div>
 
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/%E8%BF%90%E7%BB%B4/mysql/" rel="prev" title="MySQL">
-      <i class="fa fa-chevron-left"></i> MySQL
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/%E5%90%8E%E7%AB%AF/rabbitmq/" rel="next" title="RabbitMQ">
-      RabbitMQ <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
-      </footer>
-    
-  </article>
-  
-  
-  
-
-
-
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/%E5%90%8E%E7%AB%AF/rabbitmq/" rel="prev" title="RabbitMQ">
+                  <i class="fa fa-angle-left"></i> RabbitMQ
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/%E8%BF%90%E7%BB%B4/vim%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/" rel="next" title="VIM使用手册">
+                  VIM使用手册 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
           </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-
-        </div>
-          
-  
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
-
-  <aside class="sidebar">
-    <div class="sidebar-inner">
-
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%8A%A8%E6%B5%8B%E8%AF%95%E7%9A%84%E7%90%86%E5%BF%B5"><span class="nav-number">1.1.</span> <span class="nav-text">自动测试的理念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#TDD"><span class="nav-number">1.1.1.</span> <span class="nav-text">TDD</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%AA%E4%BA%BA%E8%A7%81%E8%A7%A3"><span class="nav-number">1.2.</span> <span class="nav-text">个人见解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Django%E4%B8%AD%E9%9C%80%E8%A6%81%E6%B5%8B%E8%AF%95%E7%9A%84%E9%83%A8%E5%88%86"><span class="nav-number">1.3.</span> <span class="nav-text">Django中需要测试的部分</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8"><span class="nav-number">2.</span> <span class="nav-text">快速入门</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E4%BB%A3%E7%A0%81"><span class="nav-number">2.1.</span> <span class="nav-text">测试代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C"><span class="nav-number">2.2.</span> <span class="nav-text">命令行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">2.3.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8E%A5%E5%8F%A3%E5%92%8C%E5%B7%A5%E5%85%B7"><span class="nav-number">3.</span> <span class="nav-text">接口和工具</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">3.1.</span> <span class="nav-text">请求客户端</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E6%95%B0"><span class="nav-number">3.1.1.</span> <span class="nav-text">参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A5%E5%8F%A3"><span class="nav-number">3.1.2.</span> <span class="nav-text">接口</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#get"><span class="nav-number">3.1.2.1.</span> <span class="nav-text">get</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#post"><span class="nav-number">3.1.2.2.</span> <span class="nav-text">post</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#trace"><span class="nav-number">3.1.2.3.</span> <span class="nav-text">trace</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#login"><span class="nav-number">3.1.2.4.</span> <span class="nav-text">login</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#force-login"><span class="nav-number">3.1.2.5.</span> <span class="nav-text">force_login</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%81%E4%B9%85%E5%8C%96-%E5%B1%9E%E6%80%A7"><span class="nav-number">3.1.3.</span> <span class="nav-text">持久化 属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9-1"><span class="nav-number">3.1.4.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%B7%E6%B1%82%E5%93%8D%E5%BA%94Response"><span class="nav-number">3.2.</span> <span class="nav-text">请求响应Response</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B1%9E%E6%80%A7"><span class="nav-number">3.2.1.</span> <span class="nav-text">属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E6%B3%95"><span class="nav-number">3.2.2.</span> <span class="nav-text">方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9-2"><span class="nav-number">3.2.3.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B%E7%B1%BB"><span class="nav-number">3.3.</span> <span class="nav-text">测试用例类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SimpleTestCase"><span class="nav-number">3.3.1.</span> <span class="nav-text">SimpleTestCase</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B1%9E%E6%80%A7-1"><span class="nav-number">3.3.1.1.</span> <span class="nav-text">属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9-3"><span class="nav-number">3.3.1.2.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TransactionTestCase"><span class="nav-number">3.3.2.</span> <span class="nav-text">TransactionTestCase</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TestCase"><span class="nav-number">3.3.3.</span> <span class="nav-text">TestCase</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B9%E6%B3%95-1"><span class="nav-number">3.3.3.1.</span> <span class="nav-text">方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9-4"><span class="nav-number">3.3.3.2.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LiveServerTestCase"><span class="nav-number">3.3.4.</span> <span class="nav-text">LiveServerTestCase</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B1%9E%E6%80%A7-2"><span class="nav-number">3.3.4.1.</span> <span class="nav-text">属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%98%E6%96%B9%E7%A4%BA%E4%BE%8B"><span class="nav-number">3.3.4.2.</span> <span class="nav-text">官方示例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9-5"><span class="nav-number">3.3.4.3.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E6%AE%8A%E4%BA%8B%E9%A1%B9"><span class="nav-number">3.3.5.</span> <span class="nav-text">特殊事项</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#client%E5%AF%B9%E8%B1%A1%E8%87%AA%E5%8A%A8%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">3.3.5.1.</span> <span class="nav-text">client对象自动初始化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89client%E5%AF%B9%E8%B1%A1"><span class="nav-number">3.3.5.2.</span> <span class="nav-text">自定义client对象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%84%E5%8A%A0%E8%BD%BD%E6%95%B0%E6%8D%AE"><span class="nav-number">3.3.5.3.</span> <span class="nav-text">预加载数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8%E4%B8%8D%E5%90%8C%E7%9A%84%E8%B7%9F%E8%B7%AF%E7%94%B1%E9%85%8D%E7%BD%AE%E4%B8%8B%E8%BF%90%E8%A1%8C"><span class="nav-number">3.3.5.4.</span> <span class="nav-text">在不同的跟路由配置下运行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%9A%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">3.3.5.5.</span> <span class="nav-text">多数据库</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A6%86%E7%9B%96%E9%85%8D%E7%BD%AE%E9%A1%B9"><span class="nav-number">3.3.5.6.</span> <span class="nav-text">覆盖配置项</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%82%AE%E4%BB%B6"><span class="nav-number">3.3.5.7.</span> <span class="nav-text">邮件</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Assertions%E6%96%AD%E8%A8%80"><span class="nav-number">3.4.</span> <span class="nav-text">Assertions断言</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#assertRaisesMessage"><span class="nav-number">3.4.1.</span> <span class="nav-text">assertRaisesMessage</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#assertFieldOutput"><span class="nav-number">3.4.2.</span> <span class="nav-text">assertFieldOutput</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#assertFormError"><span class="nav-number">3.4.3.</span> <span class="nav-text">assertFormError</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#assertFormsetError"><span class="nav-number">3.4.4.</span> <span class="nav-text">assertFormsetError</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#assertContains"><span class="nav-number">3.4.5.</span> <span class="nav-text">assertContains</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#assertNotContains"><span class="nav-number">3.4.6.</span> <span class="nav-text">assertNotContains</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#assertTemplateUsed"><span class="nav-number">3.4.7.</span> <span class="nav-text">assertTemplateUsed</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#assertTemplateNotUsed"><span class="nav-number">3.4.8.</span> <span class="nav-text">assertTemplateNotUsed</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#assertRedirects"><span class="nav-number">3.4.9.</span> <span class="nav-text">assertRedirects</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#assertHTMLEqual"><span class="nav-number">3.4.10.</span> <span class="nav-text">assertHTMLEqual</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#assertHTMLNotEqual"><span class="nav-number">3.4.11.</span> <span class="nav-text">assertHTMLNotEqual</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#assertQuerysetEqual"><span class="nav-number">3.4.12.</span> <span class="nav-text">assertQuerysetEqual</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#assertNumQueries"><span class="nav-number">3.4.13.</span> <span class="nav-text">assertNumQueries</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9-6"><span class="nav-number">3.4.14.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%99%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95%E6%89%93%E6%A0%87%E7%AD%BE"><span class="nav-number">3.5.</span> <span class="nav-text">给测试方法打标签</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%82%AE%E4%BB%B6%E5%8F%91%E9%80%81%E6%B5%8B%E8%AF%95"><span class="nav-number">3.6.</span> <span class="nav-text">邮件发送测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%91%BD%E4%BB%A4%E8%A1%8C%E7%AE%A1%E7%90%86%E5%91%BD%E4%BB%A4"><span class="nav-number">3.7.</span> <span class="nav-text">服务器命令行管理命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%B3%E8%BF%87%E9%83%A8%E5%88%86%E6%B5%8B%E8%AF%95"><span class="nav-number">3.8.</span> <span class="nav-text">跳过部分测试</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B6%E4%BB%96"><span class="nav-number">4.</span> <span class="nav-text">其他</span></a></li></ol></div>
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <p class="site-author-name" itemprop="name">DHC</p>
-  <div class="site-description" itemprop="description">知识以一种粗暴的方式进入了我的脑子</div>
-</div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives/">
-        
-          <span class="site-state-item-count">9</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-        <span class="site-state-item-count">8</span>
-        <span class="site-state-item-name">分类</span>
-      </div>
-      <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">9</span>
-        <span class="site-state-item-name">标签</span>
-      </div>
-  </nav>
-</div>
-
-
-
-      </div>
-
-    </div>
-  </aside>
-  <div id="sidebar-dimmer"></div>
-
-
-      </div>
-    </main>
-
-    <footer class="footer">
-      <div class="footer-inner">
-        
-
-        
-
-<div class="copyright">
-  
-  &copy; 
-  <span itemprop="copyrightYear">2024</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">DHC</span>
-</div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
-  </div>
-
-        
-
-
-
-
-
-
-
-
-      </div>
     </footer>
+  </article>
+</div>
+
+
+
+
+
+
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-gitalk">GitTalk</a></li>
+            <li class="tab"><a href="#comment-changyan">畅言云评</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments gitalk-container"></div>
+            </div>
+            <div class="tab-pane changyan" id="comment-changyan">
+              <div class="comments" id="SOHUCS" sid="6cbfed3db7da30d5420bfb61cfc0928c"></div>
+            </div>
+        </div>
+      </div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2018 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">DHC</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">NaNm</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">NaN:aN</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
   </div>
 
-  
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
-
-<script src="/js/utils.js"></script>
-
-<script src="/js/motion.js"></script>
-
-
-<script src="/js/schemes/muse.js"></script>
-
-
-<script src="/js/next-boot.js"></script>
-
-
-
+    </div>
+  </footer>
 
   
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
 
-
-
-
-
-
-
-
-
-
-
-
-
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
 
 
   
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+  <script src="/js/third-party/addtoany.js"></script>
 
   
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<script class="next-config" data-name="changyan" type="application/json">{"enable":true,"appid":"cyxbA0JJC","appkey":"prod_92bb5d5522847ce24a9096867876c0b8","count":true}</script>
+<script src="/js/third-party/comments/changyan.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"JIMhackKING","repo":"JIMhackKING.github.io","client_id":"7ebc2cfea41386b00310","client_secret":"b56956858260f816994b4bf786041e059249e217","admin_user":"JIMhackKING","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"6cbfed3db7da30d5420bfb61cfc0928c"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
 
 </body>
 </html>

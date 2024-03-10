@@ -1,0 +1,2630 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>ATmega16 ADC简单实验</title>
+    <url>/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/</url>
+    <content><![CDATA[<p>这篇博客的主要内容是讲解常用的 AVR 单片机的 ADC 功能，知识比较基础，代码也很简单，适合新手快速掌握单片机 ADC 的操作，本篇使用的单片机是 ATmega16。</p>
+<span id="more"></span>
+
+<p>最近由于课程需要，学习了一段时间的 AVR 单片机，对于一些简单的端口操作、控制 LED 灯之类的就不另做篇幅去讲解了，因为就跟 Hello, world 一样简单，对于我来说，单片机控制得最多的是各种各样的传感器，而传感器是模拟器件，传到单片机的数据时模拟信号，但是单片机等芯片是数字芯片呀，数字芯片只能处理数字信号，也就是高电平和低电平，所以就需要一个模块来将这两种信号进行转换，就是今天要讲到的 AD 转换，中文是模数转换，作用就是讲模拟信号转化成数字信号，在大部分文档中也会称为 ADC (Analog&#x2F;Digital Convert)，今天就以一个实例来展示 AVR 的 ADC。</p>
+<p>新手入门单片机大都是学习的 51 单片机，用的最多的芯片是 STC89C52 （或 C51），但是 51 单片机片上资源很少，只有少数够用的功能，其他的一些高级模块都没有，而 AVR 虽然跟 51 单片机都是 8 位的微控制器，但是 AVR 单片机的片上资源多很多，诸如 ADC, I2C 等等，有了这些外设，使用起来就简单很多了，不用自己重新编写复杂的程序，也不用花钱给电路增加额外的硬件。</p>
+<p>先来看看本次实验的电路图：</p>
+<img src="/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/circute.png" class="" title="电路图">
+
+<p>其中图片左上角部分连接着 RESET, XTAL1, XTAL2 引脚的那一部分电路是组成单片机最小系统的电路，也是使单片机正常工作的必要条件。我们在 PA0 脚上连接一个电位器，给单片机提供模拟信号的就是这个电位器了，电位器通过改变阻值来改变输入到单片机的电压。右下角有两个引脚 AREF 和 AVCC，其中 AREF 是单片机基准电压外部输入引脚，AVCC 是模拟电源，要使用 ADC 功能这两个引脚就必不可少了。还有最后一部分是连接到 PD 口的 8 个 LED 灯，用来显示单片机 AD 转换后的结果，虽然用 LED 来表示结果不直观，但是是操作最简单的方法了。</p>
+<p>代码比电路更简单，直接贴上代码：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;avr/io.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;avr/interrupt.h&gt;</span></span><br><br><span class="hljs-comment">/*ADC Conversion Complete Interrupt Service Routine (ISR)*/</span><br>ISR(ADC_vect)<br>&#123;<br><br>	PORTD = ADCH;			<span class="hljs-comment">// Output ADCH to PortD</span><br>	ADCSRA |= <span class="hljs-number">1</span>&lt;&lt;ADSC;		<span class="hljs-comment">// Start Conversion</span><br>&#125;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>	DDRD = <span class="hljs-number">0xFF</span>;			<span class="hljs-comment">// Configure PortD as output</span><br>	DDRA = <span class="hljs-number">0x00</span>;			<span class="hljs-comment">// Configure PortA as input</span><br>					<span class="hljs-comment">// PA0 is ADC0 input</span><br><br>	ADCSRA = <span class="hljs-number">0x8F</span>;			<span class="hljs-comment">// Enable the ADC and its interrupt feature</span><br>					<span class="hljs-comment">// and set the ACD clock pre-scalar to clk/128</span><br>	ADMUX = <span class="hljs-number">0xE0</span>;			<span class="hljs-comment">// Select internal 2.56V as Vref, left justify </span><br>					<span class="hljs-comment">// data registers and select ADC0 as input channel </span><br>	 <br>	sei();				<span class="hljs-comment">// Enable Global Interrupts</span><br>	ADCSRA |= <span class="hljs-number">1</span>&lt;&lt;ADSC;		<span class="hljs-comment">// Start Conversion</span><br>	 <br>	<span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>);			<span class="hljs-comment">// Wait forever</span><br>&#125; <br></code></pre></td></tr></table></figure>
+
+<p>每一句的作用在代码中的注释都已经很清晰了，要特别讲解的是 ADCSRA 寄存器，事实上关于这个寄存器的操作以及每一位的作用都不需要特别讲解，因为在官方文档都已经说得很清楚了，我就只贴出文档的截图吧</p>
+<img src="/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/ADCSRA-1.png" class="" title="ADCSRA寄存器介绍">
+<img src="/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/ADCSRA-2.png" class="" title="ADCSRA寄存器介绍">
+
+<br/>
+以上的代码在 ATmel Studio 7.0 中已经验证通过，在 AT Studio 中编译生成 hex 文件之后，电路按照第一张图片的接法，然后将程序写入单片机中运行就能看到接 LED 灯的结果了，AD 转换的结果是 8 位的，每次转换的结果都会存在 ADCH 寄存器中，所以代码中就直接将 ADCH 的值写入 PD 口中，当你改变电位器阻值的时候你就会看到 LED 灯也在变化。
+
+<p>YouTube 上的演示视频：</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/ORkgPxC4p5U?rel=0&amp;showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+]]></content>
+      <categories>
+        <category>硬件</category>
+      </categories>
+      <tags>
+        <tag>AVR</tag>
+        <tag>单片机</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Arduino + Proteus 仿真（一）</title>
+    <url>/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%B8%80%EF%BC%89/</url>
+    <content><![CDATA[<p>玩过单片机的人应该都会知道，有一个系列的单片机叫 Arduino，总所周知的 Arduino 是对对单片机不熟悉，但是对单片机感兴趣的软件开发程序员非常友好的，他有一个专门的软件 Arduino IDE，用于开发 Arduino 系列的产品，他的特点是有许许多多的库和函数，编写程序控制单片机的时候不需要了解太多关于寄存器的知识，直接调用相应的函数就可以控制单片机，这就是为什么说对软件开发的程序员非常友好，他的库可以让你在开发硬件的时候像开发软件一样方便快捷。</p>
+<span id="more"></span>
+<blockquote>
+<p><font size="1px">可以直接跳到正话部分看。</font></p>
+</blockquote>
+<p>不过这篇文章不只是要讲 Arduino 的开发，更重要的是用 Arduino 和 Proteus 结合来进行电路仿真，Proteus 是一款电路仿真软件，这款软件可以调用很多的单片机还有很多常用芯片，并且可以运行仿真观察电路的状态，对于数字电路他可以直观地显示出电路中某个引脚的电平，这对于数字电路开发是非常有帮助的。</p>
+<p>那么又为什么要进行仿真呢，如果没有仿真，那么你每次运行和调试程序的时候都需要把程序烧写进单片机内才能看到你程序的运行结果，并且还要根据你画的电路图来搭建外围电路，这很明显就是不现实的，不可能每次突发奇想要设计一个电路就自己动手焊接一个电路嘛，而且这样的话电路还需要单片机，那单片机就很难进行二次开发；第二点就是多次对单片机进行烧写程序会缩短单片机的寿命，这里说的寿命主要是单片机内部程序存储器（flash），每一个（程序）存储器都有他的擦写寿命，擦写的次数越多寿命自然就会减短；第三点就是你有很多电路中要用到的芯片你手头上没有，于是电路无法调试，但是 Proteus 可以找到你想要用的芯片，并且功能和使用方法都是跟实际的芯片一样的。</p>
+<p>** 好了，这里才是正话！ ** Arduino 通常情况下都是直接在 IDE 上传程序，之后 IDE 会自动完成程序的烧写，但是要使用 Proteus 的仿真必须要有编译器编译出来的 hex、bin、elf 文件，这三种文件都是烧写单片机的程序文件，而 Arduino 每次编译上传的时候都会创建一个临时文件夹存放 hex 文件，你是找不到他编译出来的 hex 文件的，我们需要进行设置，让 Arduino 编译的时候把 hex 文件存放在某个地方。</p>
+<p>Arduino 的设置方法：</p>
+<p>首先打开左上角 文件 -&gt; 首选项</p>
+<img src="/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%B8%80%EF%BC%89/setting1.png" class="">
+
+<br>
+然后点击下方的首选项编辑文件（如图所示的地方，蓝色字体的文件路径）
+
+<img src="/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%B8%80%EF%BC%89/setting2.png" class="">
+
+<br>
+打开文件之后在文件最下方添加一条语句：``` build.path=XXX ``` 其中 XXX 是你要保存编译后的文件的路径，改成自己的路径就好，注意：编辑改文件要先关闭 Arduino IDE 
+
+<p>然后此时你就可以编写你的程序并编译（验证），然后在你刚设置的路径下找到一个 hex 文件，之后就可以使用 Proteus 仿真了，<a href="/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89/" title="Arduino + Proteus 仿真（二）">下一篇</a>文章会进行一次实践，编写一个程序并仿真。</p>
+]]></content>
+      <categories>
+        <category>硬件</category>
+      </categories>
+      <tags>
+        <tag>AVR</tag>
+        <tag>Arduino</tag>
+        <tag>单片机</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Arduino + Proteus 仿真（二）</title>
+    <url>/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89/</url>
+    <content><![CDATA[<p>经过上一篇文章的设置之后（如果还没进行设置的，请看<a href="/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%B8%80%EF%BC%89/" title="Arduino + Proteus 仿真（一）">上一篇</a>文章进行设置）这一篇文章就进行实际的操作，使用两款软件来进行仿真。</p>
+<span id="more"></span>
+
+<p>本次的实验是使用 Arduino UNO 开发板上的 ATmega328p 芯片，以及一个 IO 口拓展芯片来驱动 LCD1602 显示。</p>
+<p>首先介绍使用到的这些器件：</p>
+<ul>
+<li>ATmega328p：这个就是单片机，作为电路中的主控芯片</li>
+<li>PCF8574：一个 IO 口拓展芯片，使用 IIC 控制，有八个通用端口和一个中断口，使用这个芯片可以将原本八个端口控制缩小到两个端口控制（不算 VCC 和 GND），具体使用方法可以查看<a href="/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89/PCF8574.pdf" title="官方文档">官方文档</a></li>
+<li>LCD1602：这是一个液晶屏，买的时候都会带有控制芯片，除非你是只买显示屏的，要控制这个液晶屏显示要对控制芯片发送指令，这个芯片分辨率是 16x2，每一位可以显示一个 ASCII 码</li>
+</ul>
+<p>之后直接编写单片机的控制代码，代码的作用看注释：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><code class="hljs C"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;LiquidCrystal_I2C.h&gt;</span></span><br><br>LiquidCrystal_I2C <span class="hljs-title function_">lcd</span><span class="hljs-params">(<span class="hljs-number">0x3F</span>, <span class="hljs-number">16</span>, <span class="hljs-number">2</span>)</span>;  <span class="hljs-comment">// 参数：IIC地址，显示屏宽、高</span><br><br><span class="hljs-type">void</span> <span class="hljs-title function_">setup</span><span class="hljs-params">()</span><br>&#123;<br>  lcd.init();  <span class="hljs-comment">// 初始化 LCD</span><br>  lcd.backlight();  <span class="hljs-comment">// 打开 LCD 背光</span><br>  lcd.home();  <span class="hljs-comment">// 将 LCD 光标移动到首位</span><br>  lcd.print(<span class="hljs-string">&quot;LCD1602 IIC TEST&quot;</span>);  <span class="hljs-comment">// 显示字符</span><br>&#125;<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">loop</span><span class="hljs-params">()</span><br>&#123;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>然后贴出 Proteus 的仿真电路图</p>
+<img src="/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89/circute.png" class="" title="电路图">
+<br>
+
+<p>画好电路图之后要给单片机写入程序，在 Proteus 电路图中双击 ATmega328p 芯片，会看到有很多的设置项，其中要设置 Program File ，填入你的程序编译后的 hex 文件路径；然后设置 CKSEL Fuses，点击右边的下拉列表，选中 (1111)Ext. Crystal 8.0-MHz 选项，最后在 Advanced Properties 设置项里面的输入框填入 16MHz，然后就可以运行仿真查看结果了。</p>
+<p>仿真效果</p>
+<img src="/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89/result.png" class="" title="仿真结果">
+<p>图中每个引脚旁边的有色小方块代表了该引脚的电平状态，红色是高电平，蓝色是低电平，灰色是高阻态。</p>
+]]></content>
+      <categories>
+        <category>硬件</category>
+      </categories>
+      <tags>
+        <tag>AVR</tag>
+        <tag>Arduino</tag>
+        <tag>单片机</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>天刀基本玩法</title>
+    <url>/%E6%B8%B8%E6%88%8F/%E5%A4%A9%E5%88%80%E5%9F%BA%E6%9C%AC%E7%8E%A9%E6%B3%95/</url>
+    <content><![CDATA[<p>天涯明月刀是我最近开始玩也比较喜欢玩的游戏，我也打算长玩，网上的人都将这个游戏简称为天刀，作为新手，每天上线不知道要做什么，作为一款比较大型的游戏，要想留住玩家，肯定需要有每日的玩法和任务给大家去做，我在网上也看到有人专门录了视频来讲解天刀每日的玩法都有些什么，于是我特意写这篇博客来归纳各种的天刀玩法。</p>
+<span id="more"></span>
+
+<p>（由于视频不能使用外链，所以只能贴上视频链接了）</p>
+<p>每日玩法：</p>
+<p><a href="http://video.duowan.com/play/8856893.html">http://video.duowan.com/play/8856893.html</a></p>
+<!-- <embed id="8856893" name="8856893" src="http://assets.dwstatic.com/video/vppp.swf" wmode="transparent" allowFullScreen="true" quality="high"  height="498"  width="610" align="middle" allowScriptAccess="always" flashvars="auto_play=1&vid=8856893&channelId=wuxia&logo=dw" type="application/x-shockwave-flash">	</embed>  -->
+
+<br/>
+杀手和捕快身份玩法详解：
+
+<p><a href="http://video.duowan.com/play/8837225.html">http://video.duowan.com/play/8837225.html</a></p>
+<!-- <embed id="8837225" name="8837225" src="http://assets.dwstatic.com/video/vppp.swf" wmode="transparent" allowFullScreen="true" quality="high"  height="498"  width="610" align="middle" allowScriptAccess="always" flashvars="auto_play=1&vid=8837225&channelId=wuxia&logo=dw" type="application/x-shockwave-flash">	</embed>  -->
+<br/>
+游侠和猎户身份玩法详解：
+
+<p><a href="http://video.duowan.com/play/8842355.html">http://video.duowan.com/play/8842355.html</a></p>
+<!-- <embed id="8842355" name="8842355" src="http://assets.dwstatic.com/video/vppp.swf" wmode="transparent" allowFullScreen="true" quality="high"  height="498"  width="610" align="middle" allowScriptAccess="always" flashvars="auto_play=1&vid=8842355&channelId=wuxia&logo=dw" type="application/x-shockwave-flash">	</embed>  -->
+<br/>
+镖师、文士、乐伶身份玩法详解：
+
+<p><a href="http://video.duowan.com/play/8850543.html">http://video.duowan.com/play/8850543.html</a></p>
+<!-- <embed id="8850543" name="8850543" src="http://assets.dwstatic.com/video/vppp.swf" wmode="transparent" allowFullScreen="true" quality="high"  height="498"  width="610" align="middle" allowScriptAccess="always" flashvars="auto_play=1&vid=8850543&channelId=wuxia&logo=dw" type="application/x-shockwave-flash">	</embed>  -->
+<br/>
+雅集、拉镖、劫镖玩法详解：
+
+<p><a href="http://video.duowan.com/play/8858989.html">http://video.duowan.com/play/8858989.html</a></p>
+<!-- <embed id="8858989" name="8858989" src="http://assets.dwstatic.com/video/vppp.swf" wmode="transparent" allowFullScreen="true" quality="high"  height="498"  width="610" align="middle" allowScriptAccess="always" flashvars="auto_play=1&vid=8858989&channelId=wuxia&logo=dw" type="application/x-shockwave-flash">	</embed>  -->
+<br/>
+莲花、宝藏、快活王、钓鱼玩法详解：
+
+<p><a href="http://video.duowan.com/play/8862367.html">http://video.duowan.com/play/8862367.html</a></p>
+<!-- <embed id="8862367" name="8862367" src="http://assets.dwstatic.com/video/vppp.swf" wmode="transparent" allowFullScreen="true" quality="high"  height="498"  width="610" align="middle" allowScriptAccess="always" flashvars="auto_play=1&vid=8862367&channelId=wuxia&logo=dw" type="application/x-shockwave-flash">	</embed>  -->
+<br/>
+缉拿、江洋大盗玩法详解：
+
+<p><a href="http://video.duowan.com/play/8864355.html">http://video.duowan.com/play/8864355.html</a></p>
+<!-- <embed id="8864355" name="8864355" src="http://assets.dwstatic.com/video/vppp.swf" wmode="transparent" allowFullScreen="true" quality="high"  height="498"  width="610" align="middle" allowScriptAccess="always" flashvars="auto_play=1&vid=8864355&channelId=wuxia&logo=dw" type="application/x-shockwave-flash">	</embed>  -->
+<br/>
+]]></content>
+      <categories>
+        <category>游戏</category>
+      </categories>
+      <tags>
+        <tag>天涯明月刀</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>MySQL</title>
+    <url>/%E8%BF%90%E7%BB%B4/mysql/</url>
+    <content><![CDATA[<blockquote><p>本篇摘录自黑马程序员的B站教学视频，由本人学习视频内容后总结并提取摘要制作而成的简要笔记。<br>本笔记只记录到进阶篇（大部分），剩下的进阶篇以及运维篇由于本人职业生涯没有用武之地，所以没有进行学习。</p>
+<footer><strong>黑马程序员</strong><cite><a href="https://www.bilibili.com/video/BV1Kr4y1i7ru/?share_source=copy_web&vd_source=e43c1de8e41e1499f7f3fdb03fba0eb6">黑马程序员 MySQL数据库入门到精通，从mysql安装到mysql高级、mysql优化全囊括</a></cite></footer></blockquote>
+
+<span id="more"></span>
+
+<h1 id="基础篇"><a href="#基础篇" class="headerlink" title="基础篇"></a>基础篇</h1><h2 id="通用语法及分类"><a href="#通用语法及分类" class="headerlink" title="通用语法及分类"></a>通用语法及分类</h2><ul>
+<li>DDL: 数据定义语言，用来定义数据库对象（数据库、表、字段）</li>
+<li>DML: 数据操作语言，用来对数据库表中的数据进行增删改</li>
+<li>DQL: 数据查询语言，用来查询数据库中表的记录</li>
+<li>DCL: 数据控制语言，用来创建数据库用户、控制数据库的控制权限</li>
+</ul>
+<h3 id="DDL（数据定义语言）"><a href="#DDL（数据定义语言）" class="headerlink" title="DDL（数据定义语言）"></a>DDL（数据定义语言）</h3><p>数据定义语言</p>
+<h4 id="数据库操作"><a href="#数据库操作" class="headerlink" title="数据库操作"></a>数据库操作</h4><p>查询所有数据库：<br><code>SHOW DATABASES;</code><br>查询当前数据库：<br><code>SELECT DATABASE();</code><br>创建数据库：<br><code>CREATE DATABASE [ IF NOT EXISTS ] 数据库名 [ DEFAULT CHARSET 字符集] [COLLATE 排序规则 ];</code><br>删除数据库：<br><code>DROP DATABASE [ IF EXISTS ] 数据库名;</code><br>使用数据库：<br><code>USE 数据库名;</code></p>
+<h5 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h5><ul>
+<li>UTF8字符集长度为3字节，有些符号占4字节，所以推荐用utf8mb4字符集</li>
+</ul>
+<h4 id="表操作"><a href="#表操作" class="headerlink" title="表操作"></a>表操作</h4><p>查询当前数据库所有表：<br><code>SHOW TABLES;</code><br>查询表结构：<br><code>DESC 表名;</code><br>查询指定表的建表语句：<br><code>SHOW CREATE TABLE 表名;</code></p>
+<p>创建表：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">CREATE TABLE 表名(</span><br><span class="line">	字段1 字段1类型 [COMMENT 字段1注释],</span><br><span class="line">	字段2 字段2类型 [COMMENT 字段2注释],</span><br><span class="line">	字段3 字段3类型 [COMMENT 字段3注释],</span><br><span class="line">	...</span><br><span class="line">	字段n 字段n类型 [COMMENT 字段n注释]</span><br><span class="line">)[ COMMENT 表注释 ];</span><br></pre></td></tr></table></figure>
+
+<p><strong>最后一个字段后面没有逗号</strong></p>
+<p>添加字段：<br><code>ALTER TABLE 表名 ADD 字段名 类型(长度) [COMMENT 注释] [约束];</code><br>例：<code>ALTER TABLE emp ADD nickname varchar(20) COMMENT &#39;昵称&#39;;</code></p>
+<p>修改数据类型：<br><code>ALTER TABLE 表名 MODIFY 字段名 新数据类型(长度);</code><br>修改字段名和字段类型：<br><code>ALTER TABLE 表名 CHANGE 旧字段名 新字段名 类型(长度) [COMMENT 注释] [约束];</code><br>例：将emp表的nickname字段修改为username，类型为varchar(30)<br><code>ALTER TABLE emp CHANGE nickname username varchar(30) COMMENT &#39;昵称&#39;;</code></p>
+<p>删除字段：<br><code>ALTER TABLE 表名 DROP 字段名;</code></p>
+<p>修改表名：<br><code>ALTER TABLE 表名 RENAME TO 新表名</code></p>
+<p>删除表：<br><code>DROP TABLE [IF EXISTS] 表名;</code><br>删除表，并重新创建该表：<br><code>TRUNCATE TABLE 表名;</code></p>
+<h3 id="DML（数据操作语言）"><a href="#DML（数据操作语言）" class="headerlink" title="DML（数据操作语言）"></a>DML（数据操作语言）</h3><h4 id="添加数据"><a href="#添加数据" class="headerlink" title="添加数据"></a>添加数据</h4><p>指定字段：<br><code>INSERT INTO 表名 (字段名1, 字段名2, ...) VALUES (值1, 值2, ...);</code><br>全部字段：<br><code>INSERT INTO 表名 VALUES (值1, 值2, ...);</code></p>
+<p>批量添加数据：<br><code>INSERT INTO 表名 (字段名1, 字段名2, ...) VALUES (值1, 值2, ...), (值1, 值2, ...), (值1, 值2, ...);</code><br><code>INSERT INTO 表名 VALUES (值1, 值2, ...), (值1, 值2, ...), (值1, 值2, ...);</code></p>
+<h5 id="注意事项-1"><a href="#注意事项-1" class="headerlink" title="注意事项"></a>注意事项</h5><ul>
+<li>字符串和日期类型数据应该包含在引号中</li>
+<li>插入的数据大小应该在字段的规定范围内</li>
+</ul>
+<h4 id="更新和删除数据"><a href="#更新和删除数据" class="headerlink" title="更新和删除数据"></a>更新和删除数据</h4><p>修改数据：<br><code>UPDATE 表名 SET 字段名1 = 值1, 字段名2 = 值2, ... [ WHERE 条件 ];</code><br>例：<br><code>UPDATE emp SET name = &#39;Jack&#39; WHERE id = 1;</code></p>
+<p>删除数据：<br><code>DELETE FROM 表名 [ WHERE 条件 ];</code></p>
+<h3 id="DQL（数据查询语言）"><a href="#DQL（数据查询语言）" class="headerlink" title="DQL（数据查询语言）"></a>DQL（数据查询语言）</h3><p>语法：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT</span><br><span class="line">	字段列表</span><br><span class="line">FROM</span><br><span class="line">	表名字段</span><br><span class="line">WHERE</span><br><span class="line">	条件列表</span><br><span class="line">GROUP BY</span><br><span class="line">	分组字段列表</span><br><span class="line">HAVING</span><br><span class="line">	分组后的条件列表</span><br><span class="line">ORDER BY</span><br><span class="line">	排序字段列表</span><br><span class="line">LIMIT</span><br><span class="line">	分页参数</span><br></pre></td></tr></table></figure>
+
+<h4 id="基础查询"><a href="#基础查询" class="headerlink" title="基础查询"></a>基础查询</h4><p>查询多个字段：<br><code>SELECT 字段1, 字段2, 字段3, ... FROM 表名;</code><br><code>SELECT * FROM 表名;</code></p>
+<p>设置别名：<br><code>SELECT 字段1 [ AS 别名1 ], 字段2 [ AS 别名2 ], 字段3 [ AS 别名3 ], ... FROM 表名;</code><br><code>SELECT 字段1 [ 别名1 ], 字段2 [ 别名2 ], 字段3 [ 别名3 ], ... FROM 表名;</code></p>
+<p>去除重复记录：<br><code>SELECT DISTINCT 字段列表 FROM 表名;</code></p>
+<p>转义：<br><code>SELECT * FROM 表名 WHERE name LIKE &#39;/_张三&#39; ESCAPE &#39;/&#39;</code><br>&#x2F; 之后的_不作为通配符</p>
+<h4 id="条件查询"><a href="#条件查询" class="headerlink" title="条件查询"></a>条件查询</h4><p>语法：<br><code>SELECT 字段列表 FROM 表名 WHERE 条件列表;</code></p>
+<p>条件：</p>
+<table>
+<thead>
+<tr>
+<th>比较运算符</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&gt;</td>
+<td>大于</td>
+</tr>
+<tr>
+<td>&gt;&#x3D;</td>
+<td>大于等于</td>
+</tr>
+<tr>
+<td>&lt;</td>
+<td>小于</td>
+</tr>
+<tr>
+<td>&lt;&#x3D;</td>
+<td>小于等于</td>
+</tr>
+<tr>
+<td>&#x3D;</td>
+<td>等于</td>
+</tr>
+<tr>
+<td>&lt;&gt; 或 !&#x3D;</td>
+<td>不等于</td>
+</tr>
+<tr>
+<td>BETWEEN … AND …</td>
+<td>在某个范围内（含最小、最大值）</td>
+</tr>
+<tr>
+<td>IN(…)</td>
+<td>在in之后的列表中的值，多选一</td>
+</tr>
+<tr>
+<td>LIKE 占位符</td>
+<td>模糊匹配（_匹配单个字符，%匹配任意个字符）</td>
+</tr>
+<tr>
+<td>IS NULL</td>
+<td>是NULL</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>逻辑运算符</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AND 或 &amp;&amp;</td>
+<td>并且（多个条件同时成立）</td>
+</tr>
+<tr>
+<td>OR 或 &#124;&#124;</td>
+<td>或者（多个条件任意一个成立）</td>
+</tr>
+<tr>
+<td>NOT 或 !</td>
+<td>非，不是</td>
+</tr>
+</tbody></table>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-- 年龄等于30</span><br><span class="line">select * from employee where age = 30;</span><br><span class="line">-- 年龄小于30</span><br><span class="line">select * from employee where age &lt; 30;</span><br><span class="line">-- 小于等于</span><br><span class="line">select * from employee where age &lt;= 30;</span><br><span class="line">-- 没有身份证</span><br><span class="line">select * from employee where idcard is null or idcard = &#x27;&#x27;;</span><br><span class="line">-- 有身份证</span><br><span class="line">select * from employee where idcard;</span><br><span class="line">select * from employee where idcard is not null;</span><br><span class="line">-- 不等于</span><br><span class="line">select * from employee where age != 30;</span><br><span class="line">-- 年龄在20到30之间</span><br><span class="line">select * from employee where age between 20 and 30;</span><br><span class="line">select * from employee where age &gt;= 20 and age &lt;= 30;</span><br><span class="line">-- 下面语句不报错，但查不到任何信息</span><br><span class="line">select * from employee where age between 30 and 20;</span><br><span class="line">-- 性别为女且年龄小于30</span><br><span class="line">select * from employee where age &lt; 30 and gender = &#x27;女&#x27;;</span><br><span class="line">-- 年龄等于25或30或35</span><br><span class="line">select * from employee where age = 25 or age = 30 or age = 35;</span><br><span class="line">select * from employee where age in (25, 30, 35);</span><br><span class="line">-- 姓名为两个字</span><br><span class="line">select * from employee where name like &#x27;__&#x27;;</span><br><span class="line">-- 身份证最后为X</span><br><span class="line">select * from employee where idcard like &#x27;%X&#x27;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="聚合查询（聚合函数）"><a href="#聚合查询（聚合函数）" class="headerlink" title="聚合查询（聚合函数）"></a>聚合查询（聚合函数）</h4><p>常见聚合函数：</p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>count</td>
+<td>统计数量</td>
+</tr>
+<tr>
+<td>max</td>
+<td>最大值</td>
+</tr>
+<tr>
+<td>min</td>
+<td>最小值</td>
+</tr>
+<tr>
+<td>avg</td>
+<td>平均值</td>
+</tr>
+<tr>
+<td>sum</td>
+<td>求和</td>
+</tr>
+</tbody></table>
+<p>语法：<br><code>SELECT 聚合函数(字段列表) FROM 表名;</code><br>例：<br><code>SELECT count(id) from employee where workaddress = &quot;广东省&quot;;</code></p>
+<h4 id="分组查询"><a href="#分组查询" class="headerlink" title="分组查询"></a>分组查询</h4><p>语法：<br><code>SELECT 字段列表 FROM 表名 [ WHERE 条件 ] GROUP BY 分组字段名 [ HAVING 分组后的过滤条件 ];</code></p>
+<p>where 和 having 的区别：</p>
+<ul>
+<li>执行时机不同：where是分组之前进行过滤，不满足where条件不参与分组；having是分组后对结果进行过滤。</li>
+<li>判断条件不同：where不能对聚合函数进行判断，而having可以。</li>
+</ul>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-- 根据性别分组，统计男性和女性数量（只显示分组数量，不显示哪个是男哪个是女）</span><br><span class="line">select count(*) from employee group by gender;</span><br><span class="line">-- 根据性别分组，统计男性和女性数量</span><br><span class="line">select gender, count(*) from employee group by gender;</span><br><span class="line">-- 根据性别分组，统计男性和女性的平均年龄</span><br><span class="line">select gender, avg(age) from employee group by gender;</span><br><span class="line">-- 年龄小于45，并根据工作地址分组</span><br><span class="line">select workaddress, count(*) from employee where age &lt; 45 group by workaddress;</span><br><span class="line">-- 年龄小于45，并根据工作地址分组，获取员工数量大于等于3的工作地址</span><br><span class="line">select workaddress, count(*) address_count from employee where age &lt; 45 group by workaddress having address_count &gt;= 3;</span><br></pre></td></tr></table></figure>
+
+<h5 id="注意事项-2"><a href="#注意事项-2" class="headerlink" title="注意事项"></a>注意事项</h5><ul>
+<li>执行顺序：where &gt; 聚合函数 &gt; having</li>
+<li>分组之后，查询的字段一般为聚合函数和分组字段，查询其他字段无任何意义</li>
+</ul>
+<h4 id="排序查询"><a href="#排序查询" class="headerlink" title="排序查询"></a>排序查询</h4><p>语法：<br><code>SELECT 字段列表 FROM 表名 ORDER BY 字段1 排序方式1, 字段2 排序方式2;</code></p>
+<p>排序方式：</p>
+<ul>
+<li>ASC: 升序（默认）</li>
+<li>DESC: 降序</li>
+</ul>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-- 根据年龄升序排序</span><br><span class="line">SELECT * FROM employee ORDER BY age ASC;</span><br><span class="line">SELECT * FROM employee ORDER BY age;</span><br><span class="line">-- 两字段排序，根据年龄升序排序，入职时间降序排序</span><br><span class="line">SELECT * FROM employee ORDER BY age ASC, entrydate DESC;</span><br></pre></td></tr></table></figure>
+
+<h5 id="注意事项-3"><a href="#注意事项-3" class="headerlink" title="注意事项"></a>注意事项</h5><p>如果是多字段排序，当第一个字段值相同时，才会根据第二个字段进行排序</p>
+<h4 id="分页查询"><a href="#分页查询" class="headerlink" title="分页查询"></a>分页查询</h4><p>语法：<br><code>SELECT 字段列表 FROM 表名 LIMIT 起始索引, 查询记录数;</code></p>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-- 查询第一页数据，展示10条</span><br><span class="line">SELECT * FROM employee LIMIT 0, 10;</span><br><span class="line">-- 查询第二页</span><br><span class="line">SELECT * FROM employee LIMIT 10, 10;</span><br></pre></td></tr></table></figure>
+
+<h5 id="注意事项-4"><a href="#注意事项-4" class="headerlink" title="注意事项"></a>注意事项</h5><ul>
+<li>起始索引从0开始，起始索引 &#x3D; （查询页码 - 1） * 每页显示记录数</li>
+<li>分页查询是数据库的方言，不同数据库有不同实现，MySQL是LIMIT</li>
+<li>如果查询的是第一页数据，起始索引可以省略，直接简写 LIMIT 10</li>
+</ul>
+<h4 id="DQL执行顺序"><a href="#DQL执行顺序" class="headerlink" title="DQL执行顺序"></a>DQL执行顺序</h4><p>FROM -&gt; WHERE -&gt; GROUP BY -&gt; SELECT -&gt; ORDER BY -&gt; LIMIT</p>
+<h3 id="DCL"><a href="#DCL" class="headerlink" title="DCL"></a>DCL</h3><h4 id="管理用户"><a href="#管理用户" class="headerlink" title="管理用户"></a>管理用户</h4><p>查询用户：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">USE mysql;</span><br><span class="line">SELECT * FROM user;</span><br></pre></td></tr></table></figure>
+
+<p>创建用户:<br><code>CREATE USER &#39;用户名&#39;@&#39;主机名&#39; IDENTIFIED BY &#39;密码&#39;;</code></p>
+<p>修改用户密码：<br><code>ALTER USER &#39;用户名&#39;@&#39;主机名&#39; IDENTIFIED WITH mysql_native_password BY &#39;新密码&#39;;</code></p>
+<p>删除用户：<br><code>DROP USER &#39;用户名&#39;@&#39;主机名&#39;;</code></p>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-- 创建用户test，只能在当前主机localhost访问</span><br><span class="line">create user &#x27;test&#x27;@&#x27;localhost&#x27; identified by &#x27;123456&#x27;;</span><br><span class="line">-- 创建用户test，能在任意主机访问</span><br><span class="line">create user &#x27;test&#x27;@&#x27;%&#x27; identified by &#x27;123456&#x27;;</span><br><span class="line">create user &#x27;test&#x27; identified by &#x27;123456&#x27;;</span><br><span class="line">-- 修改密码</span><br><span class="line">alter user &#x27;test&#x27;@&#x27;localhost&#x27; identified with mysql_native_password by &#x27;1234&#x27;;</span><br><span class="line">-- 删除用户</span><br><span class="line">drop user &#x27;test&#x27;@&#x27;localhost&#x27;;</span><br></pre></td></tr></table></figure>
+
+<h5 id="注意事项-5"><a href="#注意事项-5" class="headerlink" title="注意事项"></a>注意事项</h5><ul>
+<li>主机名可以使用 % 通配</li>
+</ul>
+<h4 id="权限控制"><a href="#权限控制" class="headerlink" title="权限控制"></a>权限控制</h4><p>常用权限：</p>
+<table>
+<thead>
+<tr>
+<th>权限</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ALL, ALL PRIVILEGES</td>
+<td>所有权限</td>
+</tr>
+<tr>
+<td>SELECT</td>
+<td>查询数据</td>
+</tr>
+<tr>
+<td>INSERT</td>
+<td>插入数据</td>
+</tr>
+<tr>
+<td>UPDATE</td>
+<td>修改数据</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td>删除数据</td>
+</tr>
+<tr>
+<td>ALTER</td>
+<td>修改表</td>
+</tr>
+<tr>
+<td>DROP</td>
+<td>删除数据库&#x2F;表&#x2F;视图</td>
+</tr>
+<tr>
+<td>CREATE</td>
+<td>创建数据库&#x2F;表</td>
+</tr>
+</tbody></table>
+<p>更多权限请看<a href="#%E6%9D%83%E9%99%90%E4%B8%80%E8%A7%88%E8%A1%A8" title="权限一览表">权限一览表</a></p>
+<p>查询权限：<br><code>SHOW GRANTS FOR &#39;用户名&#39;@&#39;主机名&#39;;</code></p>
+<p>授予权限：<br><code>GRANT 权限列表 ON 数据库名.表名 TO &#39;用户名&#39;@&#39;主机名&#39;;</code></p>
+<p>撤销权限：<br><code>REVOKE 权限列表 ON 数据库名.表名 FROM &#39;用户名&#39;@&#39;主机名&#39;;</code></p>
+<h5 id="注意事项-6"><a href="#注意事项-6" class="headerlink" title="注意事项"></a>注意事项</h5><ul>
+<li>多个权限用逗号分隔</li>
+<li>授权时，数据库名和表名可以用 * 进行通配，代表所有</li>
+</ul>
+<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><ul>
+<li>字符串函数</li>
+<li>数值函数</li>
+<li>日期函数</li>
+<li>流程函数</li>
+</ul>
+<h3 id="字符串函数"><a href="#字符串函数" class="headerlink" title="字符串函数"></a>字符串函数</h3><p>常用函数：</p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CONCAT(s1, s2, …, sn)</td>
+<td>字符串拼接，将s1, s2, …, sn拼接成一个字符串</td>
+</tr>
+<tr>
+<td>LOWER(str)</td>
+<td>将字符串全部转为小写</td>
+</tr>
+<tr>
+<td>UPPER(str)</td>
+<td>将字符串全部转为大写</td>
+</tr>
+<tr>
+<td>LPAD(str, n, pad)</td>
+<td>左填充，用字符串pad对str的左边进行填充，达到n个字符串长度</td>
+</tr>
+<tr>
+<td>RPAD(str, n, pad)</td>
+<td>右填充，用字符串pad对str的右边进行填充，达到n个字符串长度</td>
+</tr>
+<tr>
+<td>TRIM(str)</td>
+<td>去掉字符串头部和尾部的空格</td>
+</tr>
+<tr>
+<td>SUBSTRING(str, start, len)</td>
+<td>返回从字符串str从start位置起的len个长度的字符串</td>
+</tr>
+<tr>
+<td>REPLACE(column, source, replace)</td>
+<td>替换字符串</td>
+</tr>
+</tbody></table>
+<p>使用示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-- 拼接</span><br><span class="line">SELECT CONCAT(&#x27;Hello&#x27;, &#x27;World&#x27;);</span><br><span class="line">-- 小写</span><br><span class="line">SELECT LOWER(&#x27;Hello&#x27;);</span><br><span class="line">-- 大写</span><br><span class="line">SELECT UPPER(&#x27;Hello&#x27;);</span><br><span class="line">-- 左填充</span><br><span class="line">SELECT LPAD(&#x27;01&#x27;, 5, &#x27;-&#x27;);</span><br><span class="line">-- 右填充</span><br><span class="line">SELECT RPAD(&#x27;01&#x27;, 5, &#x27;-&#x27;);</span><br><span class="line">-- 去除空格</span><br><span class="line">SELECT TRIM(&#x27; Hello World &#x27;);</span><br><span class="line">-- 切片（起始索引为1）</span><br><span class="line">SELECT SUBSTRING(&#x27;Hello World&#x27;, 1, 5);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="数值函数"><a href="#数值函数" class="headerlink" title="数值函数"></a>数值函数</h3><p>常见函数：</p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CEIL(x)</td>
+<td>向上取整</td>
+</tr>
+<tr>
+<td>FLOOR(x)</td>
+<td>向下取整</td>
+</tr>
+<tr>
+<td>MOD(x, y)</td>
+<td>返回x&#x2F;y的模</td>
+</tr>
+<tr>
+<td>RAND()</td>
+<td>返回0~1内的随机数</td>
+</tr>
+<tr>
+<td>ROUND(x, y)</td>
+<td>求参数x的四舍五入值，保留y位小数</td>
+</tr>
+</tbody></table>
+<h3 id="日期函数"><a href="#日期函数" class="headerlink" title="日期函数"></a>日期函数</h3><p>常用函数：</p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CURDATE()</td>
+<td>返回当前日期</td>
+</tr>
+<tr>
+<td>CURTIME()</td>
+<td>返回当前时间</td>
+</tr>
+<tr>
+<td>NOW()</td>
+<td>返回当前日期和时间</td>
+</tr>
+<tr>
+<td>YEAR(date)</td>
+<td>获取指定date的年份</td>
+</tr>
+<tr>
+<td>MONTH(date)</td>
+<td>获取指定date的月份</td>
+</tr>
+<tr>
+<td>DAY(date)</td>
+<td>获取指定date的日期</td>
+</tr>
+<tr>
+<td>DATE_ADD(date, INTERVAL expr type)</td>
+<td>返回一个日期&#x2F;时间值加上一个时间间隔expr后的时间值</td>
+</tr>
+<tr>
+<td>DATEDIFF(date1, date2)</td>
+<td>返回起始时间date1和结束时间date2之间的天数</td>
+</tr>
+</tbody></table>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-- DATE_ADD</span><br><span class="line">SELECT DATE_ADD(NOW(), INTERVAL 70 YEAR);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="流程函数"><a href="#流程函数" class="headerlink" title="流程函数"></a>流程函数</h3><p>常用函数：</p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>IF(value, t, f)</td>
+<td>如果value为true，则返回t，否则返回f</td>
+</tr>
+<tr>
+<td>IFNULL(value1, value2)</td>
+<td>如果value1不为空，返回value1，否则返回value2</td>
+</tr>
+<tr>
+<td>CASE WHEN [ val1 ] THEN [ res1 ] … ELSE [ default ] END</td>
+<td>如果val1为true，返回res1，… 否则返回default默认值</td>
+</tr>
+<tr>
+<td>CASE [ expr ] WHEN [ val1 ] THEN [ res1 ] … ELSE [ default ] END</td>
+<td>如果expr的值等于val1，返回res1，… 否则返回default默认值</td>
+</tr>
+</tbody></table>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">select</span><br><span class="line">	name,</span><br><span class="line">	(case when age &gt; 30 then &#x27;中年&#x27; else &#x27;青年&#x27; end)</span><br><span class="line">from employee;</span><br><span class="line">select</span><br><span class="line">	name,</span><br><span class="line">	(case workaddress when &#x27;北京市&#x27; then &#x27;一线城市&#x27; when &#x27;上海市&#x27; then &#x27;一线城市&#x27; else &#x27;二线城市&#x27; end) as &#x27;工作地址&#x27;</span><br><span class="line">from employee;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="约束"><a href="#约束" class="headerlink" title="约束"></a>约束</h2><p>分类：</p>
+<table>
+<thead>
+<tr>
+<th>约束</th>
+<th>描述</th>
+<th>关键字</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>非空约束</td>
+<td>限制该字段的数据不能为null</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>唯一约束</td>
+<td>保证该字段的所有数据都是唯一、不重复的</td>
+<td>UNIQUE</td>
+</tr>
+<tr>
+<td>主键约束</td>
+<td>主键是一行数据的唯一标识，要求非空且唯一</td>
+<td>PRIMARY KEY</td>
+</tr>
+<tr>
+<td>默认约束</td>
+<td>保存数据时，如果未指定该字段的值，则采用默认值</td>
+<td>DEFAULT</td>
+</tr>
+<tr>
+<td>检查约束（8.0.1版本后）</td>
+<td>保证字段值满足某一个条件</td>
+<td>CHECK</td>
+</tr>
+<tr>
+<td>外键约束</td>
+<td>用来让两张图的数据之间建立连接，保证数据的一致性和完整性</td>
+<td>FOREIGN KEY</td>
+</tr>
+</tbody></table>
+<p>约束是作用于表中字段上的，可以再创建表&#x2F;修改表的时候添加约束。</p>
+<h3 id="常用约束"><a href="#常用约束" class="headerlink" title="常用约束"></a>常用约束</h3><table>
+<thead>
+<tr>
+<th>约束条件</th>
+<th>关键字</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>主键</td>
+<td>PRIMARY KEY</td>
+</tr>
+<tr>
+<td>自动增长</td>
+<td>AUTO_INCREMENT</td>
+</tr>
+<tr>
+<td>不为空</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>唯一</td>
+<td>UNIQUE</td>
+</tr>
+<tr>
+<td>逻辑条件</td>
+<td>CHECK</td>
+</tr>
+<tr>
+<td>默认值</td>
+<td>DEFAULT</td>
+</tr>
+</tbody></table>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">create table user(</span><br><span class="line">	id int primary key auto_increment,</span><br><span class="line">	name varchar(10) not null unique,</span><br><span class="line">	age int check(age &gt; 0 and age &lt; 120),</span><br><span class="line">	status char(1) default &#x27;1&#x27;,</span><br><span class="line">	gender char(1)</span><br><span class="line">);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="外键约束"><a href="#外键约束" class="headerlink" title="外键约束"></a>外键约束</h3><p>添加外键：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">CREATE TABLE 表名(</span><br><span class="line">	字段名 字段类型,</span><br><span class="line">	...</span><br><span class="line">	[CONSTRAINT] [外键名称] FOREIGN KEY(外键字段名) REFERENCES 主表(主表列名)</span><br><span class="line">);</span><br><span class="line">ALTER TABLE 表名 ADD CONSTRAINT 外键名称 FOREIGN KEY (外键字段名) REFERENCES 主表(主表列名);</span><br><span class="line"></span><br><span class="line">-- 例子</span><br><span class="line">alter table emp add constraint fk_emp_dept_id foreign key(dept_id) references dept(id);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>删除外键：<br><code>ALTER TABLE 表名 DROP FOREIGN KEY 外键名;</code></p>
+<h4 id="删除-更新行为"><a href="#删除-更新行为" class="headerlink" title="删除&#x2F;更新行为"></a>删除&#x2F;更新行为</h4><table>
+<thead>
+<tr>
+<th>行为</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>NO ACTION</td>
+<td>当在父表中删除&#x2F;更新对应记录时，首先检查该记录是否有对应外键，如果有则不允许删除&#x2F;更新（与RESTRICT一致）</td>
+</tr>
+<tr>
+<td>RESTRICT</td>
+<td>当在父表中删除&#x2F;更新对应记录时，首先检查该记录是否有对应外键，如果有则不允许删除&#x2F;更新（与NO ACTION一致）</td>
+</tr>
+<tr>
+<td>CASCADE</td>
+<td>当在父表中删除&#x2F;更新对应记录时，首先检查该记录是否有对应外键，如果有则也删除&#x2F;更新外键在子表中的记录</td>
+</tr>
+<tr>
+<td>SET NULL</td>
+<td>当在父表中删除&#x2F;更新对应记录时，首先检查该记录是否有对应外键，如果有则设置子表中该外键值为null（要求该外键允许为null）</td>
+</tr>
+<tr>
+<td>SET DEFAULT</td>
+<td>父表有变更时，子表将外键设为一个默认值（Innodb不支持）</td>
+</tr>
+</tbody></table>
+<p>更改删除&#x2F;更新行为：<br><code>ALTER TABLE 表名 ADD CONSTRAINT 外键名称 FOREIGN KEY (外键字段) REFERENCES 主表名(主表字段名) ON UPDATE 行为 ON DELETE 行为;</code></p>
+<h2 id="多表查询"><a href="#多表查询" class="headerlink" title="多表查询"></a>多表查询</h2><h3 id="多表关系"><a href="#多表关系" class="headerlink" title="多表关系"></a>多表关系</h3><ul>
+<li>一对多（多对一）</li>
+<li>多对多</li>
+<li>一对一</li>
+</ul>
+<h4 id="一对多"><a href="#一对多" class="headerlink" title="一对多"></a>一对多</h4><p>案例：部门与员工<br>关系：一个部门对应多个员工，一个员工对应一个部门<br>实现：在多的一方建立外键，指向一的一方的主键</p>
+<h4 id="多对多"><a href="#多对多" class="headerlink" title="多对多"></a>多对多</h4><p>案例：学生与课程<br>关系：一个学生可以选多门课程，一门课程也可以供多个学生选修<br>实现：建立第三张中间表，中间表至少包含两个外键，分别关联两方主键</p>
+<h4 id="一对一"><a href="#一对一" class="headerlink" title="一对一"></a>一对一</h4><p>案例：用户与用户详情<br>关系：一对一关系，多用于单表拆分，将一张表的基础字段放在一张表中，其他详情字段放在另一张表中，以提升操作效率<br>实现：在任意一方加入外键，关联另外一方的主键，并且设置外键为唯一的（UNIQUE）</p>
+<h3 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h3><p>合并查询（笛卡尔积，会展示所有组合结果）：<br><code>select * from employee, dept;</code></p>
+<blockquote>
+<p>笛卡尔积：两个集合A集合和B集合的所有组合情况（在多表查询时，需要消除无效的笛卡尔积）</p>
+</blockquote>
+<p>消除无效笛卡尔积：<br><code>select * from employee, dept where employee.dept = dept.id;</code></p>
+<h3 id="内连接查询"><a href="#内连接查询" class="headerlink" title="内连接查询"></a>内连接查询</h3><p>内连接查询的是两张表交集的部分</p>
+<p>隐式内连接：<br><code>SELECT 字段列表 FROM 表1, 表2 WHERE 条件 ...;</code></p>
+<p>显式内连接：<br><code>SELECT 字段列表 FROM 表1 [ INNER ] JOIN 表2 ON 连接条件 ...;</code></p>
+<p>显式性能比隐式高</p>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-- 查询员工姓名，及关联的部门的名称</span><br><span class="line">-- 隐式</span><br><span class="line">select e.name, d.name from employee as e, dept as d where e.dept = d.id;</span><br><span class="line">-- 显式</span><br><span class="line">select e.name, d.name from employee as e inner join dept as d on e.dept = d.id;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="外连接查询"><a href="#外连接查询" class="headerlink" title="外连接查询"></a>外连接查询</h3><p>左外连接：<br>查询左表所有数据，以及两张表交集部分数据<br><code>SELECT 字段列表 FROM 表1 LEFT [ OUTER ] JOIN 表2 ON 条件 ...;</code><br>相当于查询表1的所有数据，包含表1和表2交集部分数据</p>
+<p>右外连接：<br>查询右表所有数据，以及两张表交集部分数据<br><code>SELECT 字段列表 FROM 表1 RIGHT [ OUTER ] JOIN 表2 ON 条件 ...;</code></p>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-- 左</span><br><span class="line">select e.*, d.name from employee as e left outer join dept as d on e.dept = d.id;</span><br><span class="line">select d.name, e.* from dept d left outer join emp e on e.dept = d.id;  -- 这条语句与下面的语句效果一样</span><br><span class="line">-- 右</span><br><span class="line">select d.name, e.* from employee as e right outer join dept as d on e.dept = d.id;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>左连接可以查询到没有dept的employee，右连接可以查询到没有employee的dept</p>
+<h3 id="自连接查询"><a href="#自连接查询" class="headerlink" title="自连接查询"></a>自连接查询</h3><p>当前表与自身的连接查询，自连接必须使用表别名</p>
+<p>语法：<br><code>SELECT 字段列表 FROM 表A 别名A JOIN 表A 别名B ON 条件 ...;</code></p>
+<p>自连接查询，可以是内连接查询，也可以是外连接查询</p>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-- 查询员工及其所属领导的名字</span><br><span class="line">select a.name, b.name from employee a, employee b where a.manager = b.id;</span><br><span class="line">-- 没有领导的也查询出来</span><br><span class="line">select a.name, b.name from employee a left join employee b on a.manager = b.id;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="联合查询-union-union-all"><a href="#联合查询-union-union-all" class="headerlink" title="联合查询 union, union all"></a>联合查询 union, union all</h3><p>把多次查询的结果合并，形成一个新的查询集</p>
+<p>语法：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT 字段列表 FROM 表A ...</span><br><span class="line">UNION [ALL]</span><br><span class="line">SELECT 字段列表 FROM 表B ...</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="注意事项-7"><a href="#注意事项-7" class="headerlink" title="注意事项"></a>注意事项</h4><ul>
+<li>UNION ALL 会有重复结果，UNION 不会</li>
+<li>联合查询比使用or效率高，不会使索引失效</li>
+</ul>
+<h3 id="子查询"><a href="#子查询" class="headerlink" title="子查询"></a>子查询</h3><p>SQL语句中嵌套SELECT语句，称谓嵌套查询，又称子查询。<br><code>SELECT * FROM t1 WHERE column1 = ( SELECT column1 FROM t2);</code><br><strong>子查询外部的语句可以是 INSERT &#x2F; UPDATE &#x2F; DELETE &#x2F; SELECT 的任何一个</strong></p>
+<p>根据子查询结果可以分为：</p>
+<ul>
+<li>标量子查询（子查询结果为单个值）</li>
+<li>列子查询（子查询结果为一列）</li>
+<li>行子查询（子查询结果为一行）</li>
+<li>表子查询（子查询结果为多行多列）</li>
+</ul>
+<p>根据子查询位置可分为：</p>
+<ul>
+<li>WHERE 之后</li>
+<li>FROM 之后</li>
+<li>SELECT 之后</li>
+</ul>
+<h4 id="标量子查询"><a href="#标量子查询" class="headerlink" title="标量子查询"></a>标量子查询</h4><p>子查询返回的结果是单个值（数字、字符串、日期等）。<br>常用操作符：- &lt; &gt; &gt; &gt;&#x3D; &lt; &lt;&#x3D;</p>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-- 查询销售部所有员工</span><br><span class="line">select id from dept where name = &#x27;销售部&#x27;;</span><br><span class="line">-- 根据销售部部门ID，查询员工信息</span><br><span class="line">select * from employee where dept = 4;</span><br><span class="line">-- 合并（子查询）</span><br><span class="line">select * from employee where dept = (select id from dept where name = &#x27;销售部&#x27;);</span><br><span class="line"></span><br><span class="line">-- 查询xxx入职之后的员工信息</span><br><span class="line">select * from employee where entrydate &gt; (select entrydate from employee where name = &#x27;xxx&#x27;);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="列子查询"><a href="#列子查询" class="headerlink" title="列子查询"></a>列子查询</h4><p>返回的结果是一列（可以是多行）。</p>
+<p>常用操作符：</p>
+<table>
+<thead>
+<tr>
+<th>操作符</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>IN</td>
+<td>在指定的集合范围内，多选一</td>
+</tr>
+<tr>
+<td>NOT IN</td>
+<td>不在指定的集合范围内</td>
+</tr>
+<tr>
+<td>ANY</td>
+<td>子查询返回列表中，有任意一个满足即可</td>
+</tr>
+<tr>
+<td>SOME</td>
+<td>与ANY等同，使用SOME的地方都可以使用ANY</td>
+</tr>
+<tr>
+<td>ALL</td>
+<td>子查询返回列表的所有值都必须满足</td>
+</tr>
+</tbody></table>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-- 查询销售部和市场部的所有员工信息</span><br><span class="line">select * from employee where dept in (select id from dept where name = &#x27;销售部&#x27; or name = &#x27;市场部&#x27;);</span><br><span class="line">-- 查询比财务部所有人工资都高的员工信息</span><br><span class="line">select * from employee where salary &gt; all(select salary from employee where dept = (select id from dept where name = &#x27;财务部&#x27;));</span><br><span class="line">-- 查询比研发部任意一人工资高的员工信息</span><br><span class="line">select * from employee where salary &gt; any (select salary from employee where dept = (select id from dept where name = &#x27;研发部&#x27;));</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="行子查询"><a href="#行子查询" class="headerlink" title="行子查询"></a>行子查询</h4><p>返回的结果是一行（可以是多列）。<br>常用操作符：&#x3D;, &lt;, &gt;, IN, NOT IN</p>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-- 查询与xxx的薪资及直属领导相同的员工信息</span><br><span class="line">select * from employee where (salary, manager) = (12500, 1);</span><br><span class="line">select * from employee where (salary, manager) = (select salary, manager from employee where name = &#x27;xxx&#x27;);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="表子查询"><a href="#表子查询" class="headerlink" title="表子查询"></a>表子查询</h4><p>返回的结果是多行多列<br>常用操作符：IN</p>
+<p>例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-- 查询与xxx1，xxx2的职位和薪资相同的员工</span><br><span class="line">select * from employee where (job, salary) in (select job, salary from employee where name = &#x27;xxx1&#x27; or name = &#x27;xxx2&#x27;);</span><br><span class="line">-- 查询入职日期是2006-01-01之后的员工，及其部门信息</span><br><span class="line">select e.*, d.* from (select * from employee where entrydate &gt; &#x27;2006-01-01&#x27;) as e left join dept as d on e.dept = d.id;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h2><p>事务是一组操作的集合，事务会把所有操作作为一个整体一起向系统提交或撤销操作请求，即这些操作要么同时成功，要么同时失败。</p>
+<p>基本操作：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-- 1. 查询张三账户余额</span><br><span class="line">select * from account where name = &#x27;张三&#x27;;</span><br><span class="line">-- 2. 将张三账户余额-1000</span><br><span class="line">update account set money = money - 1000 where name = &#x27;张三&#x27;;</span><br><span class="line">-- 此语句出错后张三钱减少但是李四钱没有增加</span><br><span class="line">模拟sql语句错误</span><br><span class="line">-- 3. 将李四账户余额+1000</span><br><span class="line">update account set money = money + 1000 where name = &#x27;李四&#x27;;</span><br><span class="line"></span><br><span class="line">-- 查看事务提交方式</span><br><span class="line">SELECT @@AUTOCOMMIT;</span><br><span class="line">-- 设置事务提交方式，1为自动提交，0为手动提交，该设置只对当前会话有效</span><br><span class="line">SET @@AUTOCOMMIT = 0;</span><br><span class="line">-- 提交事务</span><br><span class="line">COMMIT;</span><br><span class="line">-- 回滚事务</span><br><span class="line">ROLLBACK;</span><br><span class="line"></span><br><span class="line">-- 设置手动提交后上面代码改为：</span><br><span class="line">select * from account where name = &#x27;张三&#x27;;</span><br><span class="line">update account set money = money - 1000 where name = &#x27;张三&#x27;;</span><br><span class="line">update account set money = money + 1000 where name = &#x27;李四&#x27;;</span><br><span class="line">commit;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>操作方式二：</p>
+<p>开启事务：<br><code>START TRANSACTION 或 BEGIN TRANSACTION;</code><br>提交事务：<br><code>COMMIT;</code><br>回滚事务：<br><code>ROLLBACK;</code></p>
+<p>操作实例：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">start transaction;</span><br><span class="line">select * from account where name = &#x27;张三&#x27;;</span><br><span class="line">update account set money = money - 1000 where name = &#x27;张三&#x27;;</span><br><span class="line">update account set money = money + 1000 where name = &#x27;李四&#x27;;</span><br><span class="line">commit;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="四大特性ACID"><a href="#四大特性ACID" class="headerlink" title="四大特性ACID"></a>四大特性ACID</h3><ul>
+<li>原子性(Atomicity)：事务是不可分割的最小操作但愿，要么全部成功，要么全部失败</li>
+<li>一致性(Consistency)：事务完成时，必须使所有数据都保持一致状态</li>
+<li>隔离性(Isolation)：数据库系统提供的隔离机制，保证事务在不受外部并发操作影响的独立环境下运行</li>
+<li>持久性(Durability)：事务一旦提交或回滚，它对数据库中的数据的改变就是永久的</li>
+</ul>
+<h3 id="并发事务"><a href="#并发事务" class="headerlink" title="并发事务"></a>并发事务</h3><table>
+<thead>
+<tr>
+<th>问题</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>脏读</td>
+<td>一个事务读到另一个事务还没提交的数据</td>
+</tr>
+<tr>
+<td>不可重复读</td>
+<td>一个事务先后读取同一条记录，但两次读取的数据不同</td>
+</tr>
+<tr>
+<td>幻读</td>
+<td>一个事务按照条件查询数据时，没有对应的数据行，但是再插入数据时，又发现这行数据已经存在</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>这三个问题的详细演示：<a href="https://www.bilibili.com/video/BV1Kr4y1i7ru?p=55cd">https://www.bilibili.com/video/BV1Kr4y1i7ru?p=55cd</a> </p>
+</blockquote>
+<p>并发事务隔离级别：</p>
+<table>
+<thead>
+<tr>
+<th>隔离级别</th>
+<th>脏读</th>
+<th>不可重复读</th>
+<th>幻读</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Read uncommitted</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+</tr>
+<tr>
+<td>Read committed</td>
+<td>×</td>
+<td>√</td>
+<td>√</td>
+</tr>
+<tr>
+<td>Repeatable Read(默认)</td>
+<td>×</td>
+<td>×</td>
+<td>√</td>
+</tr>
+<tr>
+<td>Serializable</td>
+<td>×</td>
+<td>×</td>
+<td>×</td>
+</tr>
+</tbody></table>
+<ul>
+<li>√表示在当前隔离级别下该问题会出现</li>
+<li>Serializable 性能最低；Read uncommitted 性能最高，数据安全性最差</li>
+</ul>
+<p>查看事务隔离级别：<br><code>SELECT @@TRANSACTION_ISOLATION;</code><br>设置事务隔离级别：<br><code>SET [ SESSION | GLOBAL ] TRANSACTION ISOLATION LEVEL &#123;READ UNCOMMITTED | READ COMMITTED | REPEATABLE READ | SERIALIZABLE &#125;;</code><br>SESSION 是会话级别，表示只针对当前会话有效，GLOBAL 表示对所有会话有效</p>
+<h1 id="进阶篇"><a href="#进阶篇" class="headerlink" title="进阶篇"></a>进阶篇</h1><h2 id="存储引擎"><a href="#存储引擎" class="headerlink" title="存储引擎"></a>存储引擎</h2><p>MySQL体系结构：</p>
+<p><img src="/%E8%BF%90%E7%BB%B4/mysql/MySQL%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84.png" alt="结构图" title="结构图"><br><img src="/%E8%BF%90%E7%BB%B4/mysql/MySQL%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E5%B1%82%E7%BA%A7%E5%90%AB%E4%B9%89.png" alt="层级描述" title="层级描述"></p>
+<p>存储引擎就是存储数据、建立索引、更新&#x2F;查询数据等技术的实现方式。存储引擎是基于表而不是基于库的，所以存储引擎也可以被称为表引擎。<br>默认存储引擎是InnoDB。</p>
+<p>相关操作：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-- 查询建表语句</span><br><span class="line">show create table account;</span><br><span class="line">-- 建表时指定存储引擎</span><br><span class="line">CREATE TABLE 表名(</span><br><span class="line">	...</span><br><span class="line">) ENGINE=INNODB;</span><br><span class="line">-- 查看当前数据库支持的存储引擎</span><br><span class="line">show engines;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="InnoDB"><a href="#InnoDB" class="headerlink" title="InnoDB"></a>InnoDB</h3><p>InnoDB 是一种兼顾高可靠性和高性能的通用存储引擎，在 MySQL 5.5 之后，InnoDB 是默认的 MySQL 引擎。</p>
+<p>特点：</p>
+<ul>
+<li>DML 操作遵循 ACID 模型，支持<strong>事务</strong></li>
+<li><strong>行级锁</strong>，提高并发访问性能</li>
+<li>支持<strong>外键</strong>约束，保证数据的完整性和正确性</li>
+</ul>
+<p>文件：</p>
+<ul>
+<li>xxx.ibd: xxx代表表名，InnoDB 引擎的每张表都会对应这样一个表空间文件，存储该表的表结构（frm、sdi）、数据和索引。</li>
+</ul>
+<p>参数：innodb_file_per_table，决定多张表共享一个表空间还是每张表对应一个表空间</p>
+<p>知识点：</p>
+<p>查看 Mysql 变量：<br><code>show variables like &#39;innodb_file_per_table&#39;;</code></p>
+<p>从idb文件提取表结构数据：<br>（在cmd运行）<br><code>ibd2sdi xxx.ibd</code></p>
+<p>InnoDB 逻辑存储结构：<br><img src="/%E8%BF%90%E7%BB%B4/mysql/%E9%80%BB%E8%BE%91%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84.png" alt="InnoDB逻辑存储结构" title="InnoDB逻辑存储结构"></p>
+<h3 id="MyISAM"><a href="#MyISAM" class="headerlink" title="MyISAM"></a>MyISAM</h3><p>MyISAM 是 MySQL 早期的默认存储引擎。</p>
+<p>特点：</p>
+<ul>
+<li>不支持事务，不支持外键</li>
+<li>支持表锁，不支持行锁</li>
+<li>访问速度快</li>
+</ul>
+<p>文件：</p>
+<ul>
+<li>xxx.sdi: 存储表结构信息</li>
+<li>xxx.MYD: 存储数据</li>
+<li>xxx.MYI: 存储索引</li>
+</ul>
+<h3 id="Memory"><a href="#Memory" class="headerlink" title="Memory"></a>Memory</h3><p>Memory 引擎的表数据是存储在内存中的，受硬件问题、断电问题的影响，只能将这些表作为临时表或缓存使用。</p>
+<p>特点：</p>
+<ul>
+<li>存放在内存中，速度快</li>
+<li>hash索引（默认）</li>
+</ul>
+<p>文件：</p>
+<ul>
+<li>xxx.sdi: 存储表结构信息</li>
+</ul>
+<h3 id="存储引擎特点"><a href="#存储引擎特点" class="headerlink" title="存储引擎特点"></a>存储引擎特点</h3><table>
+<thead>
+<tr>
+<th>特点</th>
+<th>InnoDB</th>
+<th>MyISAM</th>
+<th>Memory</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>存储限制</td>
+<td>64TB</td>
+<td>有</td>
+<td>有</td>
+</tr>
+<tr>
+<td>事务安全</td>
+<td>支持</td>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>锁机制</td>
+<td>行锁</td>
+<td>表锁</td>
+<td>表锁</td>
+</tr>
+<tr>
+<td>B+tree索引</td>
+<td>支持</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>Hash索引</td>
+<td>-</td>
+<td>-</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>全文索引</td>
+<td>支持（5.6版本之后）</td>
+<td>支持</td>
+<td>-</td>
+</tr>
+<tr>
+<td>空间使用</td>
+<td>高</td>
+<td>低</td>
+<td>N&#x2F;A</td>
+</tr>
+<tr>
+<td>内存使用</td>
+<td>高</td>
+<td>低</td>
+<td>中等</td>
+</tr>
+<tr>
+<td>批量插入速度</td>
+<td>低</td>
+<td>高</td>
+<td>高</td>
+</tr>
+<tr>
+<td>支持外键</td>
+<td>支持</td>
+<td>-</td>
+<td>-</td>
+</tr>
+</tbody></table>
+<h3 id="存储引擎的选择"><a href="#存储引擎的选择" class="headerlink" title="存储引擎的选择"></a>存储引擎的选择</h3><p>在选择存储引擎时，应该根据应用系统的特点选择合适的存储引擎。对于复杂的应用系统，还可以根据实际情况选择多种存储引擎进行组合。</p>
+<ul>
+<li>InnoDB: 如果应用对事物的完整性有比较高的要求，在并发条件下要求数据的一致性，数据操作除了插入和查询之外，还包含很多的更新、删除操作，则 InnoDB 是比较合适的选择</li>
+<li>MyISAM: 如果应用是以读操作和插入操作为主，只有很少的更新和删除操作，并且对事务的完整性、并发性要求不高，那这个存储引擎是非常合适的。</li>
+<li>Memory: 将所有数据保存在内存中，访问速度快，通常用于临时表及缓存。Memory 的缺陷是对表的大小有限制，太大的表无法缓存在内存中，而且无法保障数据的安全性</li>
+</ul>
+<p>电商中的足迹和评论适合使用 MyISAM 引擎，缓存适合使用 Memory 引擎。</p>
+<h2 id="性能分析"><a href="#性能分析" class="headerlink" title="性能分析"></a>性能分析</h2><h3 id="查看执行频次"><a href="#查看执行频次" class="headerlink" title="查看执行频次"></a>查看执行频次</h3><p>查看当前数据库的 INSERT, UPDATE, DELETE, SELECT 访问频次：<br><code>SHOW GLOBAL STATUS LIKE &#39;Com_______&#39;;</code> 或者 <code>SHOW SESSION STATUS LIKE &#39;Com_______&#39;;</code><br>例：<code>show global status like &#39;Com_______&#39;</code></p>
+<h3 id="慢查询日志"><a href="#慢查询日志" class="headerlink" title="慢查询日志"></a>慢查询日志</h3><p>慢查询日志记录了所有执行时间超过指定参数（long_query_time，单位：秒，默认10秒）的所有SQL语句的日志。<br>MySQL的慢查询日志默认没有开启，需要在MySQL的配置文件（&#x2F;etc&#x2F;my.cnf）中配置如下信息：<br>    # 开启慢查询日志开关<br>    slow_query_log&#x3D;1<br>    # 设置慢查询日志的时间为2秒，SQL语句执行时间超过2秒，就会视为慢查询，记录慢查询日志<br>    long_query_time&#x3D;2<br>更改后记得重启MySQL服务，日志文件位置：&#x2F;var&#x2F;lib&#x2F;mysql&#x2F;localhost-slow.log</p>
+<p>查看慢查询日志开关状态：<br><code>show variables like &#39;slow_query_log&#39;;</code></p>
+<h3 id="profile"><a href="#profile" class="headerlink" title="profile"></a>profile</h3><p>show profile 能在做SQL优化时帮我们了解时间都耗费在哪里。通过 have_profiling 参数，能看到当前 MySQL 是否支持 profile 操作：<br><code>SELECT @@have_profiling;</code><br>profiling 默认关闭，可以通过set语句在session&#x2F;global级别开启 profiling：<br><code>SET profiling = 1;</code><br>查看所有语句的耗时：<br><code>show profiles;</code><br>查看指定query_id的SQL语句各个阶段的耗时：<br><code>show profile for query query_id;</code><br>查看指定query_id的SQL语句CPU的使用情况<br><code>show profile cpu for query query_id;</code></p>
+<h3 id="explain"><a href="#explain" class="headerlink" title="explain"></a>explain</h3><p>EXPLAIN 或者 DESC 命令获取 MySQL 如何执行 SELECT 语句的信息，包括在 SELECT 语句执行过程中表如何连接和连接的顺序。<br>语法：<br>    # 直接在select语句之前加上关键字 explain &#x2F; desc<br>    EXPLAIN SELECT 字段列表 FROM 表名 HWERE 条件;</p>
+<p>EXPLAIN 各字段含义：</p>
+<ul>
+<li>id：select 查询的序列号，表示查询中执行 select 子句或者操作表的顺序（id相同，执行顺序从上到下；id不同，值越大越先执行）</li>
+<li>select_type：表示 SELECT 的类型，常见取值有 SIMPLE（简单表，即不适用表连接或者子查询）、PRIMARY（主查询，即外层的查询）、UNION（UNION中的第二个或者后面的查询语句）、SUBQUERY（SELECT&#x2F;WHERE之后包含了子查询）等</li>
+<li>type：表示连接类型，性能由好到差的连接类型为 NULL、system、const、eq_ref、ref、range、index、all</li>
+<li>possible_key：可能应用在这张表上的索引，一个或多个</li>
+<li>Key：实际使用的索引，如果为 NULL，则没有使用索引</li>
+<li>Key_len：表示索引中使用的字节数，该值为索引字段最大可能长度，并非实际使用长度，在不损失精确性的前提下，长度越短越好</li>
+<li>rows：MySQL认为必须要执行的行数，在InnoDB引擎的表中，是一个估计值，可能并不总是准确的</li>
+<li>filtered：表示返回结果的行数占需读取行数的百分比，filtered的值越大越好</li>
+</ul>
+<h2 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h2><p>索引是帮助 MySQL <strong>高效获取数据</strong>的<strong>数据结构（有序）</strong>。在数据之外，数据库系统还维护着满足特定查找算法的数据结构，这些数据结构以某种方式引用（指向）数据，这样就可以在这些数据结构上实现高级查询算法，这种数据结构就是索引。</p>
+<p>优缺点：</p>
+<p>优点：</p>
+<ul>
+<li>提高数据检索效率，降低数据库的IO成本</li>
+<li>通过索引列对数据进行排序，降低数据排序的成本，降低CPU的消耗</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>索引列也是要占用空间的</li>
+<li>索引大大提高了查询效率，但降低了更新的速度，比如 INSERT、UPDATE、DELETE</li>
+</ul>
+<h3 id="索引结构"><a href="#索引结构" class="headerlink" title="索引结构"></a>索引结构</h3><table>
+<thead>
+<tr>
+<th>索引结构</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>B+Tree</td>
+<td>最常见的索引类型，大部分引擎都支持B+树索引</td>
+</tr>
+<tr>
+<td>Hash</td>
+<td>底层数据结构是用哈希表实现，只有精确匹配索引列的查询才有效，不支持范围查询</td>
+</tr>
+<tr>
+<td>R-Tree(空间索引)</td>
+<td>空间索引是 MyISAM 引擎的一个特殊索引类型，主要用于地理空间数据类型，通常使用较少</td>
+</tr>
+<tr>
+<td>Full-Text(全文索引)</td>
+<td>是一种通过建立倒排索引，快速匹配文档的方式，类似于 Lucene, Solr, ES</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>索引</th>
+<th>InnoDB</th>
+<th>MyISAM</th>
+<th>Memory</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>B+Tree索引</td>
+<td>支持</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>Hash索引</td>
+<td>不支持</td>
+<td>不支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>R-Tree索引</td>
+<td>不支持</td>
+<td>支持</td>
+<td>不支持</td>
+</tr>
+<tr>
+<td>Full-text</td>
+<td>5.6版本后支持</td>
+<td>支持</td>
+<td>不支持</td>
+</tr>
+</tbody></table>
+<h4 id="B-Tree"><a href="#B-Tree" class="headerlink" title="B-Tree"></a>B-Tree</h4><p><img src="/%E8%BF%90%E7%BB%B4/mysql/%E4%BA%8C%E5%8F%89%E6%A0%91.png" alt="二叉树" title="二叉树"></p>
+<p>二叉树的缺点可以用红黑树来解决：<br><img src="https://learning-logs-1253130399.cos.ap-guangzhou.myqcloud.com/editor/%E7%BA%A2%E9%BB%91%E6%A0%91_20220316163142686602.png" alt="红黑树" title="红黑树"><br>红黑树也存在大数据量情况下，层级较深，检索速度慢的问题。</p>
+<p>为了解决上述问题，可以使用 B-Tree 结构。<br>B-Tree (多路平衡查找树) 以一棵最大度数（max-degree，指一个节点的子节点个数）为5（5阶）的 b-tree 为例（每个节点最多存储4个key，5个指针）</p>
+<p><img src="/%E8%BF%90%E7%BB%B4/mysql/B-Tree%E7%BB%93%E6%9E%84.png" alt="B-Tree结构" title="B-Tree结构"></p>
+<blockquote>
+<p>B-Tree 的数据插入过程动画参照：<a href="https://www.bilibili.com/video/BV1Kr4y1i7ru?p=68">https://www.bilibili.com/video/BV1Kr4y1i7ru?p=68</a><br>演示地址：<a href="https://www.cs.usfca.edu/~galles/visualization/BTree.html">https://www.cs.usfca.edu/~galles/visualization/BTree.html</a></p>
+</blockquote>
+<h4 id="B-Tree-1"><a href="#B-Tree-1" class="headerlink" title="B+Tree"></a>B+Tree</h4><p>结构图：</p>
+<p><img src="/%E8%BF%90%E7%BB%B4/mysql/B+Tree%E7%BB%93%E6%9E%84%E5%9B%BE.png" alt="B+Tree结构图" title="B+Tree结构图"></p>
+<blockquote>
+<p>演示地址：<a href="https://www.cs.usfca.edu/~galles/visualization/BPlusTree.html">https://www.cs.usfca.edu/~galles/visualization/BPlusTree.html</a></p>
+</blockquote>
+<p>与 B-Tree 的区别：</p>
+<ul>
+<li>所有的数据都会出现在叶子节点</li>
+<li>叶子节点形成一个单向链表</li>
+</ul>
+<p>MySQL 索引数据结构对经典的 B+Tree 进行了优化。在原 B+Tree 的基础上，增加一个指向相邻叶子节点的链表指针，就形成了带有顺序指针的 B+Tree，提高区间访问的性能。</p>
+<p><img src="/%E8%BF%90%E7%BB%B4/mysql/%E7%BB%93%E6%9E%84%E5%9B%BE.png" alt="MySQL B+Tree 结构图" title="MySQL B+Tree 结构图"></p>
+<h4 id="Hash"><a href="#Hash" class="headerlink" title="Hash"></a>Hash</h4><p>哈希索引就是采用一定的hash算法，将键值换算成新的hash值，映射到对应的槽位上，然后存储在hash表中。<br>如果两个（或多个）键值，映射到一个相同的槽位上，他们就产生了hash冲突（也称为hash碰撞），可以通过链表来解决。</p>
+<p><img src="https://learning-logs-1253130399.cos.ap-guangzhou.myqcloud.com/editor/Hash%E7%B4%A2%E5%BC%95%E5%8E%9F%E7%90%86%E5%9B%BE_20220317143226150679.png" alt="Hash索引原理图" title="Hash索引原理图"></p>
+<p>特点：</p>
+<ul>
+<li>Hash索引只能用于对等比较（&#x3D;、in），不支持范围查询（betwwn、&gt;、&lt;、…）</li>
+<li>无法利用索引完成排序操作</li>
+<li>查询效率高，通常只需要一次检索就可以了，效率通常要高于 B+Tree 索引</li>
+</ul>
+<p>存储引擎支持：</p>
+<ul>
+<li>Memory</li>
+<li>InnoDB: 具有自适应hash功能，hash索引是存储引擎根据 B+Tree 索引在指定条件下自动构建的</li>
+</ul>
+<h4 id="面试题"><a href="#面试题" class="headerlink" title="面试题"></a>面试题</h4><ol>
+<li>为什么 InnoDB 存储引擎选择使用 B+Tree 索引结构？</li>
+</ol>
+<ul>
+<li>相对于二叉树，层级更少，搜索效率高</li>
+<li>对于 B-Tree，无论是叶子节点还是非叶子节点，都会保存数据，这样导致一页中存储的键值减少，指针也跟着减少，要同样保存大量数据，只能增加树的高度，导致性能降低</li>
+<li>相对于 Hash 索引，B+Tree 支持范围匹配及排序操作</li>
+</ul>
+<h3 id="索引分类"><a href="#索引分类" class="headerlink" title="索引分类"></a>索引分类</h3><table>
+<thead>
+<tr>
+<th>分类</th>
+<th>含义</th>
+<th>特点</th>
+<th>关键字</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>主键索引</td>
+<td>针对于表中主键创建的索引</td>
+<td>默认自动创建，只能有一个</td>
+<td>PRIMARY</td>
+</tr>
+<tr>
+<td>唯一索引</td>
+<td>避免同一个表中某数据列中的值重复</td>
+<td>可以有多个</td>
+<td>UNIQUE</td>
+</tr>
+<tr>
+<td>常规索引</td>
+<td>快速定位特定数据</td>
+<td>可以有多个</td>
+<td></td>
+</tr>
+<tr>
+<td>全文索引</td>
+<td>全文索引查找的是文本中的关键词，而不是比较索引中的值</td>
+<td>可以有多个</td>
+<td>FULLTEXT</td>
+</tr>
+</tbody></table>
+<p>在 InnoDB 存储引擎中，根据索引的存储形式，又可以分为以下两种：</p>
+<table>
+<thead>
+<tr>
+<th>分类</th>
+<th>含义</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>聚集索引(Clustered Index)</td>
+<td>将数据存储与索引放一块，索引结构的叶子节点保存了行数据</td>
+<td>必须有，而且只有一个</td>
+</tr>
+<tr>
+<td>二级索引(Secondary Index)</td>
+<td>将数据与索引分开存储，索引结构的叶子节点关联的是对应的主键</td>
+<td>可以存在多个</td>
+</tr>
+</tbody></table>
+<p>演示图：</p>
+<p><img src="/%E8%BF%90%E7%BB%B4/mysql/%E5%8E%9F%E7%90%86%E5%9B%BE.png" alt="大致原理" title="大致原理"><br><img src="https://learning-logs-1253130399.cos.ap-guangzhou.myqcloud.com/editor/%E6%BC%94%E7%A4%BA%E5%9B%BE_20220319215403721066.png" alt="演示图" title="演示图"></p>
+<p>聚集索引选取规则：</p>
+<ul>
+<li>如果存在主键，主键索引就是聚集索引</li>
+<li>如果不存在主键，将使用第一个唯一(UNIQUE)索引作为聚集索引</li>
+<li>如果表没有主键或没有合适的唯一索引，则 InnoDB 会自动生成一个 rowid 作为隐藏的聚集索引</li>
+</ul>
+<h4 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h4><p>1. 以下 SQL 语句，哪个执行效率高？为什么？</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">select * from user where id = 10;</span><br><span class="line">select * from user where name = &#x27;Arm&#x27;;</span><br><span class="line">-- 备注：id为主键，name字段创建的有索引</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>答：第一条语句，因为第二条需要回表查询，相当于两个步骤。</p>
+<p>2. InnoDB 主键索引的 B+Tree 高度为多少？</p>
+<p>答：假设一行数据大小为1k，一页中可以存储16行这样的数据。InnoDB 的指针占用6个字节的空间，主键假设为bigint，占用字节数为8.<br>可得公式：<code>n * 8 + (n + 1) * 6 = 16 * 1024</code>，其中 8 表示 bigint 占用的字节数，n 表示当前节点存储的key的数量，(n + 1) 表示指针数量（比key多一个）。算出n约为1170。</p>
+<p>如果树的高度为2，那么他能存储的数据量大概为：<code>1171 * 16 = 18736</code>；<br>如果树的高度为3，那么他能存储的数据量大概为：<code>1171 * 1171 * 16 = 21939856</code>。</p>
+<p>另外，如果有成千上万的数据，那么就要考虑分表，涉及运维篇知识。</p>
+<h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><p>创建索引：<br><code>CREATE [ UNIQUE | FULLTEXT ] INDEX index_name ON table_name (index_col_name, ...);</code><br>如果不加 CREATE 后面不加索引类型参数，则创建的是常规索引</p>
+<p>查看索引：<br><code>SHOW INDEX FROM table_name;</code></p>
+<p>删除索引：<br><code>DROP INDEX index_name ON table_name;</code></p>
+<p>案例：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-- name字段为姓名字段，该字段的值可能会重复，为该字段创建索引</span><br><span class="line">create index idx_user_name on tb_user(name);</span><br><span class="line">-- phone手机号字段的值非空，且唯一，为该字段创建唯一索引</span><br><span class="line">create unique index idx_user_phone on tb_user (phone);</span><br><span class="line">-- 为profession, age, status创建联合索引</span><br><span class="line">create index idx_user_pro_age_stat on tb_user(profession, age, status);</span><br><span class="line">-- 为email建立合适的索引来提升查询效率</span><br><span class="line">create index idx_user_email on tb_user(email);</span><br><span class="line"></span><br><span class="line">-- 删除索引</span><br><span class="line">drop index idx_user_email on tb_user;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="使用规则"><a href="#使用规则" class="headerlink" title="使用规则"></a>使用规则</h3><h4 id="最左前缀法则"><a href="#最左前缀法则" class="headerlink" title="最左前缀法则"></a>最左前缀法则</h4><p>如果索引关联了多列（联合索引），要遵守最左前缀法则，最左前缀法则指的是查询从索引的最左列开始，并且不跳过索引中的列。<br>如果跳跃某一列，索引将部分失效（后面的字段索引失效）。</p>
+<p>联合索引中，出现范围查询（&lt;, &gt;），范围查询右侧的列索引失效。可以用&gt;&#x3D;或者&lt;&#x3D;来规避索引失效问题。</p>
+<h4 id="索引失效情况"><a href="#索引失效情况" class="headerlink" title="索引失效情况"></a>索引失效情况</h4><ol>
+<li>在索引列上进行运算操作，索引将失效。如：<code>explain select * from tb_user where substring(phone, 10, 2) = &#39;15&#39;;</code></li>
+<li>字符串类型字段使用时，不加引号，索引将失效。如：<code>explain select * from tb_user where phone = 17799990015;</code>，此处phone的值没有加引号</li>
+<li>模糊查询中，如果仅仅是尾部模糊匹配，索引不会是失效；如果是头部模糊匹配，索引失效。如：<code>explain select * from tb_user where profession like &#39;%工程&#39;;</code>，前后都有 % 也会失效。</li>
+<li>用 or 分割开的条件，如果 or 其中一个条件的列没有索引，那么涉及的索引都不会被用到。</li>
+<li>如果 MySQL 评估使用索引比全表更慢，则不使用索引。</li>
+</ol>
+<h4 id="SQL-提示"><a href="#SQL-提示" class="headerlink" title="SQL 提示"></a>SQL 提示</h4><p>是优化数据库的一个重要手段，简单来说，就是在SQL语句中加入一些人为的提示来达到优化操作的目的。</p>
+<p>例如，使用索引：<br><code>explain select * from tb_user use index(idx_user_pro) where profession=&quot;软件工程&quot;;</code><br>不使用哪个索引：<br><code>explain select * from tb_user ignore index(idx_user_pro) where profession=&quot;软件工程&quot;;</code><br>必须使用哪个索引：<br><code>explain select * from tb_user force index(idx_user_pro) where profession=&quot;软件工程&quot;;</code></p>
+<p>use 是建议，实际使用哪个索引 MySQL 还会自己权衡运行速度去更改，force就是无论如何都强制使用该索引。</p>
+<h4 id="覆盖索引-回表查询"><a href="#覆盖索引-回表查询" class="headerlink" title="覆盖索引&amp;回表查询"></a>覆盖索引&amp;回表查询</h4><p>尽量使用覆盖索引（查询使用了索引，并且需要返回的列，在该索引中已经全部能找到），减少 select *。</p>
+<p>explain 中 extra 字段含义：<br><code>using index condition</code>：查找使用了索引，但是需要回表查询数据<br><code>using where; using index;</code>：查找使用了索引，但是需要的数据都在索引列中能找到，所以不需要回表查询</p>
+<p>如果在聚集索引中直接能找到对应的行，则直接返回行数据，只需要一次查询，哪怕是select *；如果在辅助索引中找聚集索引，如<code>select id, name from xxx where name=&#39;xxx&#39;;</code>，也只需要通过辅助索引(name)查找到对应的id，返回name和name索引对应的id即可，只需要一次查询；如果是通过辅助索引查找其他字段，则需要回表查询，如<code>select id, name, gender from xxx where name=&#39;xxx&#39;;</code></p>
+<p>所以尽量不要用<code>select *</code>，容易出现回表查询，降低效率，除非有联合索引包含了所有字段</p>
+<p>面试题：一张表，有四个字段（id, username, password, status），由于数据量大，需要对以下SQL语句进行优化，该如何进行才是最优方案：<br><code>select id, username, password from tb_user where username=&#39;itcast&#39;;</code></p>
+<p>解：给username和password字段建立联合索引，则不需要回表查询，直接覆盖索引</p>
+<h4 id="前缀索引"><a href="#前缀索引" class="headerlink" title="前缀索引"></a>前缀索引</h4><p>当字段类型为字符串（varchar, text等）时，有时候需要索引很长的字符串，这会让索引变得很大，查询时，浪费大量的磁盘IO，影响查询效率，此时可以只降字符串的一部分前缀，建立索引，这样可以大大节约索引空间，从而提高索引效率。</p>
+<p>语法：<code>create index idx_xxxx on table_name(columnn(n));</code><br>前缀长度：可以根据索引的选择性来决定，而选择性是指不重复的索引值（基数）和数据表的记录总数的比值，索引选择性越高则查询效率越高，唯一索引的选择性是1，这是最好的索引选择性，性能也是最好的。<br>求选择性公式：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">select count(distinct email) / count(*) from tb_user;</span><br><span class="line">select count(distinct substring(email, 1, 5)) / count(*) from tb_user;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>show index 里面的sub_part可以看到接取的长度</p>
+<h4 id="单列索引-联合索引"><a href="#单列索引-联合索引" class="headerlink" title="单列索引&amp;联合索引"></a>单列索引&amp;联合索引</h4><p>单列索引：即一个索引只包含单个列<br>联合索引：即一个索引包含了多个列<br>在业务场景中，如果存在多个查询条件，考虑针对于查询字段建立索引时，建议建立联合索引，而非单列索引。</p>
+<p>单列索引情况：<br><code>explain select id, phone, name from tb_user where phone = &#39;17799990010&#39; and name = &#39;韩信&#39;;</code><br>这句只会用到phone索引字段</p>
+<h5 id="注意事项-8"><a href="#注意事项-8" class="headerlink" title="注意事项"></a>注意事项</h5><ul>
+<li>多条件联合查询时，MySQL优化器会评估哪个字段的索引效率更高，会选择该索引完成本次查询</li>
+</ul>
+<h3 id="设计原则"><a href="#设计原则" class="headerlink" title="设计原则"></a>设计原则</h3><ol>
+<li>针对于数据量较大，且查询比较频繁的表建立索引</li>
+<li>针对于常作为查询条件（where）、排序（order by）、分组（group by）操作的字段建立索引</li>
+<li>尽量选择区分度高的列作为索引，尽量建立唯一索引，区分度越高，使用索引的效率越高</li>
+<li>如果是字符串类型的字段，字段长度较长，可以针对于字段的特点，建立前缀索引</li>
+<li>尽量使用联合索引，减少单列索引，查询时，联合索引很多时候可以覆盖索引，节省存储空间，避免回表，提高查询效率</li>
+<li>要控制索引的数量，索引并不是多多益善，索引越多，维护索引结构的代价就越大，会影响增删改的效率</li>
+<li>如果索引列不能存储NULL值，请在创建表时使用NOT NULL约束它。当优化器知道每列是否包含NULL值时，它可以更好地确定哪个索引最有效地用于查询</li>
+</ol>
+<h2 id="SQL-优化"><a href="#SQL-优化" class="headerlink" title="SQL 优化"></a>SQL 优化</h2><h3 id="插入数据"><a href="#插入数据" class="headerlink" title="插入数据"></a>插入数据</h3><p>普通插入：</p>
+<ol>
+<li>采用批量插入（一次插入的数据不建议超过1000条）</li>
+<li>手动提交事务</li>
+<li>主键顺序插入</li>
+</ol>
+<p>大批量插入：<br>如果一次性需要插入大批量数据，使用insert语句插入性能较低，此时可以使用MySQL数据库提供的load指令插入。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 客户端连接服务端时，加上参数 --local-infile（这一行在bash/cmd界面输入）</span><br><span class="line">mysql --local-infile -u root -p</span><br><span class="line"># 设置全局参数local_infile为1，开启从本地加载文件导入数据的开关</span><br><span class="line">set global local_infile = 1;</span><br><span class="line">select @@local_infile;</span><br><span class="line"># 执行load指令将准备好的数据，加载到表结构中</span><br><span class="line">load data local infile &#x27;/root/sql1.log&#x27; into table &#x27;tb_user&#x27; fields terminated by &#x27;,&#x27; lines terminated by &#x27;\n&#x27;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="主键优化"><a href="#主键优化" class="headerlink" title="主键优化"></a>主键优化</h3><p>数据组织方式：在InnoDB存储引擎中，表数据都是根据主键顺序组织存放的，这种存储方式的表称为索引组织表（Index organized table, IOT）</p>
+<p>页分裂：页可以为空，也可以填充一般，也可以填充100%，每个页包含了2-N行数据（如果一行数据过大，会行溢出），根据主键排列。<br>页合并：当删除一行记录时，实际上记录并没有被物理删除，只是记录被标记（flaged）为删除并且它的空间变得允许被其他记录声明使用。当页中删除的记录到达 MERGE_THRESHOLD（默认为页的50%），InnoDB会开始寻找最靠近的页（前后）看看是否可以将这两个页合并以优化空间使用。</p>
+<p>MERGE_THRESHOLD：合并页的阈值，可以自己设置，在创建表或创建索引时指定</p>
+<blockquote>
+<p>文字说明不够清晰明了，具体可以看视频里的PPT演示过程：<a href="https://www.bilibili.com/video/BV1Kr4y1i7ru?p=90">https://www.bilibili.com/video/BV1Kr4y1i7ru?p=90</a></p>
+</blockquote>
+<p>主键设计原则：</p>
+<ul>
+<li>满足业务需求的情况下，尽量降低主键的长度</li>
+<li>插入数据时，尽量选择顺序插入，选择使用 AUTO_INCREMENT 自增主键</li>
+<li>尽量不要使用 UUID 做主键或者是其他的自然主键，如身份证号</li>
+<li>业务操作时，避免对主键的修改</li>
+</ul>
+<h3 id="order-by优化"><a href="#order-by优化" class="headerlink" title="order by优化"></a>order by优化</h3><ol>
+<li>Using filesort：通过表的索引或全表扫描，读取满足条件的数据行，然后在排序缓冲区 sort buffer 中完成排序操作，所有不是通过索引直接返回排序结果的排序都叫 FileSort 排序</li>
+<li>Using index：通过有序索引顺序扫描直接返回有序数据，这种情况即为 using index，不需要额外排序，操作效率高</li>
+</ol>
+<p>如果order by字段全部使用升序排序或者降序排序，则都会走索引，但是如果一个字段升序排序，另一个字段降序排序，则不会走索引，explain的extra信息显示的是<code>Using index, Using filesort</code>，如果要优化掉Using filesort，则需要另外再创建一个索引，如：<code>create index idx_user_age_phone_ad on tb_user(age asc, phone desc);</code>，此时使用<code>select id, age, phone from tb_user order by age asc, phone desc;</code>会全部走索引</p>
+<p>总结：</p>
+<ul>
+<li>根据排序字段建立合适的索引，多字段排序时，也遵循最左前缀法则</li>
+<li>尽量使用覆盖索引</li>
+<li>多字段排序，一个升序一个降序，此时需要注意联合索引在创建时的规则（ASC&#x2F;DESC）</li>
+<li>如果不可避免出现filesort，大数据量排序时，可以适当增大排序缓冲区大小 sort_buffer_size（默认256k）</li>
+</ul>
+<h3 id="group-by优化"><a href="#group-by优化" class="headerlink" title="group by优化"></a>group by优化</h3><ul>
+<li>在分组操作时，可以通过索引来提高效率</li>
+<li>分组操作时，索引的使用也是满足最左前缀法则的</li>
+</ul>
+<p>如索引为<code>idx_user_pro_age_stat</code>，则句式可以是<code>select ... where profession order by age</code>，这样也符合最左前缀法则</p>
+<h3 id="limit优化"><a href="#limit优化" class="headerlink" title="limit优化"></a>limit优化</h3><p>常见的问题如<code>limit 2000000, 10</code>，此时需要 MySQL 排序前2000000条记录，但仅仅返回2000000 - 2000010的记录，其他记录丢弃，查询排序的代价非常大。<br>优化方案：一般分页查询时，通过创建覆盖索引能够比较好地提高性能，可以通过覆盖索引加子查询形式进行优化</p>
+<p>例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-- 此语句耗时很长</span><br><span class="line">select * from tb_sku limit 9000000, 10;</span><br><span class="line">-- 通过覆盖索引加快速度，直接通过主键索引进行排序及查询</span><br><span class="line">select id from tb_sku order by id limit 9000000, 10;</span><br><span class="line">-- 下面的语句是错误的，因为 MySQL 不支持 in 里面使用 limit</span><br><span class="line">-- select * from tb_sku where id in (select id from tb_sku order by id limit 9000000, 10);</span><br><span class="line">-- 通过连表查询即可实现第一句的效果，并且能达到第二句的速度</span><br><span class="line">select * from tb_sku as s, (select id from tb_sku order by id limit 9000000, 10) as a where s.id = a.id;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="count优化"><a href="#count优化" class="headerlink" title="count优化"></a>count优化</h3><p>MyISAM 引擎把一个表的总行数存在了磁盘上，因此执行 count(*) 的时候会直接返回这个数，效率很高（前提是不适用where）；<br>InnoDB 在执行 count(*) 时，需要把数据一行一行地从引擎里面读出来，然后累计计数。<br>优化方案：自己计数，如创建key-value表存储在内存或硬盘，或者是用redis</p>
+<p>count的几种用法：</p>
+<ul>
+<li>如果count函数的参数（count里面写的那个字段）不是NULL（字段值不为NULL），累计值就加一，最后返回累计值</li>
+<li>用法：count(*)、count(主键)、count(字段)、count(1)</li>
+<li>count(主键)跟count(*)一样，因为主键不能为空；count(字段)只计算字段值不为NULL的行；count(1)引擎会为每行添加一个1，然后就count这个1，返回结果也跟count(*)一样；count(null)返回0</li>
+</ul>
+<p>各种用法的性能：</p>
+<ul>
+<li>count(主键)：InnoDB引擎会遍历整张表，把每行的主键id值都取出来，返回给服务层，服务层拿到主键后，直接按行进行累加（主键不可能为空）</li>
+<li>count(字段)：没有not null约束的话，InnoDB引擎会遍历整张表把每一行的字段值都取出来，返回给服务层，服务层判断是否为null，不为null，计数累加；有not null约束的话，InnoDB引擎会遍历整张表把每一行的字段值都取出来，返回给服务层，直接按行进行累加</li>
+<li>count(1)：InnoDB 引擎遍历整张表，但不取值。服务层对于返回的每一层，放一个数字 1 进去，直接按行进行累加</li>
+<li>count(*)：InnoDB 引擎并不会把全部字段取出来，而是专门做了优化，不取值，服务层直接按行进行累加</li>
+</ul>
+<p>按效率排序：count(字段) &lt; count(主键) &lt; count(1) &lt; count(*)，所以尽量使用 count(*)</p>
+<h3 id="update优化（避免行锁升级为表锁）"><a href="#update优化（避免行锁升级为表锁）" class="headerlink" title="update优化（避免行锁升级为表锁）"></a>update优化（避免行锁升级为表锁）</h3><p>InnoDB 的行锁是针对索引加的锁，不是针对记录加的锁，并且该索引不能失效，否则会从行锁升级为表锁。</p>
+<p>如以下两条语句：<br><code>update student set no = &#39;123&#39; where id = 1;</code>，这句由于id有主键索引，所以只会锁这一行；<br><code>update student set no = &#39;123&#39; where name = &#39;test&#39;;</code>，这句由于name没有索引，所以会把整张表都锁住进行数据更新，解决方法是给name字段添加索引</p>
+<h1 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h1><h2 id="整型"><a href="#整型" class="headerlink" title="整型"></a>整型</h2><table>
+<thead>
+<tr>
+<th>类型名称</th>
+<th>取值范围</th>
+<th>大小</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>TINYINT</td>
+<td>-128〜127</td>
+<td>1个字节</td>
+</tr>
+<tr>
+<td>SMALLINT</td>
+<td>-32768〜32767</td>
+<td>2个宇节</td>
+</tr>
+<tr>
+<td>MEDIUMINT</td>
+<td>-8388608〜8388607</td>
+<td>3个字节</td>
+</tr>
+<tr>
+<td>INT (INTEGHR)</td>
+<td>-2147483648〜2147483647</td>
+<td>4个字节</td>
+</tr>
+<tr>
+<td>BIGINT</td>
+<td>-9223372036854775808〜9223372036854775807</td>
+<td>8个字节</td>
+</tr>
+</tbody></table>
+<p>无符号在数据类型后加 unsigned 关键字。</p>
+<h2 id="浮点型"><a href="#浮点型" class="headerlink" title="浮点型"></a>浮点型</h2><table>
+<thead>
+<tr>
+<th>类型名称</th>
+<th>说明</th>
+<th>存储需求</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>FLOAT</td>
+<td>单精度浮点数</td>
+<td>4 个字节</td>
+</tr>
+<tr>
+<td>DOUBLE</td>
+<td>双精度浮点数</td>
+<td>8 个字节</td>
+</tr>
+<tr>
+<td>DECIMAL (M, D)，DEC</td>
+<td>压缩的“严格”定点数</td>
+<td>M+2 个字节</td>
+</tr>
+</tbody></table>
+<h2 id="日期和时间"><a href="#日期和时间" class="headerlink" title="日期和时间"></a>日期和时间</h2><table>
+<thead>
+<tr>
+<th>类型名称</th>
+<th>日期格式</th>
+<th>日期范围</th>
+<th>存储需求</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>YEAR</td>
+<td>YYYY</td>
+<td>1901 ~ 2155</td>
+<td>1 个字节</td>
+</tr>
+<tr>
+<td>TIME</td>
+<td>HH:MM:SS</td>
+<td>-838:59:59 ~ 838:59:59</td>
+<td>3 个字节</td>
+</tr>
+<tr>
+<td>DATE</td>
+<td>YYYY-MM-DD</td>
+<td>1000-01-01 ~ 9999-12-3</td>
+<td>3 个字节</td>
+</tr>
+<tr>
+<td>DATETIME</td>
+<td>YYYY-MM-DD HH:MM:SS</td>
+<td>1000-01-01 00:00:00 ~ 9999-12-31 23:59:59</td>
+<td>8 个字节</td>
+</tr>
+<tr>
+<td>TIMESTAMP</td>
+<td>YYYY-MM-DD HH:MM:SS</td>
+<td>1980-01-01 00:00:01 UTC ~ 2040-01-19 03:14:07 UTC</td>
+<td>4 个字节</td>
+</tr>
+</tbody></table>
+<h2 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h2><table>
+<thead>
+<tr>
+<th>类型名称</th>
+<th>说明</th>
+<th>存储需求</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CHAR(M)</td>
+<td>固定长度非二进制字符串</td>
+<td>M 字节，1&lt;&#x3D;M&lt;&#x3D;255</td>
+</tr>
+<tr>
+<td>VARCHAR(M)</td>
+<td>变长非二进制字符串</td>
+<td>L+1字节，在此，L&lt; &#x3D; M和 1&lt;&#x3D;M&lt;&#x3D;255</td>
+</tr>
+<tr>
+<td>TINYTEXT</td>
+<td>非常小的非二进制字符串</td>
+<td>L+1字节，在此，L&lt;2^8</td>
+</tr>
+<tr>
+<td>TEXT</td>
+<td>小的非二进制字符串</td>
+<td>L+2字节，在此，L&lt;2^16</td>
+</tr>
+<tr>
+<td>MEDIUMTEXT</td>
+<td>中等大小的非二进制字符串</td>
+<td>L+3字节，在此，L&lt;2^24</td>
+</tr>
+<tr>
+<td>LONGTEXT</td>
+<td>大的非二进制字符串</td>
+<td>L+4字节，在此，L&lt;2^32</td>
+</tr>
+<tr>
+<td>ENUM</td>
+<td>枚举类型，只能有一个枚举字符串值</td>
+<td>1或2个字节，取决于枚举值的数目 (最大值为65535)</td>
+</tr>
+<tr>
+<td>SET</td>
+<td>一个设置，字符串对象可以有零个或 多个SET成员</td>
+<td>1、2、3、4或8个字节，取决于集合 成员的数量（最多64个成员）</td>
+</tr>
+</tbody></table>
+<h2 id="二进制类型"><a href="#二进制类型" class="headerlink" title="二进制类型"></a>二进制类型</h2><table>
+<thead>
+<tr>
+<th>类型名称</th>
+<th>说明</th>
+<th>存储需求</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BIT(M)</td>
+<td>位字段类型</td>
+<td>大约 (M+7)&#x2F;8 字节</td>
+</tr>
+<tr>
+<td>BINARY(M)</td>
+<td>固定长度二进制字符串</td>
+<td>M 字节</td>
+</tr>
+<tr>
+<td>VARBINARY (M)</td>
+<td>可变长度二进制字符串</td>
+<td>M+1 字节</td>
+</tr>
+<tr>
+<td>TINYBLOB (M)</td>
+<td>非常小的BLOB</td>
+<td>L+1 字节，在此，L&lt;2^8</td>
+</tr>
+<tr>
+<td>BLOB (M)</td>
+<td>小 BLOB</td>
+<td>L+2 字节，在此，L&lt;2^16</td>
+</tr>
+<tr>
+<td>MEDIUMBLOB (M)</td>
+<td>中等大小的BLOB</td>
+<td>L+3 字节，在此，L&lt;2^24</td>
+</tr>
+<tr>
+<td>LONGBLOB (M)</td>
+<td>非常大的BLOB</td>
+<td>L+4 字节，在此，L&lt;2^32</td>
+</tr>
+</tbody></table>
+<h1 id="权限一览表"><a href="#权限一览表" class="headerlink" title="权限一览表"></a>权限一览表</h1><blockquote>
+<p>具体权限的作用详见<a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html" title="官方文档">官方文档</a></p>
+</blockquote>
+<p>GRANT 和 REVOKE 允许的静态权限</p>
+<table>
+<thead>
+<tr>
+<th align="left">Privilege</th>
+<th align="left">Grant Table Column</th>
+<th align="left">Context</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_all"><code>ALL [PRIVILEGES]</code></a></td>
+<td align="left">Synonym for “all privileges”</td>
+<td align="left">Server administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_alter"><code>ALTER</code></a></td>
+<td align="left"><code>Alter_priv</code></td>
+<td align="left">Tables</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_alter-routine"><code>ALTER ROUTINE</code></a></td>
+<td align="left"><code>Alter_routine_priv</code></td>
+<td align="left">Stored routines</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_create"><code>CREATE</code></a></td>
+<td align="left"><code>Create_priv</code></td>
+<td align="left">Databases, tables, or indexes</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_create-role"><code>CREATE ROLE</code></a></td>
+<td align="left"><code>Create_role_priv</code></td>
+<td align="left">Server administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_create-routine"><code>CREATE ROUTINE</code></a></td>
+<td align="left"><code>Create_routine_priv</code></td>
+<td align="left">Stored routines</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_create-tablespace"><code>CREATE TABLESPACE</code></a></td>
+<td align="left"><code>Create_tablespace_priv</code></td>
+<td align="left">Server administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_create-temporary-tables"><code>CREATE TEMPORARY TABLES</code></a></td>
+<td align="left"><code>Create_tmp_table_priv</code></td>
+<td align="left">Tables</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_create-user"><code>CREATE USER</code></a></td>
+<td align="left"><code>Create_user_priv</code></td>
+<td align="left">Server administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_create-view"><code>CREATE VIEW</code></a></td>
+<td align="left"><code>Create_view_priv</code></td>
+<td align="left">Views</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_delete"><code>DELETE</code></a></td>
+<td align="left"><code>Delete_priv</code></td>
+<td align="left">Tables</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_drop"><code>DROP</code></a></td>
+<td align="left"><code>Drop_priv</code></td>
+<td align="left">Databases, tables, or views</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_drop-role"><code>DROP ROLE</code></a></td>
+<td align="left"><code>Drop_role_priv</code></td>
+<td align="left">Server administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_event"><code>EVENT</code></a></td>
+<td align="left"><code>Event_priv</code></td>
+<td align="left">Databases</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_execute"><code>EXECUTE</code></a></td>
+<td align="left"><code>Execute_priv</code></td>
+<td align="left">Stored routines</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_file"><code>FILE</code></a></td>
+<td align="left"><code>File_priv</code></td>
+<td align="left">File access on server host</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_grant-option"><code>GRANT OPTION</code></a></td>
+<td align="left"><code>Grant_priv</code></td>
+<td align="left">Databases, tables, or stored routines</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_index"><code>INDEX</code></a></td>
+<td align="left"><code>Index_priv</code></td>
+<td align="left">Tables</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_insert"><code>INSERT</code></a></td>
+<td align="left"><code>Insert_priv</code></td>
+<td align="left">Tables or columns</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_lock-tables"><code>LOCK TABLES</code></a></td>
+<td align="left"><code>Lock_tables_priv</code></td>
+<td align="left">Databases</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_process"><code>PROCESS</code></a></td>
+<td align="left"><code>Process_priv</code></td>
+<td align="left">Server administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_proxy"><code>PROXY</code></a></td>
+<td align="left">See <code>proxies_priv</code> table</td>
+<td align="left">Server administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_references"><code>REFERENCES</code></a></td>
+<td align="left"><code>References_priv</code></td>
+<td align="left">Databases or tables</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_reload"><code>RELOAD</code></a></td>
+<td align="left"><code>Reload_priv</code></td>
+<td align="left">Server administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_replication-client"><code>REPLICATION CLIENT</code></a></td>
+<td align="left"><code>Repl_client_priv</code></td>
+<td align="left">Server administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_replication-slave"><code>REPLICATION SLAVE</code></a></td>
+<td align="left"><code>Repl_slave_priv</code></td>
+<td align="left">Server administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_select"><code>SELECT</code></a></td>
+<td align="left"><code>Select_priv</code></td>
+<td align="left">Tables or columns</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_show-databases"><code>SHOW DATABASES</code></a></td>
+<td align="left"><code>Show_db_priv</code></td>
+<td align="left">Server administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_show-view"><code>SHOW VIEW</code></a></td>
+<td align="left"><code>Show_view_priv</code></td>
+<td align="left">Views</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_shutdown"><code>SHUTDOWN</code></a></td>
+<td align="left"><code>Shutdown_priv</code></td>
+<td align="left">Server administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_super"><code>SUPER</code></a></td>
+<td align="left"><code>Super_priv</code></td>
+<td align="left">Server administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_trigger"><code>TRIGGER</code></a></td>
+<td align="left"><code>Trigger_priv</code></td>
+<td align="left">Tables</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_update"><code>UPDATE</code></a></td>
+<td align="left"><code>Update_priv</code></td>
+<td align="left">Tables or columns</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_usage"><code>USAGE</code></a></td>
+<td align="left">Synonym for “no privileges”</td>
+<td align="left">Server administration</td>
+</tr>
+</tbody></table>
+<p>GRANT 和 REVOKE 允许的动态权限</p>
+<table>
+<thead>
+<tr>
+<th align="left">Privilege</th>
+<th align="left">Context</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_application-password-admin"><code>APPLICATION_PASSWORD_ADMIN</code></a></td>
+<td align="left">Dual password administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_audit-abort-exempt"><code>AUDIT_ABORT_EXEMPT</code></a></td>
+<td align="left">Allow queries blocked by audit log filter</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_audit-admin"><code>AUDIT_ADMIN</code></a></td>
+<td align="left">Audit log administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_authentication-policy-admin"><code>AUTHENTICATION_POLICY_ADMIN</code></a></td>
+<td align="left">Authentication administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_backup-admin"><code>BACKUP_ADMIN</code></a></td>
+<td align="left">Backup administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_binlog-admin"><code>BINLOG_ADMIN</code></a></td>
+<td align="left">Backup and Replication administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_binlog-encryption-admin"><code>BINLOG_ENCRYPTION_ADMIN</code></a></td>
+<td align="left">Backup and Replication administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_clone-admin"><code>CLONE_ADMIN</code></a></td>
+<td align="left">Clone administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_connection-admin"><code>CONNECTION_ADMIN</code></a></td>
+<td align="left">Server administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_encryption-key-admin"><code>ENCRYPTION_KEY_ADMIN</code></a></td>
+<td align="left">Server administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_firewall-admin"><code>FIREWALL_ADMIN</code></a></td>
+<td align="left">Firewall administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_firewall-exempt"><code>FIREWALL_EXEMPT</code></a></td>
+<td align="left">Firewall administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_firewall-user"><code>FIREWALL_USER</code></a></td>
+<td align="left">Firewall administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_flush-optimizer-costs"><code>FLUSH_OPTIMIZER_COSTS</code></a></td>
+<td align="left">Server administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_flush-status"><code>FLUSH_STATUS</code></a></td>
+<td align="left">Server administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_flush-tables"><code>FLUSH_TABLES</code></a></td>
+<td align="left">Server administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_flush-user-resources"><code>FLUSH_USER_RESOURCES</code></a></td>
+<td align="left">Server administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_group-replication-admin"><code>GROUP_REPLICATION_ADMIN</code></a></td>
+<td align="left">Replication administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_group-replication-stream"><code>GROUP_REPLICATION_STREAM</code></a></td>
+<td align="left">Replication administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_innodb-redo-log-archive"><code>INNODB_REDO_LOG_ARCHIVE</code></a></td>
+<td align="left">Redo log archiving administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_ndb-stored-user"><code>NDB_STORED_USER</code></a></td>
+<td align="left">NDB Cluster</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_passwordless-user-admin"><code>PASSWORDLESS_USER_ADMIN</code></a></td>
+<td align="left">Authentication administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_persist-ro-variables-admin"><code>PERSIST_RO_VARIABLES_ADMIN</code></a></td>
+<td align="left">Server administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_replication-applier"><code>REPLICATION_APPLIER</code></a></td>
+<td align="left"><code>PRIVILEGE_CHECKS_USER</code> for a replication channel</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_replication-slave-admin"><code>REPLICATION_SLAVE_ADMIN</code></a></td>
+<td align="left">Replication administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_resource-group-admin"><code>RESOURCE_GROUP_ADMIN</code></a></td>
+<td align="left">Resource group administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_resource-group-user"><code>RESOURCE_GROUP_USER</code></a></td>
+<td align="left">Resource group administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_role-admin"><code>ROLE_ADMIN</code></a></td>
+<td align="left">Server administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_session-variables-admin"><code>SESSION_VARIABLES_ADMIN</code></a></td>
+<td align="left">Server administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_set-user-id"><code>SET_USER_ID</code></a></td>
+<td align="left">Server administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_show-routine"><code>SHOW_ROUTINE</code></a></td>
+<td align="left">Server administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_system-user"><code>SYSTEM_USER</code></a></td>
+<td align="left">Server administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_system-variables-admin"><code>SYSTEM_VARIABLES_ADMIN</code></a></td>
+<td align="left">Server administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_table-encryption-admin"><code>TABLE_ENCRYPTION_ADMIN</code></a></td>
+<td align="left">Server administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_version-token-admin"><code>VERSION_TOKEN_ADMIN</code></a></td>
+<td align="left">Server administration</td>
+</tr>
+<tr>
+<td align="left"><a href="https://dev.mysql.com/doc/refman/8.0/en/privileges-provided.html#priv_xa-recover-admin"><code>XA_RECOVER_ADMIN</code></a></td>
+<td align="left">Server administration</td>
+</tr>
+</tbody></table>
+<h1 id="图形化界面工具"><a href="#图形化界面工具" class="headerlink" title="图形化界面工具"></a>图形化界面工具</h1><ul>
+<li>Workbench(免费): <a href="http://dev.mysql.com/downloads/workbench/">http://dev.mysql.com/downloads/workbench/</a></li>
+<li>navicat(收费，试用版30天): <a href="https://www.navicat.com/en/download/navicat-for-mysql">https://www.navicat.com/en/download/navicat-for-mysql</a></li>
+<li>Sequel Pro(开源免费，仅支持Mac OS): <a href="http://www.sequelpro.com/">http://www.sequelpro.com/</a></li>
+<li>HeidiSQL(免费): <a href="http://www.heidisql.com/">http://www.heidisql.com/</a></li>
+<li>phpMyAdmin(免费): <a href="https://www.phpmyadmin.net/">https://www.phpmyadmin.net/</a></li>
+<li>SQLyog: <a href="https://sqlyog.en.softonic.com/">https://sqlyog.en.softonic.com/</a></li>
+</ul>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><h1 id="小技巧"><a href="#小技巧" class="headerlink" title="小技巧"></a>小技巧</h1><ol>
+<li>在SQL语句之后加上<code>\G</code>会将结果的表格形式转换成行文本形式</li>
+<li>查看Mysql数据库占用空间：</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">SELECT table_schema &quot;Database Name&quot;</span><br><span class="line">     , SUM(data_length + index_length) / (1024 * 1024) &quot;Database Size in MB&quot;</span><br><span class="line">FROM information_schema.TABLES</span><br><span class="line">GROUP BY table_schema;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="后续内容"><a href="#后续内容" class="headerlink" title="后续内容"></a>后续内容</h1><p>后续内容因为跟当前学习、工作计划有冲突，所以后续课程的学习计划会无限期推后。<br>目前的工作重点放在重做一个学习笔记网站，当然这是边做边学的，开发过程中遇到的难点和知识点我也会记录下来供大家学习。<br><strong>在此感谢B站同样爱学习的同学 @守心-人 提供的后续课程笔记，大家有条件一定要去给个star，你的每一个star和点赞都是我们前进的动力</strong><br><strong><a href="https://github.com/Buildings-Lei/mysql_note/blob/main/README.md">https://github.com/Buildings-Lei/mysql_note&#x2F;blob&#x2F;main&#x2F;README.md</a></strong></p>
+]]></content>
+      <categories>
+        <category>运维</category>
+      </categories>
+      <tags>
+        <tag>MySQL</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Django单元测试快速指南</title>
+    <url>/%E5%90%8E%E7%AB%AF/django%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E5%BF%AB%E9%80%9F%E6%8C%87%E5%8D%97/</url>
+    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><blockquote>
+<p>本文受《Python测试驱动开发》启发，书中内容很详尽，章节也很多，比较偏向于新手向，从如何安装Django1.11到如何使用Git工具都有教，没接触过这些的人都能看懂，有一定基础的人可以略读，值得一看。<br>本文绝大部分内容并不来自该书，更多的是我的个人见解和对官方文档的一些整理。</p>
+</blockquote>
+<p>本文主要介绍Django跟unittest有区别的地方，以及如何去使用Django内置的测试模块进行测试，适合有一定Python基础和Django基础的人。</p>
+<span id="more"></span>
+
+<h2 id="自动测试的理念"><a href="#自动测试的理念" class="headerlink" title="自动测试的理念"></a>自动测试的理念</h2><h3 id="TDD"><a href="#TDD" class="headerlink" title="TDD"></a>TDD</h3><p>TDD(Test Driven Development)，中文名是“测试驱动开发”，这是一个编程理念，类似于面向对象编程，你可以不用，但是如果你用了，你会发现你的开发过程会非常的顺畅，非常的有底气，你对代码所做的每一处修改，都在你的可控范围内，出错也很容易找到问题所在，并且先测试再开发的过程更有利于你设计一个功能或者设计整个产品，在你的大脑中会非常清晰地知道你想要实现什么功能，而不需要先想着代码应该怎么实现，就像API文档一样，每个功能、每个模块都可以一目了然，这就是测试的作用。</p>
+<h2 id="个人见解"><a href="#个人见解" class="headerlink" title="个人见解"></a>个人见解</h2><p>通过这段时间编写测试代码的经历，对自动测试、单元测试有一点小小见解。<br>给Django项目写测试对我来说是一件很痛苦的事情，特别是MTV中的T（Templates），要测试模板是否是对的，就相当于测试前端，不仅要测试UI显示（HTML）是不是对的，（JS）交互是否正常，样式（CSS）是否正确（即UI），还要测试跟Django耦合部分的上下文对不对。<br>测试模板一般都是看期望的DOM有没有渲染出来，还得测试点击某个按钮是不是能正常工作等等。</p>
+<p>然后就是视图或者模型测试，得把所有场景都想象出来，然后对这些场景进行测试，比如权限认证、身份认证、数据库查询等。</p>
+<p>如果把整个项目都做一遍测试，把上述的测试项都测试一遍，那这样下来测试代码要比业务代码要多不少，不过这样也是有他的合理性的，毕竟测试全面了，代码稳定性就高了。</p>
+<p>但是我觉得不应该把所有的测试代码都放到Django项目里面，应该分三个部分进行：</p>
+<ol>
+<li>后端函数、逻辑代码测试</li>
+<li>接口测试</li>
+<li>前端UI和交互测试</li>
+<li>功能测试&#x2F;需求测试</li>
+</ol>
+<p>各部门各司其职，对上述测试点进行测试，用其相对应的专业工具去测，这样效率也能大大提升，并且测试文档也会好写很多，最终提交的项目的结构化也更好。<br>另外我认为测试代码（即用于进行测试的代码，不是被测试的代码）越少越好，因为如果用代码测试代码，那很难保证测试代码本身不会存在逻辑错误或者其他BUG，各种逻辑函数越少越好，越傻瓜越好，哪怕是面向过程模式的测试代码，这样才能更好拟合用户的操作行为，减少依赖性。</p>
+<h2 id="Django中需要测试的部分"><a href="#Django中需要测试的部分" class="headerlink" title="Django中需要测试的部分"></a>Django中需要测试的部分</h2><p><img src="/%E5%90%8E%E7%AB%AF/django%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E5%BF%AB%E9%80%9F%E6%8C%87%E5%8D%97/Django%E6%B5%8B%E8%AF%95.png" alt="Django测试" title="Django测试"></p>
+<h1 id="快速入门"><a href="#快速入门" class="headerlink" title="快速入门"></a>快速入门</h1><h2 id="测试代码"><a href="#测试代码" class="headerlink" title="测试代码"></a>测试代码</h2><figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> django.test <span class="hljs-keyword">import</span> TestCase<br><span class="hljs-keyword">from</span> myapp.models <span class="hljs-keyword">import</span> Animal<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">AnimalTestCase</span>(<span class="hljs-title class_ inherited__">TestCase</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">setUp</span>(<span class="hljs-params">self</span>):<br>        Animal.objects.create(name=<span class="hljs-string">&quot;lion&quot;</span>, sound=<span class="hljs-string">&quot;roar&quot;</span>)<br>        Animal.objects.create(name=<span class="hljs-string">&quot;cat&quot;</span>, sound=<span class="hljs-string">&quot;meow&quot;</span>)<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">test_animals_can_speak</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-string">&quot;&quot;&quot;Animals that can speak are correctly identified&quot;&quot;&quot;</span><br>        lion = Animal.objects.get(name=<span class="hljs-string">&quot;lion&quot;</span>)<br>        cat = Animal.objects.get(name=<span class="hljs-string">&quot;cat&quot;</span>)<br>        self.assertEqual(lion.speak(), <span class="hljs-string">&#x27;The lion says &quot;roar&quot;&#x27;</span>)<br>        self.assertEqual(cat.speak(), <span class="hljs-string">&#x27;The cat says &quot;meow&quot;&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<h2 id="命令行"><a href="#命令行" class="headerlink" title="命令行"></a>命令行</h2><figure class="highlight bash"><table><tr><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 运行全部测试</span><br>python manage.py <span class="hljs-built_in">test</span><br><span class="hljs-comment"># 运行animal.tests模块下的所有测试</span><br>python manage.py <span class="hljs-built_in">test</span> animals.tests<br><span class="hljs-comment"># 自动搜索animal包下的所有test_开头的测试文件，并运行测试</span><br>python manage.py <span class="hljs-built_in">test</span> animals<br><span class="hljs-comment"># 仅运行一个测试用例</span><br>python manage.py <span class="hljs-built_in">test</span> animals.tests.AnimalTestCase<br><span class="hljs-comment"># 仅运行一个测试用例下的测试点</span><br>python manage.py <span class="hljs-built_in">test</span> animals.tests.AnimalTestCase.test_animals_can_speak<br><span class="hljs-comment"># 也可以自动搜索一个目录下的测试文件，并运行测试，跟第三个示例相似</span><br>python manage.py <span class="hljs-built_in">test</span> animals/<br><span class="hljs-comment"># 甚至可以指定一个前缀，然后自动运行对应前缀的测试代码</span><br>python manage.py <span class="hljs-built_in">test</span> --pattern=<span class="hljs-string">&quot;tests_*.py&quot;</span><br><span class="hljs-comment"># 并行运行测试</span><br>python manage.py <span class="hljs-built_in">test</span> --parallel<br><span class="hljs-comment"># 运行测试并保存临时数据库</span><br>python manage.py <span class="hljs-built_in">test</span> --keepdb<br></code></pre></td></tr></table></figure>
+
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ul>
+<li>测试时不会使用真实数据库，测试运行完之后会自动删除临时数据库，除非指定一个参数<code>--keepdb</code>，指定了这个参数之后数据库会保存下来（SQLite数据库后端会保存为test_开头的文件），方便查看运行结果</li>
+</ul>
+<h1 id="接口和工具"><a href="#接口和工具" class="headerlink" title="接口和工具"></a>接口和工具</h1><h2 id="请求客户端"><a href="#请求客户端" class="headerlink" title="请求客户端"></a>请求客户端</h2><p>模拟浏览器发起请求，跟用requests模块类似，用来测试RestfulAPI很方便</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> django.test <span class="hljs-keyword">import</span> Client<br>c = Client()<br>response = c.post(<span class="hljs-string">&#x27;/login/&#x27;</span>, &#123;<span class="hljs-string">&#x27;username&#x27;</span>: <span class="hljs-string">&#x27;john&#x27;</span>, <span class="hljs-string">&#x27;password&#x27;</span>: <span class="hljs-string">&#x27;smith&#x27;</span>&#125;)<br>response.status_code  <span class="hljs-comment"># 200</span><br>response = c.get(<span class="hljs-string">&#x27;/customer/details/&#x27;</span>)<br>response.content  <span class="hljs-comment"># b&#x27;&lt;!DOCTYPE html...&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h3><ul>
+<li>enforce_csrf_checks：启用csrf检查</li>
+<li>HTTP_USER_AGENT：指定UA</li>
+<li>包括其他的HTTP_HEADERS都可以传递到Client</li>
+</ul>
+<h3 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h3><ul>
+<li><code>.get(path, data=None, follow=False, secure=False, **extra)</code></li>
+<li><code>.post(path, data=None, content_type=MULTIPART_CONTENT, follow=False, secure=False, **extra)</code></li>
+<li><code>.head(path, data=None, follow=False, secure=False, **extra)</code></li>
+<li><code>.options(path, data=&#39;&#39;, content_type=&#39;application/octet-stream&#39;, follow=False, secure=False, **extra)</code></li>
+<li><code>.put(path, data=&#39;&#39;, content_type=&#39;application/octet-stream&#39;, follow=False, secure=False, **extra)</code></li>
+<li><code>.patch(path, data=&#39;&#39;, content_type=&#39;application/octet-stream&#39;, follow=False, secure=False, **extra)</code></li>
+<li><code>.delete(path, data=&#39;&#39;, content_type=&#39;application/octet-stream&#39;, follow=False, secure=False, **extra)</code></li>
+<li><code>.trace(path, follow=False, secure=False, **extra)</code></li>
+<li><code>.login(**credentials)</code></li>
+<li><code>.force_login(user, backend=None)</code></li>
+<li><code>.logout()</code></li>
+</ul>
+<h4 id="get"><a href="#get" class="headerlink" title="get"></a>get</h4><ul>
+<li>data：传递一个字典，会将请求URL拼接成 ?a&#x3D;1&amp;b&#x3D;2 这种类型</li>
+<li>follow：跟踪重定向返回，此时返回值response会带有一个属性redirect_chain，这个属性可以看到所有重定向中经过的URL</li>
+<li>secure：设置成True时会模拟成一个HTTPS请求</li>
+</ul>
+<h4 id="post"><a href="#post" class="headerlink" title="post"></a>post</h4><ul>
+<li>data：请求的数据，可以传递文件对象</li>
+<li>content_type：这个值会设置Content-Type请求头，具体可以设置的值参考Content-Type</li>
+</ul>
+<h4 id="trace"><a href="#trace" class="headerlink" title="trace"></a>trace</h4><p>用于模拟浏览器的diagnostic探针（Chrome浏览器会有这个请求，跟OPTIONS请求一起的）</p>
+<h4 id="login"><a href="#login" class="headerlink" title="login"></a>login</h4><p>用于登录，登录之后client会带有cookies和session，之后可以用于测试所有需要登录的视图，要想提高这个接口的速度可以添加配置项：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python">PASSWORD_HASHERS = [<br>    <span class="hljs-string">&#x27;django.contrib.auth.hashers.MD5PasswordHasher&#x27;</span>,<br>]<br></code></pre></td></tr></table></figure>
+
+<h4 id="force-login"><a href="#force-login" class="headerlink" title="force_login"></a>force_login</h4><p>也是用于登录，而且is_active&#x3D;False的用户也可以登录，甚至不需要提供凭证也能登录。<br>在不做其他任何设置的话，这个接口速度也会比login快（因为密码哈希算法是很耗时的）</p>
+<h3 id="持久化-属性"><a href="#持久化-属性" class="headerlink" title="持久化 属性"></a>持久化 属性</h3><ul>
+<li>Client.cookies</li>
+<li>Client.session</li>
+</ul>
+<h3 id="注意事项-1"><a href="#注意事项-1" class="headerlink" title="注意事项"></a>注意事项</h3><ul>
+<li>不需要运行服务器也可以工作</li>
+<li>请求路径不需要包含全路径，只需要url路由就行</li>
+</ul>
+<h2 id="请求响应Response"><a href="#请求响应Response" class="headerlink" title="请求响应Response"></a>请求响应Response</h2><p>响应对象来源于上一节中的请求方法</p>
+<h3 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h3><ul>
+<li>client：请求的客户端，来源于上一节中的客户端对象</li>
+<li>content：返回的内容，是一个bytes类型</li>
+<li>context：渲染模板时传入的context值，是用于测试模板是否正确渲染的最重要属性。如果用的是其他的模板引擎，就要用context_data来访问</li>
+<li>request：触发响应的请求对象，跟wsgi_request的不同是这个参数是一个字典，只包含一些基本的请求数据，比如端口、请求方法等</li>
+<li>wsgi_request：生成响应的测试处理程序生成的WSGIRequest实例。（跟views.py里面定义的那些视图函数的request参数是一样的）</li>
+<li>status_code：状态码</li>
+<li>templates：响应所使用的模板对象，可以用<code>.name</code>获取模板文件名（路径）</li>
+<li>resolver_match：响应所使用的视图函数，可以用<code>.func</code>获取视图函数，然后可以用<code>self.assertEqual(response.resolver_match.func, my_view)</code>来进行比对</li>
+</ul>
+<h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3><ul>
+<li><code>.json(**kwargs)</code>：返回json格式</li>
+</ul>
+<h3 id="注意事项-2"><a href="#注意事项-2" class="headerlink" title="注意事项"></a>注意事项</h3><ul>
+<li>响应对象还可以像字典那样取值</li>
+</ul>
+<h2 id="测试用例类"><a href="#测试用例类" class="headerlink" title="测试用例类"></a>测试用例类</h2><h3 id="SimpleTestCase"><a href="#SimpleTestCase" class="headerlink" title="SimpleTestCase"></a>SimpleTestCase</h3><p>一个非常简单的测试用例类，是unittest.TestCase的一个子类。<br>如果你要做很多的数据库查询操作，就不要用这个类了，改为用 TransactionTestCase 或 TestCase（django的TestCase）</p>
+<h4 id="属性-1"><a href="#属性-1" class="headerlink" title="属性"></a>属性</h4><ul>
+<li>allow_database_queries：是否允许数据库查询操作，默认是False。防止其他SimpleTestCase运行数据库查询的时候不在一个事务里面，可能是防冲突</li>
+</ul>
+<h4 id="注意事项-3"><a href="#注意事项-3" class="headerlink" title="注意事项"></a>注意事项</h4><ul>
+<li>要设置类变量，要用setUpClass和tearDownClass方法</li>
+</ul>
+<h3 id="TransactionTestCase"><a href="#TransactionTestCase" class="headerlink" title="TransactionTestCase"></a>TransactionTestCase</h3><p>继承自SimpleTestCase，多了一些数据库的操作。在每次测试开始时将数据库重置为已知状态，以便于测试和使用ORM。</p>
+<h3 id="TestCase"><a href="#TestCase" class="headerlink" title="TestCase"></a>TestCase</h3><p>最常用的类，继承自TransactionTestCase，如果你的Django项目没有用到数据库，用SimpleTestCase会好很多。<br>里面的测试会封装在两个<code>atomic()</code>块中（一个便捷的在事务里面操作数据库的方法），一个包在TestCase外面，一个包在所有的test方法外。<br>如果要测试某些特定的数据库事务行为，请使用TransactionTestCase。</p>
+<h4 id="方法-1"><a href="#方法-1" class="headerlink" title="方法"></a>方法</h4><ul>
+<li>setUpTestData：这个方法专门用于往数据库插入数据（创建模型数据），用这个方法会比用setUp快</li>
+</ul>
+<h4 id="注意事项-4"><a href="#注意事项-4" class="headerlink" title="注意事项"></a>注意事项</h4><ul>
+<li>如果测试在没有事务支持的数据库上运行（例如，使用MyISAM引擎的MySQL），则在每次测试之前都会调用setUpTestData()，从而抵消了速度优势。</li>
+<li>不要在测试方法中修改setUpTestData()中创建的任何对象。在类中完成设置工作后，再对内存对象的修改将会在其他测试方法之间持续。如果确实需要修改它们，可以在setUp中使用refresh_from_db()重新加载它们。（暂时没用过，不确保解释准确性，只做简单翻译）</li>
+</ul>
+<h3 id="LiveServerTestCase"><a href="#LiveServerTestCase" class="headerlink" title="LiveServerTestCase"></a>LiveServerTestCase</h3><p>这是一个比较特殊的类，他会在setUp的时候把服务器启动，tearDown的时候关闭服务器，从名字上也可以看出来，这个类下面的测试都是跟服务相关联的，用这个类可以使得Django的虚拟客户端（上面说的那个）或者<strong>Selenium客户端</strong>测试起来更加的快捷方便，这个类可以用在功能测试上（官方也是说很适合用在功能测试上）</p>
+<h4 id="属性-2"><a href="#属性-2" class="headerlink" title="属性"></a>属性</h4><ul>
+<li>live_server_url：服务器的监听地址，IP都是localhost，端口会用一个可以使用的端口</li>
+</ul>
+<h4 id="官方示例"><a href="#官方示例" class="headerlink" title="官方示例"></a>官方示例</h4><figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> django.contrib.staticfiles.testing <span class="hljs-keyword">import</span> StaticLiveServerTestCase<br><span class="hljs-keyword">from</span> selenium.webdriver.firefox.webdriver <span class="hljs-keyword">import</span> WebDriver<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">MySeleniumTests</span>(<span class="hljs-title class_ inherited__">StaticLiveServerTestCase</span>):<br>    fixtures = [<span class="hljs-string">&#x27;user-data.json&#x27;</span>]<br><br><span class="hljs-meta">    @classmethod</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">setUpClass</span>(<span class="hljs-params">cls</span>):<br>        <span class="hljs-built_in">super</span>(MySeleniumTests, cls).setUpClass()<br>        cls.selenium = WebDriver()<br>        cls.selenium.implicitly_wait(<span class="hljs-number">10</span>)<br><br><span class="hljs-meta">    @classmethod</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">tearDownClass</span>(<span class="hljs-params">cls</span>):<br>        cls.selenium.quit()<br>        <span class="hljs-built_in">super</span>(MySeleniumTests, cls).tearDownClass()<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">test_login</span>(<span class="hljs-params">self</span>):<br>        self.selenium.get(<span class="hljs-string">&#x27;%s%s&#x27;</span> % (self.live_server_url, <span class="hljs-string">&#x27;/login/&#x27;</span>))<br>        username_input = self.selenium.find_element_by_name(<span class="hljs-string">&quot;username&quot;</span>)<br>        username_input.send_keys(<span class="hljs-string">&#x27;myuser&#x27;</span>)<br>        password_input = self.selenium.find_element_by_name(<span class="hljs-string">&quot;password&quot;</span>)<br>        password_input.send_keys(<span class="hljs-string">&#x27;secret&#x27;</span>)<br>        self.selenium.find_element_by_xpath(<span class="hljs-string">&#x27;//input[@value=&quot;Log in&quot;]&#x27;</span>).click()<br></code></pre></td></tr></table></figure>
+
+<h4 id="注意事项-5"><a href="#注意事项-5" class="headerlink" title="注意事项"></a>注意事项</h4><ul>
+<li>尽量避免在多个测试中同时操作数据库（在并行测试的模式下）</li>
+</ul>
+<h3 id="特殊事项"><a href="#特殊事项" class="headerlink" title="特殊事项"></a>特殊事项</h3><h4 id="client对象自动初始化"><a href="#client对象自动初始化" class="headerlink" title="client对象自动初始化"></a>client对象自动初始化</h4><p>任何的测试用例类都会自带一个<code>self.client</code>属性，所以你不需要每次都自己定义一个client，除非你要在一个测试里面用多个客户端来进行测试。并且每个测试的client对象是互不干扰的，不用担心session和cookie会影响到别的测试。</p>
+<h4 id="自定义client对象"><a href="#自定义client对象" class="headerlink" title="自定义client对象"></a>自定义client对象</h4><p>你可以定义一个继承自Client类的子类，然后在你的TestCase下设置一个类变量<code>client_class</code>赋值为你的自定义Client类</p>
+<h4 id="预加载数据"><a href="#预加载数据" class="headerlink" title="预加载数据"></a>预加载数据</h4><p>可以设置TransactionTestCase类的一个类变量值<code>fixtures</code>，这个值是一个列表类型，里面的元素可以是一个文件名，或者是一个含有fixtures的Django APP。<br>这个功能暂时不做过多解释，知道有什么用就行。</p>
+<h4 id="在不同的跟路由配置下运行"><a href="#在不同的跟路由配置下运行" class="headerlink" title="在不同的跟路由配置下运行"></a>在不同的跟路由配置下运行</h4><p>你的程序（或者说项目）如果要给其他人用，或者允许别人部署的时候可以做很多的自定义配置，那你就不能只单纯地认为你的测试或者说你的项目在你自己配置好的路由下能正常运行就算是验收通过了，你还要去确认在别的路由配置下，仍能正常访问和使用各个功能，所以做其他的路由测试非常重要。一般如果又要在自己的配置下能正常运行，又要在自定义配置下运行，那你的测试只需要测试自定义配置下的情况就可以了。自定义配置的话，能配多奇葩就多奇葩，因为你无法预测用户的行为，你只能去预防最坏的情况。</p>
+<p>要设置其他的路由（或者其他配置项也可以，修改参数就行），就要在你的TestCase或者其下的测试方法用一个装饰器<code>@override_settings(ROOT_URLCONF=...)</code>。</p>
+<h4 id="多数据库"><a href="#多数据库" class="headerlink" title="多数据库"></a>多数据库</h4><p>如果你的项目用到了多个数据库，就要设置一个类变量<code>multi_db = True</code>，他会在每次测试之前清空所有数据库。如果为False，则整个测试流程只会用到<code>settings.py</code>里面的default数据库。</p>
+<h4 id="覆盖配置项"><a href="#覆盖配置项" class="headerlink" title="覆盖配置项"></a>覆盖配置项</h4><p><strong>不要直接修改<code>django.conf.settings</code>里面的配置项</strong>，否则你剩下的测试都会使用新的配置项。</p>
+<p>代码示例：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">with</span> self.settings(LOGIN_URL=<span class="hljs-string">&#x27;/other/login/&#x27;</span>):<br>    response = self.client.get(<span class="hljs-string">&#x27;/sekrit/&#x27;</span>)<br>    self.assertRedirects(response, <span class="hljs-string">&#x27;/other/login/?next=/sekrit/&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>或者仅添加（后添加、前添加）、修改某个值（对于列表类型的配置项有用），可以使用另一个方法（注意里面的key的含义）：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">with</span> self.modify_settings(MIDDLEWARE=&#123;<br>    <span class="hljs-string">&#x27;append&#x27;</span>: <span class="hljs-string">&#x27;django.middleware.cache.FetchFromCacheMiddleware&#x27;</span>,<br>    <span class="hljs-string">&#x27;prepend&#x27;</span>: <span class="hljs-string">&#x27;django.middleware.cache.UpdateCacheMiddleware&#x27;</span>,<br>    <span class="hljs-string">&#x27;remove&#x27;</span>: [<br>        <span class="hljs-string">&#x27;django.contrib.sessions.middleware.SessionMiddleware&#x27;</span>,<br>        <span class="hljs-string">&#x27;django.contrib.auth.middleware.AuthenticationMiddleware&#x27;</span>,<br>        <span class="hljs-string">&#x27;django.contrib.messages.middleware.MessageMiddleware&#x27;</span>,<br>    ],<br>&#125;):<br>    response = self.client.get(<span class="hljs-string">&#x27;/&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>还有如前面所说的<code>@override_settings</code>装饰器，前面已做过介绍，这里不再赘述。<br>另外还有一个跟<code>modify_settings</code>一样用法的装饰器<code>@modify_settings</code>，就是对整个test或TestCase都进行修改的方法。</p>
+<p><strong>override_settings要在modify_settings之前。</strong></p>
+<p>重写设置时，请确保正确处理应用程序代码使用缓存或类似功能的情况，即使更改了设置，该功能也会保留状态。Django提供<code>django.test.signals.setting_changed</code>信号，允许您注册回调以在设置更改时清除或重置状态。<br>Django本身使用此信号重置各种数据：</p>
+<table>
+<thead>
+<tr>
+<th>Overridden settings</th>
+<th>Data reset</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>TEMPLATES</td>
+<td>Template engines</td>
+</tr>
+<tr>
+<td>SERIALIZATION_MODULES</td>
+<td>Serializers cache</td>
+</tr>
+<tr>
+<td>LOCALE_PATHS, LANGUAGE_CODE</td>
+<td>Default translation and loaded translations</td>
+</tr>
+<tr>
+<td>MEDIA_ROOT, DEFAULT_FILE_STORAGE</td>
+<td>Default file storage</td>
+</tr>
+</tbody></table>
+<h4 id="邮件"><a href="#邮件" class="headerlink" title="邮件"></a>邮件</h4><p>如果你用的是Django的TestCase类（包括子类），那所有类运行前都会清空测试邮件的outbox</p>
+<h2 id="Assertions断言"><a href="#Assertions断言" class="headerlink" title="Assertions断言"></a>Assertions断言</h2><p>除了Python标准库unittest里面的那些断言之外，Django还提供了很多特有的断言方法。</p>
+<p>SimpleTestCase（及其子类）方法：</p>
+<ul>
+<li><code>.assertRaisesMessage(expected_exception, expected_message, callable, *args, **kwargs)</code></li>
+<li><code>.assertFieldOutput(fieldclass, valid, invalid, field_args=None, field_kwargs=None, empty_value=&#39;&#39;)</code></li>
+<li><code>.assertFormError(response, form, field, errors, msg_prefix=&#39;&#39;)</code></li>
+<li><code>.assertFormsetError(response, formset, form_index, field, errors, msg_prefix=&#39;&#39;)</code></li>
+<li><code>.assertContains(response, text, count=None, status_code=200, msg_prefix=&#39;&#39;, html=False)</code></li>
+<li><code>.assertNotContains(response, text, status_code=200, msg_prefix=&#39;&#39;, html=False)</code></li>
+<li><code>.assertTemplateUsed(response, template_name, msg_prefix=&#39;&#39;, count=None)</code></li>
+<li><code>.assertTemplateNotUsed(response, template_name, msg_prefix=&#39;&#39;)</code></li>
+<li><code>.assertRedirects(response, expected_url, status_code=302, target_status_code=200, msg_prefix=&#39;&#39;, fetch_redirect_response=True)</code></li>
+<li><code>.assertHTMLEqual(html1, html2, msg=None)</code></li>
+<li><code>.assertHTMLNotEqual(html1, html2, msg=None)</code></li>
+<li><code>.assertXMLEqual(xml1, xml2, msg=None)</code></li>
+<li><code>.assertXMLNotEqual(xml1, xml2, msg=None)</code></li>
+<li><code>.assertInHTML(needle, haystack, count=None, msg_prefix=&#39;&#39;)</code></li>
+<li><code>.assertJSONEqual(raw, expected_data, msg=None)</code></li>
+<li><code>.assertJSONNotEqual(raw, expected_data, msg=None)</code></li>
+</ul>
+<p>TransactionTestCase（及其子类）方法：</p>
+<ul>
+<li><code>.assertQuerysetEqual(qs, values, transform=repr, ordered=True, msg=None)</code></li>
+<li><code>.assertNumQueries(num, func, *args, **kwargs)</code></li>
+</ul>
+<h3 id="assertRaisesMessage"><a href="#assertRaisesMessage" class="headerlink" title="assertRaisesMessage"></a>assertRaisesMessage</h3><p>调用callable并且匹配exception类型和exception的message，如果匹配不到就是fail。<br>这个方法是<code>unittest.TestCase.assertRaisesRegex()</code>的简单实现，这个方法的<code>expected_message</code>参数不是一个正则表达式。<br>可以不传callable参数，这时候他就变成一个上下文管理器，示例：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">with</span> self.assertRaisesMessage(ValueError, <span class="hljs-string">&#x27;invalid literal for int()&#x27;</span>):<br>    <span class="hljs-built_in">int</span>(<span class="hljs-string">&#x27;a&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<h3 id="assertFieldOutput"><a href="#assertFieldOutput" class="headerlink" title="assertFieldOutput"></a>assertFieldOutput</h3><p>判断表单的输入是否正确。</p>
+<p>参数：</p>
+<ul>
+<li>fieldclass：需要测试的字段类</li>
+<li>valid：期望的字段值，字典类型</li>
+<li>invalid：当数据不正确时的提示信息，字典类型</li>
+<li>field_args：实例化字段类时要传递的参数，根据你要测试的字段类填写</li>
+<li>field_kwargs：跟field_args相同作用，传递关键字参数</li>
+<li>empty_value：当字段为空时期望得到的信息</li>
+</ul>
+<p>示例代码：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python">self.assertFieldOutput(EmailField, &#123;<span class="hljs-string">&#x27;a@a.com&#x27;</span>: <span class="hljs-string">&#x27;a@a.com&#x27;</span>&#125;, &#123;<span class="hljs-string">&#x27;aaa&#x27;</span>: [<span class="hljs-string">&#x27;Enter a valid email address.&#x27;</span>]&#125;)<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="assertFormError"><a href="#assertFormError" class="headerlink" title="assertFormError"></a>assertFormError</h3><p>判断表单的某个字段是不是会报<code>errors</code>（列表）参数种的错误。</p>
+<p>参数：</p>
+<ul>
+<li>form：Form对象</li>
+<li>field：字段的name，就是定义字段时的变量名，如果field有一个值是None的话，就会去检查non-field错误，你可以通过<code>form.non_field_errors()</code>获取那些non-field错误</li>
+<li>errors：错误信息，是一个字符串类型，或者包含你想要测试的所有错误信息的列表</li>
+</ul>
+<h3 id="assertFormsetError"><a href="#assertFormsetError" class="headerlink" title="assertFormsetError"></a>assertFormsetError</h3><p>跟<code>assertFormError</code>差不多，不过是对FormSet对象的一个断言。</p>
+<p>参数：</p>
+<ul>
+<li>form_index：FormSet中的表单索引，如果为None，就会去检查non-form错误，你可以通过<code>formset.non_form_errors()</code>获取那些non-form错误</li>
+<li>field：与assertFormError一样</li>
+<li>errors：与assertFormError一样</li>
+</ul>
+<h3 id="assertContains"><a href="#assertContains" class="headerlink" title="assertContains"></a>assertContains</h3><p>用来判断Response对象的状态码和是否包含<code>text</code>参数的内容。</p>
+<p>参数：</p>
+<ul>
+<li>text：预期包含的内容</li>
+<li>count：如果不为None，则表示预期会包含多少个text的内容</li>
+<li>html：如果为True，代表对比的内容为HTML格式字符串，在大多数情况下，空格被忽略，属性排序不重要</li>
+</ul>
+<h3 id="assertNotContains"><a href="#assertNotContains" class="headerlink" title="assertNotContains"></a>assertNotContains</h3><p>作用跟assertContains相反。除了没有count参数之外，其他的参数含义跟assertContains一样。</p>
+<h3 id="assertTemplateUsed"><a href="#assertTemplateUsed" class="headerlink" title="assertTemplateUsed"></a>assertTemplateUsed</h3><p>判断response所使用的模板是不是预期中的模板。<br>count参数是一个整数，表示应该呈现模板的次数。默认值为None，这意味着模板应渲染一次或多次。</p>
+<p>也可以用上下文管理器的方式调用，如：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">with</span> self.assertTemplateUsed(<span class="hljs-string">&#x27;index.html&#x27;</span>):<br>    render_to_string(<span class="hljs-string">&#x27;index.html&#x27;</span>)<br><span class="hljs-keyword">with</span> self.assertTemplateUsed(template_name=<span class="hljs-string">&#x27;index.html&#x27;</span>):<br>    render_to_string(<span class="hljs-string">&#x27;index.html&#x27;</span>)<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="assertTemplateNotUsed"><a href="#assertTemplateNotUsed" class="headerlink" title="assertTemplateNotUsed"></a>assertTemplateNotUsed</h3><p>与assertTemplateUsed的作用相反。</p>
+<h3 id="assertRedirects"><a href="#assertRedirects" class="headerlink" title="assertRedirects"></a>assertRedirects</h3><p>用于判断response是否如预期一样进行了重定向。<br>如果你的请求使用了<code>follow</code>参数，则<code>expect_url</code>和<code>target_status_code</code>会是最终重定向到的url和状态码。</p>
+<p>参数：</p>
+<ul>
+<li>expected_url：期望跳转到的目标地址</li>
+<li>status_code：期望访问原始url时返回的状态码，默认是302</li>
+<li>target_status_code：期望跳转后的url返回的状态码，默认是200</li>
+<li>fetch_redirect_response：如果为False，则不会加载最终页面。由于测试客户端无法获取外部url，如果expected_url不是Django应用程序的一部分，这个就很有用。</li>
+</ul>
+<h3 id="assertHTMLEqual"><a href="#assertHTMLEqual" class="headerlink" title="assertHTMLEqual"></a>assertHTMLEqual</h3><p>判断两个html文本是否一样，有一些注意事项：</p>
+<ul>
+<li>HTML的节点tag前后的空格和换行会被忽略</li>
+<li>所有类型的空白符都是一样的，比如tab和空格</li>
+<li>所有的标签都是隐式闭合的</li>
+<li>HTML节点的属性排序不重要</li>
+<li>没有值的属性，他的值等于他的名字</li>
+</ul>
+<p>以下的例子是正确的例子，不会触发AssertionError：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python">self.assertHTMLEqual(<br>    <span class="hljs-string">&#x27;&lt;p&gt;Hello &lt;b&gt;world!&lt;/p&gt;&#x27;</span>,<br>    <span class="hljs-string">&#x27;&#x27;&#x27;&lt;p&gt;</span><br><span class="hljs-string">        Hello   &lt;b&gt;world! &lt;b/&gt;</span><br><span class="hljs-string">    &lt;/p&gt;&#x27;&#x27;&#x27;</span><br>)<br>self.assertHTMLEqual(<br>    <span class="hljs-string">&#x27;&lt;input type=&quot;checkbox&quot; checked=&quot;checked&quot; id=&quot;id_accept_terms&quot; /&gt;&#x27;</span>,<br>    <span class="hljs-string">&#x27;&lt;input id=&quot;id_accept_terms&quot; type=&quot;checkbox&quot; checked&gt;&#x27;</span><br>)<br><br></code></pre></td></tr></table></figure>
+
+<p><strong>传递的两个参数都必须是有效的HTML格式字符串，否则会触发AssertionError</strong></p>
+<h3 id="assertHTMLNotEqual"><a href="#assertHTMLNotEqual" class="headerlink" title="assertHTMLNotEqual"></a>assertHTMLNotEqual</h3><p>跟assertHTMLEqual作用相反。</p>
+<h3 id="assertQuerysetEqual"><a href="#assertQuerysetEqual" class="headerlink" title="assertQuerysetEqual"></a>assertQuerysetEqual</h3><p>判断QuerySet是不是返回了特定的列表</p>
+<p>参数：</p>
+<ul>
+<li>transform：用于转换qs和期望值的函数，默认是repr，就变成了字符串对比</li>
+<li>ordered：默认是True， 如果qs的排序没定义，且这个值为False，且比较的是多个值，则会抛出ValueError错误</li>
+</ul>
+<h3 id="assertNumQueries"><a href="#assertNumQueries" class="headerlink" title="assertNumQueries"></a>assertNumQueries</h3><p>声明当用*args和**kwargs调用func时，将执行num个数据库查询。</p>
+<p>如果kwargs中存在一个“using”键，它将用作检查查询数的数据库别名。如果希望使用using参数调用函数，可以通过使用lambda包装调用来添加额外的参数：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python">self.assertNumQueries(<span class="hljs-number">7</span>, <span class="hljs-keyword">lambda</span>: my_function(using=<span class="hljs-number">7</span>))<br><br></code></pre></td></tr></table></figure>
+
+<p>也可以用上下文管理器</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">with</span> self.assertNumQueries(<span class="hljs-number">2</span>):<br>    Person.objects.create(name=<span class="hljs-string">&quot;Aaron&quot;</span>)<br>    Person.objects.create(name=<span class="hljs-string">&quot;Daniel&quot;</span>)<br><br></code></pre></td></tr></table></figure>
+
+<h3 id="注意事项-6"><a href="#注意事项-6" class="headerlink" title="注意事项"></a>注意事项</h3><ul>
+<li>大部分断言方法可以用<code>msg_prefix</code>参数指定断言失败时的提示消息前缀</li>
+</ul>
+<h2 id="给测试方法打标签"><a href="#给测试方法打标签" class="headerlink" title="给测试方法打标签"></a>给测试方法打标签</h2><p>没什么特别需要说明的地方，直接上例子：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> django.test <span class="hljs-keyword">import</span> tag<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">SampleTestCase</span>(<span class="hljs-title class_ inherited__">TestCase</span>):<br><br><span class="hljs-meta">    @tag(<span class="hljs-params"><span class="hljs-string">&#x27;fast&#x27;</span></span>)</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">test_fast</span>(<span class="hljs-params">self</span>):<br>        ...<br><br><span class="hljs-meta">    @tag(<span class="hljs-params"><span class="hljs-string">&#x27;slow&#x27;</span></span>)</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">test_slow</span>(<span class="hljs-params">self</span>):<br>        ...<br><br><span class="hljs-meta">    @tag(<span class="hljs-params"><span class="hljs-string">&#x27;slow&#x27;</span>, <span class="hljs-string">&#x27;core&#x27;</span></span>)</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">test_slow_but_core</span>(<span class="hljs-params">self</span>):<br><br><span class="hljs-meta">@tag(<span class="hljs-params"><span class="hljs-string">&#x27;slow&#x27;</span>, <span class="hljs-string">&#x27;core&#x27;</span></span>)</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">SampleTestCase</span>(<span class="hljs-title class_ inherited__">TestCase</span>):<br>    <span class="hljs-keyword">pass</span><br><br></code></pre></td></tr></table></figure>
+
+<p>然后可以在命令行运行测试的时候传递参数筛选需要测试的那些测试方法：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">只运行fast标签的测试</span><br>python manage.py test --tag=fast<br><span class="hljs-meta prompt_"># </span><span class="language-bash">运行fast和core测试</span><br>python manage.py test --tag=fast --tag=core<br><span class="hljs-meta prompt_"># </span><span class="language-bash">排除slow测试</span><br>python manage.py test --tag=core --exclude-tag=slow<br><br></code></pre></td></tr></table></figure>
+
+<p>exclude-tag比tag的优先级要高，所以如果你的某个测试含有了tag的标签，并且也包含了exclude-tag的标签，那这个测试就不会运行。</p>
+<h2 id="邮件发送测试"><a href="#邮件发送测试" class="headerlink" title="邮件发送测试"></a>邮件发送测试</h2><p>测试的时候肯定不会想要每次运行测试都发一封真实的邮件，所以Django的邮件测试会运行在一个虚拟的outbox。<br>在测试运行期间，每个传出的电子邮件都保存在<code>django.core.mail.outbox</code>中。这是已发送的所有EmailMessage实例的简单列表。<code>outbox</code>是一个特殊的属性，仅在使用locmem邮件后端时才创建。它通常不作为<code>django.core.mail</code>模块的一部分存在，您不能直接导入它。下面的代码显示了如何正确访问此属性：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> django.core <span class="hljs-keyword">import</span> mail<br><span class="hljs-keyword">from</span> django.test <span class="hljs-keyword">import</span> TestCase<br><br><span class="hljs-comment"># 每个TestCase运行前都会清空outbox，也可以像下面的代码一样手动清空</span><br>mail.outbox = []<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">EmailTest</span>(<span class="hljs-title class_ inherited__">TestCase</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">test_send_email</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-comment"># Send message.</span><br>        mail.send_mail(<br>            <span class="hljs-string">&#x27;Subject here&#x27;</span>, <span class="hljs-string">&#x27;Here is the message.&#x27;</span>,<br>            <span class="hljs-string">&#x27;from@example.com&#x27;</span>, [<span class="hljs-string">&#x27;to@example.com&#x27;</span>],<br>            fail_silently=<span class="hljs-literal">False</span>,<br>        )<br><br>        <span class="hljs-comment"># Test that one message has been sent.</span><br>        self.assertEqual(<span class="hljs-built_in">len</span>(mail.outbox), <span class="hljs-number">1</span>)<br><br>        <span class="hljs-comment"># Verify that the subject of the first message is correct.</span><br>        self.assertEqual(mail.outbox[<span class="hljs-number">0</span>].subject, <span class="hljs-string">&#x27;Subject here&#x27;</span>)<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="服务器命令行管理命令"><a href="#服务器命令行管理命令" class="headerlink" title="服务器命令行管理命令"></a>服务器命令行管理命令</h2><p>就是运行<code>python manage.py</code>的那些命令，官方文档也没有过多介绍，直接看代码示例：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> django.core.management <span class="hljs-keyword">import</span> call_command<br><span class="hljs-keyword">from</span> django.test <span class="hljs-keyword">import</span> TestCase<br><span class="hljs-keyword">from</span> django.utils.six <span class="hljs-keyword">import</span> StringIO<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">ClosepollTest</span>(<span class="hljs-title class_ inherited__">TestCase</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">test_command_output</span>(<span class="hljs-params">self</span>):<br>        out = StringIO()<br>        call_command(<span class="hljs-string">&#x27;closepoll&#x27;</span>, stdout=out)<br>        self.assertIn(<span class="hljs-string">&#x27;Expected output&#x27;</span>, out.getvalue())<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="跳过部分测试"><a href="#跳过部分测试" class="headerlink" title="跳过部分测试"></a>跳过部分测试</h2><p>当你提前知道你的某些测试会测试失败的时候你就可以用这个功能。比如你的某个测试需要特定的库才能正常运行，这时你就可以用<code>@skipIf</code>装饰器装饰你的测试，并且测试的时候会报告给你哪个测试被跳过了还有跳过的原因。</p>
+<p>除了<code>unittest</code>内置的一些跳过装饰器（<code>.skipIf</code>，<code>.skipUnless</code>）之外，Django还内置了其他的装饰器，这些装饰器不是用来检测布尔值，而是用来检测数据库功能的，如果测试的数据库不支持你指定的功能，那就会跳过测试。要想查看数据库的所有特性（功能），可以去看一下<code>django.db.backends.BaseDatabaseFeatures</code>这个类</p>
+<p>示例代码：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">MyTests</span>(<span class="hljs-title class_ inherited__">TestCase</span>):<br><span class="hljs-meta">    @skipIfDBFeature(<span class="hljs-params"><span class="hljs-string">&#x27;supports_transactions&#x27;</span></span>)</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">test_transaction_behavior</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-comment"># ... conditional test code</span><br>        <span class="hljs-keyword">pass</span><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">MyTests</span>(<span class="hljs-title class_ inherited__">TestCase</span>):<br><span class="hljs-meta">    @skipUnlessDBFeature(<span class="hljs-params"><span class="hljs-string">&#x27;supports_transactions&#x27;</span></span>)</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">test_transaction_behavior</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-comment"># ... conditional test code</span><br>        <span class="hljs-keyword">pass</span><br><br></code></pre></td></tr></table></figure>
+
+<h1 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h1><p>这篇文档中可能有一些接口或者方法没有介绍到，常用或者有用的都介绍到了，剩下一些适用面较少、不常见的内容，需要移步到官方文档查看其介绍：<a href="https://docs.djangoproject.com/en/1.11/topics/testing/" title="Django Testing">Django Testing</a></p>
+]]></content>
+      <categories>
+        <category>后端</category>
+      </categories>
+      <tags>
+        <tag>Django</tag>
+        <tag>测试</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>RabbitMQ</title>
+    <url>/%E5%90%8E%E7%AB%AF/rabbitmq/</url>
+    <content><![CDATA[<h4 id="什么是MQ？"><a href="#什么是MQ？" class="headerlink" title="什么是MQ？"></a>什么是MQ？</h4><p>MQ是消息队列(Message Queue)的缩写，是一种应用程序之间的通信方法。它是一个保存消息的容器，本质上是个队列。消息是指在应用之间传送的数据，可以非常简单，比如只包含文本字符串，也可以更复杂，可能包含嵌入对象。</p>
+<p>MQ的主要特点是异步处理，主要目的是减少请求响应时间，实现非核心流程异步化，提高系统响应性能。</p>
+<h4 id="常见的消息队列"><a href="#常见的消息队列" class="headerlink" title="常见的消息队列"></a>常见的消息队列</h4><ul>
+<li>ActiveMQ</li>
+<li>RabbitMQ</li>
+<li>ZeroMQ</li>
+<li>Kafka</li>
+<li>RocketMQ</li>
+</ul>
+<h4 id="什么是rabbitmq？"><a href="#什么是rabbitmq？" class="headerlink" title="什么是rabbitmq？"></a>什么是rabbitmq？</h4><p>RabbitMQ是一款使用Erlang语言开发的，实现AMQP (高级消息队列协议)的开源消息中间件。它是一个由Erlang语言开发的AMQP的开源实现。</p>
+<p>RabbitMQ的主要特点是可靠性、灵活的分发消息策略和支持集群。</p>
+<p>优点：</p>
+<ol>
+<li>高可靠性：RabbitMQ支持多种消息持久化方式，如内存、磁盘等，保证消息不会丢失。同时，它也支持消息的死信队列和消息的优先级设置，可以有效避免消息丢失和重复处理的问题。</li>
+<li>高可用性：RabbitMQ采用集群的方式部署，可以实现负载均衡和故障转移，保证系统的高可用性。</li>
+<li>高性能：RabbitMQ采用Erlang语言编写，具有出色的性能表现。同时，它还支持多种交换机类型和路由策略，可以根据实际需求进行优化。</li>
+<li>易扩展性：RabbitMQ支持插件机制，可以通过插件来扩展其功能。同时，它还支持集群、镜像队列等高级特性，可以满足不同场景下的需求。</li>
+<li>灵活性：RabbitMQ支持多种协议，如AMQP、STOMP等，可以与其他系统集成。同时，它还支持多种编程语言的开发，如Java、Python等，可以满足不同开发人员的需求。</li>
+</ol>
+<p>缺点：</p>
+<ol>
+<li>系统可用性降低：系统引入的外部依赖增多，系统的稳定性就会变差。一旦MQ宕机，就会对业务产生影响。需要考虑如何保证MQ的高可用。</li>
+<li>系统的复杂度提高：引入MQ后系统的复杂度会大大提高。以前服务之间可以进行同步的服务调用，引入MQ后，会变成异步调用，数据链路会变得更复杂。并且还会带来一系列的问题。如如何保证消息不会丢失？不会被重复调用？怎么保证消息的顺序性？</li>
+<li>并发量大时性能下降：如果有大量的消息堆积在队列中，性能会急剧下降。</li>
+</ol>
+]]></content>
+      <categories>
+        <category>后端</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>VIM使用手册</title>
+    <url>/%E8%BF%90%E7%BB%B4/vim%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/</url>
+    <content><![CDATA[<h1 id="查找"><a href="#查找" class="headerlink" title="查找"></a>查找</h1><p>在normal模式下按下<code>/</code>即可进入查找模式，输入要查找的字符串并按下回车。 Vim会跳转到第一个匹配。按下<code>n</code>查找下一个，按下<code>N</code>查找上一个。</p>
+<p>Vim查找支持正则表达式，例如<code>/vim$</code>匹配行尾的<code>&quot;vim&quot;</code>。 需要查找特殊字符需要转义，例如<code>/vim\$</code>匹配<code>&quot;vim$&quot;</code>。</p>
+<h2 id="大小写敏感查找"><a href="#大小写敏感查找" class="headerlink" title="大小写敏感查找"></a>大小写敏感查找</h2><p>在查找模式中加入<code>\c</code>表示大小写不敏感查找，<code>\C</code>表示大小写敏感查找。例如：</p>
+<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line">/foo\<span class="keyword">c</span></span><br></pre></td></tr></table></figure>
+
+<p>将会查找所有的<code>&quot;foo&quot;</code>,<code>&quot;FOO&quot;</code>,<code>&quot;Foo&quot;</code>等字符串。</p>
+<h2 id="大小写敏感配置"><a href="#大小写敏感配置" class="headerlink" title="大小写敏感配置"></a>大小写敏感配置</h2><p>Vim 默认采用大小写敏感的查找，为了方便我们常常将其配置为大小写不敏感：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot; 设置默认进行大小写不敏感查找</span><br><span class="line">set ignorecase</span><br><span class="line">&quot; 如果有一个大写字母，则切换到大小写敏感查找</span><br><span class="line">set smartcase</span><br></pre></td></tr></table></figure>
+
+<p>将上述设置粘贴到你的~&#x2F;.vimrc，重新打开Vim即可生效</p>
+<h2 id="查找当前单词"><a href="#查找当前单词" class="headerlink" title="查找当前单词"></a>查找当前单词</h2><p>在normal模式下按下<code>*</code>即可查找光标所在单词（word）， 要求每次出现的前后为空白字符或标点符号。例如当前为<code>foo</code>， 可以匹配<code>foo bar</code>中的<code>foo</code>，但不可匹配<code>foobar</code>中的<code>foo</code>。 这在查找函数名、变量名时非常有用。</p>
+<p>按下<code>g*</code>即可查找光标所在单词的字符序列，每次出现前后字符无要求。 即<code>foo bar</code>和<code>foobar</code>中的<code>foo</code>均可被匹配到。</p>
+<h1 id="替换"><a href="#替换" class="headerlink" title="替换"></a>替换</h1><p>语法为<code>:&#123;作用范围&#125;s/&#123;目标&#125;/&#123;替换&#125;/&#123;替换标志&#125;</code>，<br>全局替换：<code>:%s/源字符串/目的字符串/g</code>。</p>
+<p>例如<code>:%s/foo/bar/g</code>会在全局范围(<code>%</code>)查找<code>foo</code>并替换为<code>bar</code>，所有出现都会被替换（<code>g</code>）</p>
+<h2 id="基本的替换"><a href="#基本的替换" class="headerlink" title="基本的替换"></a>基本的替换</h2><p><code>:s/vivian/sky/</code> 替换当前行第一个 vivian 为 sky<br><code>:s/vivian/sky/g</code> 替换当前行所有 vivian 为 sky<br><code>:n,$s/vivian/sky/</code> 替换第 n 行开始到最后一行中每一行的第一个 vivian 为 sky<br><code>:n,$s/vivian/sky/g</code> 替换第 n 行开始到最后一行中每一行所有 vivian 为 sky<br>（n 为数字，若 n 为 .，表示从当前行开始到最后一行）<br><code>:%s/vivian/sky/</code>（等同于 :g&#x2F;vivian&#x2F;s&#x2F;&#x2F;sky&#x2F;）替换每一行的第一个 vivian 为 sky<br><code>:%s/vivian/sky/g</code>（等同于 :g&#x2F;vivian&#x2F;s&#x2F;&#x2F;sky&#x2F;g） 替换每一行中所有 vivian 为 sky<br>可以使用 # 作为分隔符，此时中间出现的 &#x2F; 不会作为分隔符<br><code>:s#vivian/#sky/#</code> 替换当前行第一个 vivian&#x2F; 为 sky&#x2F;<br><code>:%s+/oradata/apras/+/user01/apras1+</code> （使用+ 来替换 &#x2F; ）： &#x2F;oradata&#x2F;apras&#x2F;替换成&#x2F;user01&#x2F;apras1&#x2F;</p>
+<h2 id="作用范围"><a href="#作用范围" class="headerlink" title="作用范围"></a>作用范围</h2><p>作用范围分为当前行、全文、选区等等。</p>
+<p>当前行：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:s/foo/bar/g</span><br></pre></td></tr></table></figure>
+
+<p>全文：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:%s/foo/bar/g</span><br></pre></td></tr></table></figure>
+
+<p>选区，在Visual模式下选择区域后输入<code>:</code>，Vim即可自动补全为 <code>:&#39;&lt;,&#39;&gt;</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:&#x27;&lt;,&#x27;&gt;s/foo/bar/g</span><br></pre></td></tr></table></figure>
+
+<p>2-11行：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:5,12s/foo/bar/g</span><br></pre></td></tr></table></figure>
+
+<p>当前行.与接下来两行+2：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:.,+2s/foo/bar/g</span><br></pre></td></tr></table></figure>
+
+<h2 id="替换标志"><a href="#替换标志" class="headerlink" title="替换标志"></a>替换标志</h2><p>上文中命令结尾的<code>g</code>即是替换标志之一，表示全局global替换（即替换目标的所有出现）。 还有很多其他有用的替换标志：</p>
+<p>空替换标志表示只替换从光标位置开始，目标的第一次出现：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:%s/foo/bar</span><br></pre></td></tr></table></figure>
+
+<p><code>i</code>表示大小写不敏感查找，<code>I</code>表示大小写敏感：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:%s/foo/bar/i</span><br><span class="line"># 等效于模式中的\c（不敏感）或\C（敏感）</span><br><span class="line">:%s/foo\c/bar</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><code>c</code>表示需要确认，例如全局查找<code>&quot;foo&quot;</code>替换为<code>&quot;bar&quot;</code>并且需要确认：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:%s/foo/bar/gc</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>回车后Vim会将光标移动到每一次<code>&quot;foo&quot;</code>出现的位置，并提示<code>replace with bar (y/n/a/q/l/^E/^Y)?</code>。<br>按下<code>y</code>表示替换，<code>n</code>表示不替换，<code>a</code>表示替换所有，<code>q</code>表示退出查找模式， <code>l</code>表示替换当前位置并退出。<code>^E</code>与<code>^Y</code>是光标移动快捷键，参考： <a href="http://harttle.com/2015/11/07/vim-cursor.html" title="Vim中如何快速进行光标移动">Vim中如何快速进行光标移动</a></p>
+<h1 id="设置缩进"><a href="#设置缩进" class="headerlink" title="设置缩进"></a>设置缩进</h1><p><code>set autoindent</code>设置自动缩进<br><code>set shiftwidth=4</code>设置自动缩进空格数<br><code>set tabstop=4</code>设置一个tab等于多少个空格的宽度<br><code>set softtabstop=4</code>设置软制表符，软制表符表示在Insert模式的时候按退格键时退回缩进的长度，当使用expandtab 时特别有用。<br><code>set expandtab</code>将tab变成空格<br><code>:%retab!</code>将文件中现有的tab变成空格</p>
+<h1 id="鼠标功能"><a href="#鼠标功能" class="headerlink" title="鼠标功能"></a>鼠标功能</h1><p><code>set mouse=a</code>启用鼠标功能<br><code>set mouse-=a</code>停用鼠标功能</p>
+<p>鼠标模式：</p>
+<ul>
+<li>n：普通模式</li>
+<li>v：可视模式</li>
+<li>i：插入模式</li>
+<li>c：命令行模式</li>
+<li>h：在帮助文件里，以上所有模式</li>
+<li>a：以上所有模式</li>
+<li>r：跳过|lit-enter|提示</li>
+<li>A：在可视模式下自动选择</li>
+</ul>
+<p>解决鼠标模式右键不能粘贴问题<br>用鼠标和可视模式复制&#x2F;粘贴 (‘mouse’ 选项必须设置，见上):</p>
+<ol>
+<li>在文本的第一个字符上按鼠标左键，移动鼠标到文本的最后一个字母，然后释放左<br>键。这会启动可视模式并高亮选择区域。</li>
+<li>按 “y” 抽出可视文本到无名寄存器里。</li>
+<li>在要插入的位置上按鼠标左键。</li>
+<li>按鼠标中键（滚轮）。</li>
+</ol>
+<h1 id="折叠代码"><a href="#折叠代码" class="headerlink" title="折叠代码"></a>折叠代码</h1><p><img src="/%E8%BF%90%E7%BB%B4/vim%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/%E5%BF%AB%E6%8D%B7%E9%94%AE.png"></p>
+]]></content>
+      <categories>
+        <category>运维</category>
+      </categories>
+      <tags>
+        <tag>VIM</tag>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>程序员手记</title>
+    <url>/%E8%BF%90%E7%BB%B4/%E7%A8%8B%E5%BA%8F%E5%91%98%E6%89%8B%E8%AE%B0/</url>
+    <content><![CDATA[<h1 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h1><h2 id="终端快捷键"><a href="#终端快捷键" class="headerlink" title="终端快捷键"></a>终端快捷键</h2><h3 id="光标移动"><a href="#光标移动" class="headerlink" title="光标移动"></a>光标移动</h3><table>
+<thead>
+<tr>
+<th>快捷键</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>crtl+a</code></td>
+<td>移动到开头</td>
+</tr>
+<tr>
+<td><code>crtl+e</code></td>
+<td>移动到结尾</td>
+</tr>
+<tr>
+<td><code>alt+b</code></td>
+<td>向左移动一个单词</td>
+</tr>
+<tr>
+<td><code>alt+f</code></td>
+<td>向右移动一个单词</td>
+</tr>
+<tr>
+<td><code>crtl+b</code></td>
+<td>向左移动一个字符</td>
+</tr>
+<tr>
+<td><code>crtl+f</code></td>
+<td>向右移动一个字符</td>
+</tr>
+<tr>
+<td><code>esc+b</code></td>
+<td>向左移动一个单词</td>
+</tr>
+<tr>
+<td><code>esc+f</code></td>
+<td>向右移动一个单词</td>
+</tr>
+<tr>
+<td><code>ctrl+XX</code></td>
+<td>在上次光标和当前光标所在字符间跳转</td>
+</tr>
+<tr>
+<td><code>esc+t</code></td>
+<td>交换光标位置钱的两个单词</td>
+</tr>
+</tbody></table>
+<h3 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h3><table>
+<thead>
+<tr>
+<th>快捷键</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ctrl+k</code></td>
+<td>删除光标后所有字符</td>
+</tr>
+<tr>
+<td><code>ctrl+u</code></td>
+<td>删除光标前所有字符</td>
+</tr>
+<tr>
+<td><code>ctrl+w</code></td>
+<td>删除光标前一个单词</td>
+</tr>
+<tr>
+<td><code>ctrl+d</code></td>
+<td>删除光标所在字符（右侧）</td>
+</tr>
+<tr>
+<td><code>ctrl+h</code></td>
+<td>删除光标前字符（左侧）</td>
+</tr>
+</tbody></table>
+<h3 id="撤销"><a href="#撤销" class="headerlink" title="撤销"></a>撤销</h3><table>
+<thead>
+<tr>
+<th>快捷键</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ctrl+_</code></td>
+<td>撤销操作</td>
+</tr>
+<tr>
+<td><code>ctrl+y</code></td>
+<td>粘贴ctrl+u&#x2F;k剪切的内容</td>
+</tr>
+<tr>
+<td><code>ctrl+?</code></td>
+<td>撤销前一次输入</td>
+</tr>
+<tr>
+<td><code>alt+r</code></td>
+<td>撤销前一次动作</td>
+</tr>
+</tbody></table>
+<h3 id="替换"><a href="#替换" class="headerlink" title="替换"></a>替换</h3><table>
+<thead>
+<tr>
+<th>快捷键</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ctrl+t</code></td>
+<td>将光标当前字符与前一个字符替换</td>
+</tr>
+</tbody></table>
+<h3 id="历史命令编辑"><a href="#历史命令编辑" class="headerlink" title="历史命令编辑"></a>历史命令编辑</h3><table>
+<thead>
+<tr>
+<th>快捷键</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ctrl+p</code></td>
+<td>上一条历史命令</td>
+</tr>
+<tr>
+<td><code>ctrl+n</code></td>
+<td>下一条历史命令</td>
+</tr>
+<tr>
+<td><code>alt+&gt;</code></td>
+<td>上一次执行的命令的最后一个单词</td>
+</tr>
+<tr>
+<td><code>ctrl+r</code></td>
+<td>搜索历史命令</td>
+</tr>
+</tbody></table>
+<h3 id="控制命令"><a href="#控制命令" class="headerlink" title="控制命令"></a>控制命令</h3><table>
+<thead>
+<tr>
+<th>快捷键</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ctrl+l</code></td>
+<td>清除屏幕</td>
+</tr>
+<tr>
+<td><code>ctrl+s</code></td>
+<td>锁住终端，阻止屏幕输出</td>
+</tr>
+<tr>
+<td><code>ctrl+q</code></td>
+<td>解锁终端，允许屏幕输出</td>
+</tr>
+<tr>
+<td><code>ctrl+c</code></td>
+<td>终止命令</td>
+</tr>
+<tr>
+<td><code>ctrl+i</code></td>
+<td>补全，相当于tab</td>
+</tr>
+<tr>
+<td><code>ctrl+o</code></td>
+<td>重复执行命令</td>
+</tr>
+<tr>
+<td><code>alt+&lt;数字&gt;</code></td>
+<td>操作的次数</td>
+</tr>
+<tr>
+<td><code>ctrl+z</code></td>
+<td>挂起</td>
+</tr>
+</tbody></table>
+<h3 id="命令"><a href="#命令" class="headerlink" title="!命令"></a>!命令</h3><table>
+<thead>
+<tr>
+<th>快捷</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>!!</code></td>
+<td>执行上条命令</td>
+</tr>
+<tr>
+<td><code>!-n</code></td>
+<td>执行前n条命令</td>
+</tr>
+</tbody></table>
+<h2 id="shell中的-用法"><a href="#shell中的-用法" class="headerlink" title="shell中的 $ 用法"></a>shell中的 $ 用法</h2><table>
+<thead>
+<tr>
+<th>特殊符号</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>$#</td>
+<td>传给脚本的参数个数</td>
+</tr>
+<tr>
+<td>$0</td>
+<td>shell脚本文件的名字</td>
+</tr>
+<tr>
+<td>$1</td>
+<td>传递给该shell脚本的第一个参数</td>
+</tr>
+<tr>
+<td>$2</td>
+<td>传递给该shell脚本的第二个参数</td>
+</tr>
+<tr>
+<td>$@</td>
+<td>传给脚本的所有参数的列表</td>
+</tr>
+<tr>
+<td>$*</td>
+<td>以一个单字符串显示所有向脚本传递的参数，与位置变量不同，参数可超过9个</td>
+</tr>
+<tr>
+<td>$$</td>
+<td>脚本运行的当前进程ID号，Shell本身的PID</td>
+</tr>
+<tr>
+<td>$?</td>
+<td>显示最后命令的退出状态，0表示没有错误，其他表示有错误</td>
+</tr>
+<tr>
+<td>$!</td>
+<td>Shell最后运行的后台Process的PID</td>
+</tr>
+<tr>
+<td>$-</td>
+<td>使用Set命令设定的Flag一览</td>
+</tr>
+<tr>
+<td>$()</td>
+<td>相当于&#96;&#96;，括号中放的是命令</td>
+</tr>
+<tr>
+<td>${}</td>
+<td>括号中放的是变量。例如echo P A T H 取 P A T H 变 量 的 值 并 打 印 ， 也 可 以 不 加 括 号 比 如 {PATH}取PATH变 量的值并打印，也可以不加括号比如PATH取PATH变量的值并打印，也可以不加括号比如PATH。</td>
+</tr>
+<tr>
+<td>$1~n</td>
+<td>添加到Shell的各参数值。$1是第1参数、$2是第2参数…。</td>
+</tr>
+</tbody></table>
+<h3 id="的特殊用法"><a href="#的特殊用法" class="headerlink" title="${}的特殊用法"></a>${}的特殊用法</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">sh, dash 都不能使用该语法</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">基础语法：<span class="variable">$&#123;parameter,,pattern&#125;</span> / <span class="variable">$&#123;parameter^^pattern&#125;</span></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">另外这个语法不会改变原变量</span></span><br><span class="line">var=&quot;Hello,World&quot;</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">第一个字符变为大写</span></span><br><span class="line">echo $&#123;var^&#125;</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">所有字符变为大写</span></span><br><span class="line">echo $&#123;var^^&#125;</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">第一个字符变为小写</span></span><br><span class="line">echo $&#123;var,&#125;</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">所有字符变为小写</span></span><br><span class="line">echo $&#123;var,,&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="判断-比较"><a href="#判断-比较" class="headerlink" title="判断&#x2F;比较"></a>判断&#x2F;比较</h2><h3 id="语法（用例）"><a href="#语法（用例）" class="headerlink" title="语法（用例）"></a>语法（用例）</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">if [ $SYSTEM = &quot;Linux&quot; ] ; then # 如果是linux话输出linux字符串</span><br><span class="line">echo &quot;Linux&quot;</span><br><span class="line">elif [ $SYSTEM = &quot;FreeBSD&quot; ] ; then</span><br><span class="line">echo &quot;FreeBSD&quot;</span><br><span class="line">elif [ $SYSTEM = &quot;Solaris&quot; ] ; then</span><br><span class="line">echo &quot;Solaris&quot;</span><br><span class="line">else</span><br><span class="line">echo &quot;What?&quot;</span><br><span class="line">fi # 判断结束，以fi结尾</span><br></pre></td></tr></table></figure>
+
+<h3 id="字符串判断"><a href="#字符串判断" class="headerlink" title="字符串判断"></a>字符串判断</h3><table>
+<thead>
+<tr>
+<th>语法</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>str1 &#x3D; str2</td>
+<td>当两个串有相同内容、长度时为真</td>
+</tr>
+<tr>
+<td>str1 !&#x3D; str2</td>
+<td>当串str1和str2不等时为真</td>
+</tr>
+<tr>
+<td>-n str1</td>
+<td>当串的长度大于0时为真(串非空)</td>
+</tr>
+<tr>
+<td>-z str1</td>
+<td>当串的长度为0时为真(空串)</td>
+</tr>
+<tr>
+<td>str1</td>
+<td>当串str1为非空时为真</td>
+</tr>
+</tbody></table>
+<h3 id="数字的判断"><a href="#数字的判断" class="headerlink" title="数字的判断"></a>数字的判断</h3><table>
+<thead>
+<tr>
+<th>语法</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>int1 -eq int2</td>
+<td>两数相等为真</td>
+</tr>
+<tr>
+<td>int1 -ne int2</td>
+<td>两数不等为真</td>
+</tr>
+<tr>
+<td>int1 -gt int2</td>
+<td>int1大于int2为真</td>
+</tr>
+<tr>
+<td>int1 -ge int2</td>
+<td>int1大于等于int2为真</td>
+</tr>
+<tr>
+<td>int1 -lt int2</td>
+<td>int1小于int2为真</td>
+</tr>
+<tr>
+<td>int1 -le int2</td>
+<td>int1小于等于int2为真</td>
+</tr>
+</tbody></table>
+<h3 id="文件相关的if判断条件语句"><a href="#文件相关的if判断条件语句" class="headerlink" title="文件相关的if判断条件语句"></a>文件相关的if判断条件语句</h3><table>
+<thead>
+<tr>
+<th>语法</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-r file</td>
+<td>用户可读为真</td>
+</tr>
+<tr>
+<td>-w file</td>
+<td>用户可写为真</td>
+</tr>
+<tr>
+<td>-x file</td>
+<td>用户可执行为真</td>
+</tr>
+<tr>
+<td>-f file</td>
+<td>文件为正规文件为真</td>
+</tr>
+<tr>
+<td>-d file</td>
+<td>文件为目录为真</td>
+</tr>
+<tr>
+<td>-c file</td>
+<td>文件为字符特殊文件为真</td>
+</tr>
+<tr>
+<td>-b file</td>
+<td>文件为块特殊文件为真</td>
+</tr>
+<tr>
+<td>-s file</td>
+<td>文件大小非0时为真</td>
+</tr>
+<tr>
+<td>-t file</td>
+<td>当文件描述符(默认为1)指定的设备为终端时为真</td>
+</tr>
+</tbody></table>
+<h3 id="复杂逻辑判断"><a href="#复杂逻辑判断" class="headerlink" title="复杂逻辑判断"></a>复杂逻辑判断</h3><table>
+<thead>
+<tr>
+<th>语法</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-a</td>
+<td>与</td>
+</tr>
+<tr>
+<td>-o</td>
+<td>或</td>
+</tr>
+<tr>
+<td>!</td>
+<td>非</td>
+</tr>
+</tbody></table>
+<h2 id="和-的区别"><a href="#和-的区别" class="headerlink" title="[] 和 [[]] 的区别"></a>[] 和 [[]] 的区别</h2><p>if [[]] 要求括号里的表达式前后必须有一个空格，格式如 if [[ xxx ]]。<br>当 if [[]] 用于字符串常量或变量比较时，表达式本身的运算符，如 &lt;、&gt;、&#x3D;&#x3D;、!&#x3D; ，其前后可以不加空格；<br>但当 if [[]] 用于数值比较时，表达式本身的运算符前后必须加空格，否则会得到相反的结果。</p>
+<p>如：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">if [[ $1 != &quot;start&quot;  &amp;&amp;  $1 != &quot;stop&quot; ]]</span><br><span class="line"></span><br><span class="line">在if之后要用空格,[[ 之后要有一个空格,]]之前要有空格,不然会出错.</span><br><span class="line"></span><br><span class="line">elif [[ $1 == &quot;stop&quot; ]] </span><br><span class="line"></span><br><span class="line">双等号两边要有空格不然后会出错.</span><br></pre></td></tr></table></figure>
+
+<h2 id="在shell中查看每条指令实际执行的结果"><a href="#在shell中查看每条指令实际执行的结果" class="headerlink" title="在shell中查看每条指令实际执行的结果"></a>在shell中查看每条指令实际执行的结果</h2><p><code>set +x</code>表示开始记录，<code>set -x</code>表示停止记录。</p>
+<p>例子：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">set +x</span><br><span class="line">name=&quot;test&quot;</span><br><span class="line">echo $name</span><br><span class="line">set -x</span><br></pre></td></tr></table></figure>
+
+<h2 id="实用小技巧"><a href="#实用小技巧" class="headerlink" title="实用小技巧"></a>实用小技巧</h2><p>查找包含某个字符串的所有文件，可以用于后续的自动处理：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">指令</span></span><br><span class="line">grep -r &quot;desktop\.&quot; | awk &#x27;&#123;print $1&#125;&#x27; | sed &#x27;s/://g&#x27; | uniq</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">用途</span></span><br><span class="line">for script_name in `grep -r &quot;desktop\.&quot; | awk &#x27;&#123;print $1&#125;&#x27; | sed &#x27;s/://g&#x27; | uniq`</span><br><span class="line">do</span><br><span class="line">	echo y | edopkg pull $script_name</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<h2 id="日志管理"><a href="#日志管理" class="headerlink" title="日志管理"></a>日志管理</h2><p><code>dmesg</code>命令可以查看系统的整个启动日志</p>
+<h1 id="GIT"><a href="#GIT" class="headerlink" title="GIT"></a>GIT</h1><h2 id="批量删除已合并分支"><a href="#批量删除已合并分支" class="headerlink" title="批量删除已合并分支"></a>批量删除已合并分支</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">获取已合并分支</span></span><br><span class="line">git branch --merged</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">筛选去除指定字符串（正则方式）</span></span><br><span class="line">grep -i -v -E &quot;master|dev&quot;</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">以字符串结尾的</span></span><br><span class="line">grep -i -v -E &quot;x-master$|x-develop$|x-release$&quot;</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">批量执行（要用管道）</span></span><br><span class="line">xargs git branch -d</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">合起来</span></span><br><span class="line">git branch --merged | grep -i -v -E &quot;x-master$|x-develop$|x-release$&quot; | xargs git branch -d</span><br></pre></td></tr></table></figure>
+
+<h2 id="删除远程跟踪分支"><a href="#删除远程跟踪分支" class="headerlink" title="删除远程跟踪分支"></a>删除远程跟踪分支</h2><p><code>git remote prune origin</code></p>
+<h2 id="修改当前commit"><a href="#修改当前commit" class="headerlink" title="修改当前commit"></a>修改当前commit</h2><p><code>git add . &amp;&amp; git commit --amend --no-edit</code></p>
+<p>该操作会修改当前最新commit并添加当前目录下所有修改了但未提交的文件。<br>如果最新commit已经push到远端，则需要再次强制推送到远端。</p>
+<h2 id="查找某个commit被哪个branch和tag包含"><a href="#查找某个commit被哪个branch和tag包含" class="headerlink" title="查找某个commit被哪个branch和tag包含"></a>查找某个commit被哪个branch和tag包含</h2><p>查找被包含的branch：<code>git branch --contains commit_id --all</code><br>查找被包含的tag：<code>git tag --contains tag_name</code></p>
+<h2 id="设置命令别名"><a href="#设置命令别名" class="headerlink" title="设置命令别名"></a>设置命令别名</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git config --global alias.a add</span><br><span class="line">git config --global alias.c commit</span><br><span class="line">git config --global alias.o checkout</span><br></pre></td></tr></table></figure>
+
+<p>也可以在config文件进行修改和查看，<br>在<code>~/.gitconfig</code>或项目的<code>.git/config</code>文件中，有以下信息，可以进行修改：</p>
+<pre><code>[alias]
+a = add
+c = commit
+o = checkout
+# ...
+</code></pre>
+<p>还可以直接用别人写好的：<br><a href="https://github.com/GitAlias/gitalias" title="项目地址">项目地址</a><br>使用方法：</p>
+<ol>
+<li>首先将该开源项目中的<code>gitalias.txt</code>文件下载下来</li>
+<li>然后在<code>.gitconfig</code>文件里面加入：<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[include]</span><br><span class="line">path = gitalias.txt</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="获取两个commit之间更改的文件"><a href="#获取两个commit之间更改的文件" class="headerlink" title="获取两个commit之间更改的文件"></a>获取两个commit之间更改的文件</h2><p>可以方便在shell或者bash中执行自动化操作</p>
+<p>以最新的更新为例：<code>git diff --name-only HEAD HEAD^</code><br>执行自动化操作：<code>for fp in `git diff --name-only HEAD HEAD^`; do echo $fp; done</code></p>
+<h1 id="Docker"><a href="#Docker" class="headerlink" title="Docker"></a>Docker</h1><p>删除虚悬镜像：<code>docker images --filter dangling=true</code><br>删除所有虚悬镜像：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker rmi $(docker images --filter dangling=true -q)</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">或</span></span><br><span class="line">docker image prune</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">删除24小时前的虚悬镜像，-a 标签还支持删除所有未使用的镜像</span></span><br><span class="line">docker image prune -f --filter until=24h</span><br></pre></td></tr></table></figure>
+
+<p>列出latest镜像之前的所有镜像：<code>docker images aka-gm --filter before=aka-gm:latest</code><br>从以上输出中取出镜像的REPOSITORY与TAG：<code>docker images aka-gm --filter before=aka-gm:latest --format &quot;&#123;&#123;.Repository&#125;&#125;:&#123;&#123;.Tag&#125;&#125;&quot;</code><br>排除TAG为<none>的镜像并删除：<code>docker images aka-gm -f before=aka-gm:latest | grep aka-gm | grep -v &quot;&lt;none&gt;&quot; | awk &#39;&#123;printf &quot;%s:%s\n&quot;,$1,$2&#125;&#39; | xargs -r docker rmi</code><br>删除TAG为<none>的镜像：<code>docker images aka-gm -f before=aka-gm:latest | grep &quot;&lt;none&gt;&quot; | awk &#39;&#123;printf &quot;%s:%s\n&quot;,$1,$2&#125;&#39; | xargs -r docker rmi</code></p>
+<p>找出容器对应的日志滤镜：<code>docker inspect --format=&#39;&#123;&#123;.LogPath&#125;&#125;&#39; containername</code></p>
+]]></content>
+      <categories>
+        <category>运维</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+</search>
