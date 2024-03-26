@@ -23,27 +23,27 @@
     <meta name="description" content="这篇博客的主要内容是讲解常用的 AVR 单片机的 ADC 功能，知识比较基础，代码也很简单，适合新手快速掌握单片机 ADC 的操作，本篇使用的单片机是 ATmega16。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ATmega16 ADC简单实验">
-<meta property="og:url" content="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/index.html">
+<meta property="og:url" content="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/ATmega16-ADC%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/index.html">
 <meta property="og:site_name" content="智云知识">
 <meta property="og:description" content="这篇博客的主要内容是讲解常用的 AVR 单片机的 ADC 功能，知识比较基础，代码也很简单，适合新手快速掌握单片机 ADC 的操作，本篇使用的单片机是 ATmega16。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/circute.png">
-<meta property="og:image" content="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/ADCSRA-1.png">
-<meta property="og:image" content="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/ADCSRA-2.png">
+<meta property="og:image" content="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/ATmega16-ADC%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/circute.png">
+<meta property="og:image" content="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/ATmega16-ADC%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/ADCSRA-1.png">
+<meta property="og:image" content="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/ATmega16-ADC%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/ADCSRA-2.png">
 <meta property="article:published_time" content="2018-05-15T12:04:50.000Z">
 <meta property="article:modified_time" content="2024-03-06T14:41:00.323Z">
 <meta property="article:author" content="DHC">
 <meta property="article:tag" content="单片机">
 <meta property="article:tag" content="AVR">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/circute.png">
+<meta name="twitter:image" content="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/ATmega16-ADC%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/circute.png">
 
 
-<link rel="canonical" href="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/">
+<link rel="canonical" href="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/ATmega16-ADC%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/","path":"硬件/atmega16-adc简单实验/","title":"ATmega16 ADC简单实验"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/ATmega16-ADC%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/","path":"硬件/ATmega16-ADC简单实验/","title":"ATmega16 ADC简单实验"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>ATmega16 ADC简单实验 | 智云知识</title>
@@ -82,7 +82,7 @@
       <p class="site-title">智云知识</p>
       <i class="logo-line"></i>
     </a>
-      <p class="site-subtitle" itemprop="description">共享知识库</p>
+      <p class="site-subtitle" itemprop="description">共享学习笔记</p>
   </div>
 
   <div class="site-nav-right">
@@ -95,7 +95,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">9</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">4</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">9</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">9</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -152,7 +152,7 @@
         <div class="site-overview-wrap sidebar-panel">
           <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
   <p class="site-author-name" itemprop="name">DHC</p>
-  <div class="site-description" itemprop="description">知识以一种粗暴的方式进入了我的脑子</div>
+  <div class="site-description" itemprop="description">但行好事，莫问前程</div>
 </div>
 <div class="site-state-wrap animated">
   <nav class="site-state">
@@ -163,12 +163,14 @@
         </a>
       </div>
       <div class="site-state-item site-state-categories">
+          <a href="/categories/">
         <span class="site-state-item-count">4</span>
-        <span class="site-state-item-name">分类</span>
+        <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
+          <a href="/tags/">
         <span class="site-state-item-count">9</span>
-        <span class="site-state-item-name">标签</span>
+        <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>
@@ -217,7 +219,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/">
+    <link itemprop="mainEntityOfPage" href="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/ATmega16-ADC%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -226,7 +228,7 @@
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="智云知识">
-      <meta itemprop="description" content="知识以一种粗暴的方式进入了我的脑子">
+      <meta itemprop="description" content="但行好事，莫问前程">
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
@@ -235,7 +237,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          ATmega16 ADC简单实验
+          ATmega16 ADC简单实验<a href="https://gitee.com/dhc_king/github-page/tree/master/source/_posts/ATmega16-ADC%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
         </h1>
 
         <div class="post-meta-container">
@@ -281,8 +283,8 @@
       </span>
       <span class="post-meta-item-text">Changyan：</span>
     
-    <a title="ATmega16 ADC简单实验" href="/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/#SOHUCS" itemprop="discussionUrl">
-      <span id="sourceId::c27e617fd689eaa80b4737e9f15b2894" class="cy_cmt_count" itemprop="commentCount"></span>
+    <a title="ATmega16 ADC简单实验" href="/%E7%A1%AC%E4%BB%B6/ATmega16-ADC%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/#SOHUCS" itemprop="discussionUrl">
+      <span id="sourceId::8713d59407b463f1d6bed1c15ea3d765" class="cy_cmt_count" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -316,15 +318,15 @@
 <p>最近由于课程需要，学习了一段时间的 AVR 单片机，对于一些简单的端口操作、控制 LED 灯之类的就不另做篇幅去讲解了，因为就跟 Hello, world 一样简单，对于我来说，单片机控制得最多的是各种各样的传感器，而传感器是模拟器件，传到单片机的数据时模拟信号，但是单片机等芯片是数字芯片呀，数字芯片只能处理数字信号，也就是高电平和低电平，所以就需要一个模块来将这两种信号进行转换，就是今天要讲到的 AD 转换，中文是模数转换，作用就是讲模拟信号转化成数字信号，在大部分文档中也会称为 ADC (Analog&#x2F;Digital Convert)，今天就以一个实例来展示 AVR 的 ADC。</p>
 <p>新手入门单片机大都是学习的 51 单片机，用的最多的芯片是 STC89C52 （或 C51），但是 51 单片机片上资源很少，只有少数够用的功能，其他的一些高级模块都没有，而 AVR 虽然跟 51 单片机都是 8 位的微控制器，但是 AVR 单片机的片上资源多很多，诸如 ADC, I2C 等等，有了这些外设，使用起来就简单很多了，不用自己重新编写复杂的程序，也不用花钱给电路增加额外的硬件。</p>
 <p>先来看看本次实验的电路图：</p>
-<img src="/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/circute.png" class="" title="电路图">
+<img src="/%E7%A1%AC%E4%BB%B6/ATmega16-ADC%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/circute.png" class="" title="电路图">
 
 <p>其中图片左上角部分连接着 RESET, XTAL1, XTAL2 引脚的那一部分电路是组成单片机最小系统的电路，也是使单片机正常工作的必要条件。我们在 PA0 脚上连接一个电位器，给单片机提供模拟信号的就是这个电位器了，电位器通过改变阻值来改变输入到单片机的电压。右下角有两个引脚 AREF 和 AVCC，其中 AREF 是单片机基准电压外部输入引脚，AVCC 是模拟电源，要使用 ADC 功能这两个引脚就必不可少了。还有最后一部分是连接到 PD 口的 8 个 LED 灯，用来显示单片机 AD 转换后的结果，虽然用 LED 来表示结果不直观，但是是操作最简单的方法了。</p>
 <p>代码比电路更简单，直接贴上代码：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;avr/io.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;avr/interrupt.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*ADC Conversion Complete Interrupt Service Routine (ISR)*/</span></span><br><span class="line">ISR(ADC_vect)</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">	PORTD = ADCH;			<span class="comment">// Output ADCH to PortD</span></span><br><span class="line">	ADCSRA |= <span class="number">1</span>&lt;&lt;ADSC;		<span class="comment">// Start Conversion</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">	DDRD = <span class="number">0xFF</span>;			<span class="comment">// Configure PortD as output</span></span><br><span class="line">	DDRA = <span class="number">0x00</span>;			<span class="comment">// Configure PortA as input</span></span><br><span class="line">					<span class="comment">// PA0 is ADC0 input</span></span><br><span class="line"></span><br><span class="line">	ADCSRA = <span class="number">0x8F</span>;			<span class="comment">// Enable the ADC and its interrupt feature</span></span><br><span class="line">					<span class="comment">// and set the ACD clock pre-scalar to clk/128</span></span><br><span class="line">	ADMUX = <span class="number">0xE0</span>;			<span class="comment">// Select internal 2.56V as Vref, left justify </span></span><br><span class="line">					<span class="comment">// data registers and select ADC0 as input channel </span></span><br><span class="line">	 </span><br><span class="line">	sei();				<span class="comment">// Enable Global Interrupts</span></span><br><span class="line">	ADCSRA |= <span class="number">1</span>&lt;&lt;ADSC;		<span class="comment">// Start Conversion</span></span><br><span class="line">	 </span><br><span class="line">	<span class="keyword">while</span>(<span class="number">1</span>);			<span class="comment">// Wait forever</span></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
 
 <p>每一句的作用在代码中的注释都已经很清晰了，要特别讲解的是 ADCSRA 寄存器，事实上关于这个寄存器的操作以及每一位的作用都不需要特别讲解，因为在官方文档都已经说得很清楚了，我就只贴出文档的截图吧</p>
-<img src="/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/ADCSRA-1.png" class="" title="ADCSRA寄存器介绍">
-<img src="/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/ADCSRA-2.png" class="" title="ADCSRA寄存器介绍">
+<img src="/%E7%A1%AC%E4%BB%B6/ATmega16-ADC%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/ADCSRA-1.png" class="" title="ADCSRA寄存器介绍">
+<img src="/%E7%A1%AC%E4%BB%B6/ATmega16-ADC%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/ADCSRA-2.png" class="" title="ADCSRA寄存器介绍">
 
 <br/>
 以上的代码在 ATmel Studio 7.0 中已经验证通过，在 AT Studio 中编译生成 hex 文件之后，电路按照第一张图片的接法，然后将程序写入单片机中运行就能看到接 LED 灯的结果了，AD 转换的结果是 8 位的，每次转换的结果都会存在 ADCH 寄存器中，所以代码中就直接将 ADCH 的值写入 PD 口中，当你改变电位器阻值的时候你就会看到 LED 灯也在变化。
@@ -362,7 +364,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/" title="ATmega16 ADC简单实验">https://jimhackking.github.io/硬件/atmega16-adc简单实验/</a>
+      <a href="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/ATmega16-ADC%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/" title="ATmega16 ADC简单实验">https://jimhackking.github.io/硬件/ATmega16-ADC简单实验/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -449,7 +451,7 @@
               <div class="comments gitalk-container"></div>
             </div>
             <div class="tab-pane changyan" id="comment-changyan">
-              <div class="comments" id="SOHUCS" sid="c27e617fd689eaa80b4737e9f15b2894"></div>
+              <div class="comments" id="SOHUCS" sid="8713d59407b463f1d6bed1c15ea3d765"></div>
             </div>
         </div>
       </div>
@@ -549,7 +551,7 @@
 <script src="/js/third-party/comments/changyan.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
-<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"JIMhackKING","repo":"JIMhackKING.github.io","client_id":"7ebc2cfea41386b00310","client_secret":"b56956858260f816994b4bf786041e059249e217","admin_user":"JIMhackKING","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"c27e617fd689eaa80b4737e9f15b2894"}</script>
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"JIMhackKING","repo":"JIMhackKING.github.io","client_id":"7ebc2cfea41386b00310","client_secret":"b56956858260f816994b4bf786041e059249e217","admin_user":"JIMhackKING","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"8713d59407b463f1d6bed1c15ea3d765"}</script>
 <script src="/js/third-party/comments/gitalk.js"></script>
 
 </body>

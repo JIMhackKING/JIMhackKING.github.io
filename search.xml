@@ -2,22 +2,22 @@
 <search>
   <entry>
     <title>ATmega16 ADC简单实验</title>
-    <url>/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/</url>
+    <url>/%E7%A1%AC%E4%BB%B6/ATmega16-ADC%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/</url>
     <content><![CDATA[<p>这篇博客的主要内容是讲解常用的 AVR 单片机的 ADC 功能，知识比较基础，代码也很简单，适合新手快速掌握单片机 ADC 的操作，本篇使用的单片机是 ATmega16。</p>
 <span id="more"></span>
 
 <p>最近由于课程需要，学习了一段时间的 AVR 单片机，对于一些简单的端口操作、控制 LED 灯之类的就不另做篇幅去讲解了，因为就跟 Hello, world 一样简单，对于我来说，单片机控制得最多的是各种各样的传感器，而传感器是模拟器件，传到单片机的数据时模拟信号，但是单片机等芯片是数字芯片呀，数字芯片只能处理数字信号，也就是高电平和低电平，所以就需要一个模块来将这两种信号进行转换，就是今天要讲到的 AD 转换，中文是模数转换，作用就是讲模拟信号转化成数字信号，在大部分文档中也会称为 ADC (Analog&#x2F;Digital Convert)，今天就以一个实例来展示 AVR 的 ADC。</p>
 <p>新手入门单片机大都是学习的 51 单片机，用的最多的芯片是 STC89C52 （或 C51），但是 51 单片机片上资源很少，只有少数够用的功能，其他的一些高级模块都没有，而 AVR 虽然跟 51 单片机都是 8 位的微控制器，但是 AVR 单片机的片上资源多很多，诸如 ADC, I2C 等等，有了这些外设，使用起来就简单很多了，不用自己重新编写复杂的程序，也不用花钱给电路增加额外的硬件。</p>
 <p>先来看看本次实验的电路图：</p>
-<img src="/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/circute.png" class="" title="电路图">
+<img src="/%E7%A1%AC%E4%BB%B6/ATmega16-ADC%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/circute.png" class="" title="电路图">
 
 <p>其中图片左上角部分连接着 RESET, XTAL1, XTAL2 引脚的那一部分电路是组成单片机最小系统的电路，也是使单片机正常工作的必要条件。我们在 PA0 脚上连接一个电位器，给单片机提供模拟信号的就是这个电位器了，电位器通过改变阻值来改变输入到单片机的电压。右下角有两个引脚 AREF 和 AVCC，其中 AREF 是单片机基准电压外部输入引脚，AVCC 是模拟电源，要使用 ADC 功能这两个引脚就必不可少了。还有最后一部分是连接到 PD 口的 8 个 LED 灯，用来显示单片机 AD 转换后的结果，虽然用 LED 来表示结果不直观，但是是操作最简单的方法了。</p>
 <p>代码比电路更简单，直接贴上代码：</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;avr/io.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;avr/interrupt.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*ADC Conversion Complete Interrupt Service Routine (ISR)*/</span></span><br><span class="line">ISR(ADC_vect)</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">	PORTD = ADCH;			<span class="comment">// Output ADCH to PortD</span></span><br><span class="line">	ADCSRA |= <span class="number">1</span>&lt;&lt;ADSC;		<span class="comment">// Start Conversion</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">	DDRD = <span class="number">0xFF</span>;			<span class="comment">// Configure PortD as output</span></span><br><span class="line">	DDRA = <span class="number">0x00</span>;			<span class="comment">// Configure PortA as input</span></span><br><span class="line">					<span class="comment">// PA0 is ADC0 input</span></span><br><span class="line"></span><br><span class="line">	ADCSRA = <span class="number">0x8F</span>;			<span class="comment">// Enable the ADC and its interrupt feature</span></span><br><span class="line">					<span class="comment">// and set the ACD clock pre-scalar to clk/128</span></span><br><span class="line">	ADMUX = <span class="number">0xE0</span>;			<span class="comment">// Select internal 2.56V as Vref, left justify </span></span><br><span class="line">					<span class="comment">// data registers and select ADC0 as input channel </span></span><br><span class="line">	 </span><br><span class="line">	sei();				<span class="comment">// Enable Global Interrupts</span></span><br><span class="line">	ADCSRA |= <span class="number">1</span>&lt;&lt;ADSC;		<span class="comment">// Start Conversion</span></span><br><span class="line">	 </span><br><span class="line">	<span class="keyword">while</span>(<span class="number">1</span>);			<span class="comment">// Wait forever</span></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
 
 <p>每一句的作用在代码中的注释都已经很清晰了，要特别讲解的是 ADCSRA 寄存器，事实上关于这个寄存器的操作以及每一位的作用都不需要特别讲解，因为在官方文档都已经说得很清楚了，我就只贴出文档的截图吧</p>
-<img src="/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/ADCSRA-1.png" class="" title="ADCSRA寄存器介绍">
-<img src="/%E7%A1%AC%E4%BB%B6/atmega16-adc%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/ADCSRA-2.png" class="" title="ADCSRA寄存器介绍">
+<img src="/%E7%A1%AC%E4%BB%B6/ATmega16-ADC%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/ADCSRA-1.png" class="" title="ADCSRA寄存器介绍">
+<img src="/%E7%A1%AC%E4%BB%B6/ATmega16-ADC%E7%AE%80%E5%8D%95%E5%AE%9E%E9%AA%8C/ADCSRA-2.png" class="" title="ADCSRA寄存器介绍">
 
 <br/>
 以上的代码在 ATmel Studio 7.0 中已经验证通过，在 AT Studio 中编译生成 hex 文件之后，电路按照第一张图片的接法，然后将程序写入单片机中运行就能看到接 LED 灯的结果了，AD 转换的结果是 8 位的，每次转换的结果都会存在 ADCH 寄存器中，所以代码中就直接将 ADCH 的值写入 PD 口中，当你改变电位器阻值的时候你就会看到 LED 灯也在变化。
@@ -35,7 +35,7 @@
   </entry>
   <entry>
     <title>Arduino + Proteus 仿真（一）</title>
-    <url>/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%B8%80%EF%BC%89/</url>
+    <url>/%E7%A1%AC%E4%BB%B6/Arduino-Proteus-%E4%BB%BF%E7%9C%9F%E4%B8%80/</url>
     <content><![CDATA[<p>玩过单片机的人应该都会知道，有一个系列的单片机叫 Arduino，总所周知的 Arduino 是对对单片机不熟悉，但是对单片机感兴趣的软件开发程序员非常友好的，他有一个专门的软件 Arduino IDE，用于开发 Arduino 系列的产品，他的特点是有许许多多的库和函数，编写程序控制单片机的时候不需要了解太多关于寄存器的知识，直接调用相应的函数就可以控制单片机，这就是为什么说对软件开发的程序员非常友好，他的库可以让你在开发硬件的时候像开发软件一样方便快捷。</p>
 <span id="more"></span>
 <blockquote>
@@ -46,17 +46,17 @@
 <p>** 好了，这里才是正话！ ** Arduino 通常情况下都是直接在 IDE 上传程序，之后 IDE 会自动完成程序的烧写，但是要使用 Proteus 的仿真必须要有编译器编译出来的 hex、bin、elf 文件，这三种文件都是烧写单片机的程序文件，而 Arduino 每次编译上传的时候都会创建一个临时文件夹存放 hex 文件，你是找不到他编译出来的 hex 文件的，我们需要进行设置，让 Arduino 编译的时候把 hex 文件存放在某个地方。</p>
 <p>Arduino 的设置方法：</p>
 <p>首先打开左上角 文件 -&gt; 首选项</p>
-<img src="/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%B8%80%EF%BC%89/setting1.png" class="">
+<img src="/%E7%A1%AC%E4%BB%B6/Arduino-Proteus-%E4%BB%BF%E7%9C%9F%E4%B8%80/setting1.png" class="">
 
 <br>
 然后点击下方的首选项编辑文件（如图所示的地方，蓝色字体的文件路径）
 
-<img src="/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%B8%80%EF%BC%89/setting2.png" class="">
+<img src="/%E7%A1%AC%E4%BB%B6/Arduino-Proteus-%E4%BB%BF%E7%9C%9F%E4%B8%80/setting2.png" class="">
 
 <br>
 打开文件之后在文件最下方添加一条语句：``` build.path=XXX ``` 其中 XXX 是你要保存编译后的文件的路径，改成自己的路径就好，注意：编辑改文件要先关闭 Arduino IDE 
 
-<p>然后此时你就可以编写你的程序并编译（验证），然后在你刚设置的路径下找到一个 hex 文件，之后就可以使用 Proteus 仿真了，<a href="/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89/" title="Arduino + Proteus 仿真（二）">下一篇</a>文章会进行一次实践，编写一个程序并仿真。</p>
+<p>然后此时你就可以编写你的程序并编译（验证），然后在你刚设置的路径下找到一个 hex 文件，之后就可以使用 Proteus 仿真了，<a href="/%E7%A1%AC%E4%BB%B6/Arduino-Proteus-%E4%BB%BF%E7%9C%9F%E4%BA%8C/" title="Arduino + Proteus 仿真（二）">下一篇</a>文章会进行一次实践，编写一个程序并仿真。</p>
 ]]></content>
       <categories>
         <category>硬件</category>
@@ -69,27 +69,27 @@
   </entry>
   <entry>
     <title>Arduino + Proteus 仿真（二）</title>
-    <url>/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89/</url>
-    <content><![CDATA[<p>经过上一篇文章的设置之后（如果还没进行设置的，请看<a href="/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%B8%80%EF%BC%89/" title="Arduino + Proteus 仿真（一）">上一篇</a>文章进行设置）这一篇文章就进行实际的操作，使用两款软件来进行仿真。</p>
+    <url>/%E7%A1%AC%E4%BB%B6/Arduino-Proteus-%E4%BB%BF%E7%9C%9F%E4%BA%8C/</url>
+    <content><![CDATA[<p>经过上一篇文章的设置之后（如果还没进行设置的，请看<a href="/%E7%A1%AC%E4%BB%B6/Arduino-Proteus-%E4%BB%BF%E7%9C%9F%E4%B8%80/" title="Arduino + Proteus 仿真（一）">上一篇</a>文章进行设置）这一篇文章就进行实际的操作，使用两款软件来进行仿真。</p>
 <span id="more"></span>
 
 <p>本次的实验是使用 Arduino UNO 开发板上的 ATmega328p 芯片，以及一个 IO 口拓展芯片来驱动 LCD1602 显示。</p>
 <p>首先介绍使用到的这些器件：</p>
 <ul>
 <li>ATmega328p：这个就是单片机，作为电路中的主控芯片</li>
-<li>PCF8574：一个 IO 口拓展芯片，使用 IIC 控制，有八个通用端口和一个中断口，使用这个芯片可以将原本八个端口控制缩小到两个端口控制（不算 VCC 和 GND），具体使用方法可以查看<a href="/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89/PCF8574.pdf" title="官方文档">官方文档</a></li>
+<li>PCF8574：一个 IO 口拓展芯片，使用 IIC 控制，有八个通用端口和一个中断口，使用这个芯片可以将原本八个端口控制缩小到两个端口控制（不算 VCC 和 GND），具体使用方法可以查看<a href="/%E7%A1%AC%E4%BB%B6/Arduino-Proteus-%E4%BB%BF%E7%9C%9F%E4%BA%8C/PCF8574.pdf" title="官方文档">官方文档</a></li>
 <li>LCD1602：这是一个液晶屏，买的时候都会带有控制芯片，除非你是只买显示屏的，要控制这个液晶屏显示要对控制芯片发送指令，这个芯片分辨率是 16x2，每一位可以显示一个 ASCII 码</li>
 </ul>
 <p>之后直接编写单片机的控制代码，代码的作用看注释：</p>
 <figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;LiquidCrystal_I2C.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">LiquidCrystal_I2C <span class="title function_">lcd</span><span class="params">(<span class="number">0x3F</span>, <span class="number">16</span>, <span class="number">2</span>)</span>;  <span class="comment">// 参数：IIC地址，显示屏宽、高</span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">setup</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">  lcd.init();  <span class="comment">// 初始化 LCD</span></span><br><span class="line">  lcd.backlight();  <span class="comment">// 打开 LCD 背光</span></span><br><span class="line">  lcd.home();  <span class="comment">// 将 LCD 光标移动到首位</span></span><br><span class="line">  lcd.print(<span class="string">&quot;LCD1602 IIC TEST&quot;</span>);  <span class="comment">// 显示字符</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">loop</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>然后贴出 Proteus 的仿真电路图</p>
-<img src="/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89/circute.png" class="" title="电路图">
+<img src="/%E7%A1%AC%E4%BB%B6/Arduino-Proteus-%E4%BB%BF%E7%9C%9F%E4%BA%8C/circute.png" class="" title="电路图">
 <br>
 
 <p>画好电路图之后要给单片机写入程序，在 Proteus 电路图中双击 ATmega328p 芯片，会看到有很多的设置项，其中要设置 Program File ，填入你的程序编译后的 hex 文件路径；然后设置 CKSEL Fuses，点击右边的下拉列表，选中 (1111)Ext. Crystal 8.0-MHz 选项，最后在 Advanced Properties 设置项里面的输入框填入 16MHz，然后就可以运行仿真查看结果了。</p>
 <p>仿真效果</p>
-<img src="/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89/result.png" class="" title="仿真结果">
+<img src="/%E7%A1%AC%E4%BB%B6/Arduino-Proteus-%E4%BB%BF%E7%9C%9F%E4%BA%8C/result.png" class="" title="仿真结果">
 <p>图中每个引脚旁边的有色小方块代表了该引脚的电平状态，红色是高电平，蓝色是低电平，灰色是高阻态。</p>
 ]]></content>
       <categories>
@@ -103,7 +103,7 @@
   </entry>
   <entry>
     <title>Django单元测试快速指南</title>
-    <url>/%E5%90%8E%E7%AB%AF/django%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E5%BF%AB%E9%80%9F%E6%8C%87%E5%8D%97/</url>
+    <url>/%E5%90%8E%E7%AB%AF/Django%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E5%BF%AB%E9%80%9F%E6%8C%87%E5%8D%97/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><blockquote>
 <p>本文受《Python测试驱动开发》启发，书中内容很详尽，章节也很多，比较偏向于新手向，从如何安装Django1.11到如何使用Git工具都有教，没接触过这些的人都能看懂，有一定基础的人可以略读，值得一看。<br>本文绝大部分内容并不来自该书，更多的是我的个人见解和对官方文档的一些整理。</p>
 </blockquote>
@@ -122,7 +122,7 @@
 <li>功能测试&#x2F;需求测试</li>
 </ol>
 <p>各部门各司其职，对上述测试点进行测试，用其相对应的专业工具去测，这样效率也能大大提升，并且测试文档也会好写很多，最终提交的项目的结构化也更好。<br>另外我认为测试代码（即用于进行测试的代码，不是被测试的代码）越少越好，因为如果用代码测试代码，那很难保证测试代码本身不会存在逻辑错误或者其他BUG，各种逻辑函数越少越好，越傻瓜越好，哪怕是面向过程模式的测试代码，这样才能更好拟合用户的操作行为，减少依赖性。</p>
-<h2 id="Django中需要测试的部分"><a href="#Django中需要测试的部分" class="headerlink" title="Django中需要测试的部分"></a>Django中需要测试的部分</h2><p><img src="/%E5%90%8E%E7%AB%AF/django%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E5%BF%AB%E9%80%9F%E6%8C%87%E5%8D%97/Django%E6%B5%8B%E8%AF%95.png" alt="Django测试" title="Django测试"></p>
+<h2 id="Django中需要测试的部分"><a href="#Django中需要测试的部分" class="headerlink" title="Django中需要测试的部分"></a>Django中需要测试的部分</h2><p><img src="/%E5%90%8E%E7%AB%AF/Django%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E5%BF%AB%E9%80%9F%E6%8C%87%E5%8D%97/Django%E6%B5%8B%E8%AF%95.png" alt="Django测试" title="Django测试"></p>
 <h1 id="快速入门"><a href="#快速入门" class="headerlink" title="快速入门"></a>快速入门</h1><h2 id="测试代码"><a href="#测试代码" class="headerlink" title="测试代码"></a>测试代码</h2><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> django.test <span class="keyword">import</span> TestCase</span><br><span class="line"><span class="keyword">from</span> myapp.models <span class="keyword">import</span> Animal</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">AnimalTestCase</span>(<span class="title class_ inherited__">TestCase</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">setUp</span>(<span class="params">self</span>):</span><br><span class="line">        Animal.objects.create(name=<span class="string">&quot;lion&quot;</span>, sound=<span class="string">&quot;roar&quot;</span>)</span><br><span class="line">        Animal.objects.create(name=<span class="string">&quot;cat&quot;</span>, sound=<span class="string">&quot;meow&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">test_animals_can_speak</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;Animals that can speak are correctly identified&quot;&quot;&quot;</span></span><br><span class="line">        lion = Animal.objects.get(name=<span class="string">&quot;lion&quot;</span>)</span><br><span class="line">        cat = Animal.objects.get(name=<span class="string">&quot;cat&quot;</span>)</span><br><span class="line">        self.assertEqual(lion.speak(), <span class="string">&#x27;The lion says &quot;roar&quot;&#x27;</span>)</span><br><span class="line">        self.assertEqual(cat.speak(), <span class="string">&#x27;The cat says &quot;meow&quot;&#x27;</span>)</span><br></pre></td></tr></table></figure>
 
 <h2 id="命令行"><a href="#命令行" class="headerlink" title="命令行"></a>命令行</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 运行全部测试</span></span><br><span class="line">python manage.py <span class="built_in">test</span></span><br><span class="line"><span class="comment"># 运行animal.tests模块下的所有测试</span></span><br><span class="line">python manage.py <span class="built_in">test</span> animals.tests</span><br><span class="line"><span class="comment"># 自动搜索animal包下的所有test_开头的测试文件，并运行测试</span></span><br><span class="line">python manage.py <span class="built_in">test</span> animals</span><br><span class="line"><span class="comment"># 仅运行一个测试用例</span></span><br><span class="line">python manage.py <span class="built_in">test</span> animals.tests.AnimalTestCase</span><br><span class="line"><span class="comment"># 仅运行一个测试用例下的测试点</span></span><br><span class="line">python manage.py <span class="built_in">test</span> animals.tests.AnimalTestCase.test_animals_can_speak</span><br><span class="line"><span class="comment"># 也可以自动搜索一个目录下的测试文件，并运行测试，跟第三个示例相似</span></span><br><span class="line">python manage.py <span class="built_in">test</span> animals/</span><br><span class="line"><span class="comment"># 甚至可以指定一个前缀，然后自动运行对应前缀的测试代码</span></span><br><span class="line">python manage.py <span class="built_in">test</span> --pattern=<span class="string">&quot;tests_*.py&quot;</span></span><br><span class="line"><span class="comment"># 并行运行测试</span></span><br><span class="line">python manage.py <span class="built_in">test</span> --parallel</span><br><span class="line"><span class="comment"># 运行测试并保存临时数据库</span></span><br><span class="line">python manage.py <span class="built_in">test</span> --keepdb</span><br></pre></td></tr></table></figure>
@@ -391,7 +391,7 @@
   </entry>
   <entry>
     <title>RabbitMQ</title>
-    <url>/%E5%90%8E%E7%AB%AF/rabbitmq/</url>
+    <url>/%E5%90%8E%E7%AB%AF/RabbitMQ/</url>
     <content><![CDATA[<h4 id="什么是MQ？"><a href="#什么是MQ？" class="headerlink" title="什么是MQ？"></a>什么是MQ？</h4><p>MQ是消息队列(Message Queue)的缩写，是一种应用程序之间的通信方法。它是一个保存消息的容器，本质上是个队列。消息是指在应用之间传送的数据，可以非常简单，比如只包含文本字符串，也可以更复杂，可能包含嵌入对象。</p>
 <p>MQ的主要特点是异步处理，主要目的是减少请求响应时间，实现非核心流程异步化，提高系统响应性能。</p>
 <h4 id="常见的消息队列"><a href="#常见的消息队列" class="headerlink" title="常见的消息队列"></a>常见的消息队列</h4><ul>
@@ -423,133 +423,8 @@
       </categories>
   </entry>
   <entry>
-    <title>VIM使用手册</title>
-    <url>/%E8%BF%90%E7%BB%B4/vim%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/</url>
-    <content><![CDATA[<h1 id="查找"><a href="#查找" class="headerlink" title="查找"></a>查找</h1><p>在normal模式下按下<code>/</code>即可进入查找模式，输入要查找的字符串并按下回车。 Vim会跳转到第一个匹配。按下<code>n</code>查找下一个，按下<code>N</code>查找上一个。</p>
-<p>Vim查找支持正则表达式，例如<code>/vim$</code>匹配行尾的<code>&quot;vim&quot;</code>。 需要查找特殊字符需要转义，例如<code>/vim\$</code>匹配<code>&quot;vim$&quot;</code>。</p>
-<h2 id="大小写敏感查找"><a href="#大小写敏感查找" class="headerlink" title="大小写敏感查找"></a>大小写敏感查找</h2><p>在查找模式中加入<code>\c</code>表示大小写不敏感查找，<code>\C</code>表示大小写敏感查找。例如：</p>
-<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line">/foo\<span class="keyword">c</span></span><br></pre></td></tr></table></figure>
-
-<p>将会查找所有的<code>&quot;foo&quot;</code>,<code>&quot;FOO&quot;</code>,<code>&quot;Foo&quot;</code>等字符串。</p>
-<h2 id="大小写敏感配置"><a href="#大小写敏感配置" class="headerlink" title="大小写敏感配置"></a>大小写敏感配置</h2><p>Vim 默认采用大小写敏感的查找，为了方便我们常常将其配置为大小写不敏感：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot; 设置默认进行大小写不敏感查找</span><br><span class="line">set ignorecase</span><br><span class="line">&quot; 如果有一个大写字母，则切换到大小写敏感查找</span><br><span class="line">set smartcase</span><br></pre></td></tr></table></figure>
-
-<p>将上述设置粘贴到你的~&#x2F;.vimrc，重新打开Vim即可生效</p>
-<h2 id="查找当前单词"><a href="#查找当前单词" class="headerlink" title="查找当前单词"></a>查找当前单词</h2><p>在normal模式下按下<code>*</code>即可查找光标所在单词（word）， 要求每次出现的前后为空白字符或标点符号。例如当前为<code>foo</code>， 可以匹配<code>foo bar</code>中的<code>foo</code>，但不可匹配<code>foobar</code>中的<code>foo</code>。 这在查找函数名、变量名时非常有用。</p>
-<p>按下<code>g*</code>即可查找光标所在单词的字符序列，每次出现前后字符无要求。 即<code>foo bar</code>和<code>foobar</code>中的<code>foo</code>均可被匹配到。</p>
-<h1 id="替换"><a href="#替换" class="headerlink" title="替换"></a>替换</h1><p>语法为<code>:&#123;作用范围&#125;s/&#123;目标&#125;/&#123;替换&#125;/&#123;替换标志&#125;</code>，<br>全局替换：<code>:%s/源字符串/目的字符串/g</code>。</p>
-<p>例如<code>:%s/foo/bar/g</code>会在全局范围(<code>%</code>)查找<code>foo</code>并替换为<code>bar</code>，所有出现都会被替换（<code>g</code>）</p>
-<h2 id="基本的替换"><a href="#基本的替换" class="headerlink" title="基本的替换"></a>基本的替换</h2><p><code>:s/vivian/sky/</code> 替换当前行第一个 vivian 为 sky<br><code>:s/vivian/sky/g</code> 替换当前行所有 vivian 为 sky<br><code>:n,$s/vivian/sky/</code> 替换第 n 行开始到最后一行中每一行的第一个 vivian 为 sky<br><code>:n,$s/vivian/sky/g</code> 替换第 n 行开始到最后一行中每一行所有 vivian 为 sky<br>（n 为数字，若 n 为 .，表示从当前行开始到最后一行）<br><code>:%s/vivian/sky/</code>（等同于 :g&#x2F;vivian&#x2F;s&#x2F;&#x2F;sky&#x2F;）替换每一行的第一个 vivian 为 sky<br><code>:%s/vivian/sky/g</code>（等同于 :g&#x2F;vivian&#x2F;s&#x2F;&#x2F;sky&#x2F;g） 替换每一行中所有 vivian 为 sky<br>可以使用 # 作为分隔符，此时中间出现的 &#x2F; 不会作为分隔符<br><code>:s#vivian/#sky/#</code> 替换当前行第一个 vivian&#x2F; 为 sky&#x2F;<br><code>:%s+/oradata/apras/+/user01/apras1+</code> （使用+ 来替换 &#x2F; ）： &#x2F;oradata&#x2F;apras&#x2F;替换成&#x2F;user01&#x2F;apras1&#x2F;</p>
-<h2 id="作用范围"><a href="#作用范围" class="headerlink" title="作用范围"></a>作用范围</h2><p>作用范围分为当前行、全文、选区等等。</p>
-<p>当前行：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:s/foo/bar/g</span><br></pre></td></tr></table></figure>
-
-<p>全文：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:%s/foo/bar/g</span><br></pre></td></tr></table></figure>
-
-<p>选区，在Visual模式下选择区域后输入<code>:</code>，Vim即可自动补全为 <code>:&#39;&lt;,&#39;&gt;</code>。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:&#x27;&lt;,&#x27;&gt;s/foo/bar/g</span><br></pre></td></tr></table></figure>
-
-<p>2-11行：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:5,12s/foo/bar/g</span><br></pre></td></tr></table></figure>
-
-<p>当前行.与接下来两行+2：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:.,+2s/foo/bar/g</span><br></pre></td></tr></table></figure>
-
-<h2 id="替换标志"><a href="#替换标志" class="headerlink" title="替换标志"></a>替换标志</h2><p>上文中命令结尾的<code>g</code>即是替换标志之一，表示全局global替换（即替换目标的所有出现）。 还有很多其他有用的替换标志：</p>
-<p>空替换标志表示只替换从光标位置开始，目标的第一次出现：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:%s/foo/bar</span><br></pre></td></tr></table></figure>
-
-<p><code>i</code>表示大小写不敏感查找，<code>I</code>表示大小写敏感：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:%s/foo/bar/i</span><br><span class="line"># 等效于模式中的\c（不敏感）或\C（敏感）</span><br><span class="line">:%s/foo\c/bar</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p><code>c</code>表示需要确认，例如全局查找<code>&quot;foo&quot;</code>替换为<code>&quot;bar&quot;</code>并且需要确认：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:%s/foo/bar/gc</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>回车后Vim会将光标移动到每一次<code>&quot;foo&quot;</code>出现的位置，并提示<code>replace with bar (y/n/a/q/l/^E/^Y)?</code>。<br>按下<code>y</code>表示替换，<code>n</code>表示不替换，<code>a</code>表示替换所有，<code>q</code>表示退出查找模式， <code>l</code>表示替换当前位置并退出。<code>^E</code>与<code>^Y</code>是光标移动快捷键，参考： <a href="http://harttle.com/2015/11/07/vim-cursor.html" title="Vim中如何快速进行光标移动">Vim中如何快速进行光标移动</a></p>
-<h1 id="设置缩进"><a href="#设置缩进" class="headerlink" title="设置缩进"></a>设置缩进</h1><p><code>set autoindent</code>设置自动缩进<br><code>set shiftwidth=4</code>设置自动缩进空格数<br><code>set tabstop=4</code>设置一个tab等于多少个空格的宽度<br><code>set softtabstop=4</code>设置软制表符，软制表符表示在Insert模式的时候按退格键时退回缩进的长度，当使用expandtab 时特别有用。<br><code>set expandtab</code>将tab变成空格<br><code>:%retab!</code>将文件中现有的tab变成空格</p>
-<h1 id="鼠标功能"><a href="#鼠标功能" class="headerlink" title="鼠标功能"></a>鼠标功能</h1><p><code>set mouse=a</code>启用鼠标功能<br><code>set mouse-=a</code>停用鼠标功能</p>
-<p>鼠标模式：</p>
-<ul>
-<li>n：普通模式</li>
-<li>v：可视模式</li>
-<li>i：插入模式</li>
-<li>c：命令行模式</li>
-<li>h：在帮助文件里，以上所有模式</li>
-<li>a：以上所有模式</li>
-<li>r：跳过|lit-enter|提示</li>
-<li>A：在可视模式下自动选择</li>
-</ul>
-<p>解决鼠标模式右键不能粘贴问题<br>用鼠标和可视模式复制&#x2F;粘贴 (‘mouse’ 选项必须设置，见上):</p>
-<ol>
-<li>在文本的第一个字符上按鼠标左键，移动鼠标到文本的最后一个字母，然后释放左<br>键。这会启动可视模式并高亮选择区域。</li>
-<li>按 “y” 抽出可视文本到无名寄存器里。</li>
-<li>在要插入的位置上按鼠标左键。</li>
-<li>按鼠标中键（滚轮）。</li>
-</ol>
-<h1 id="折叠代码"><a href="#折叠代码" class="headerlink" title="折叠代码"></a>折叠代码</h1><p><img src="/%E8%BF%90%E7%BB%B4/vim%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/%E5%BF%AB%E6%8D%B7%E9%94%AE.png"></p>
-]]></content>
-      <categories>
-        <category>运维</category>
-      </categories>
-      <tags>
-        <tag>VIM</tag>
-        <tag>Linux</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>天刀基本玩法</title>
-    <url>/%E6%B8%B8%E6%88%8F/%E5%A4%A9%E5%88%80%E5%9F%BA%E6%9C%AC%E7%8E%A9%E6%B3%95/</url>
-    <content><![CDATA[<p>天涯明月刀是我最近开始玩也比较喜欢玩的游戏，我也打算长玩，网上的人都将这个游戏简称为天刀，作为新手，每天上线不知道要做什么，作为一款比较大型的游戏，要想留住玩家，肯定需要有每日的玩法和任务给大家去做，我在网上也看到有人专门录了视频来讲解天刀每日的玩法都有些什么，于是我特意写这篇博客来归纳各种的天刀玩法。</p>
-<span id="more"></span>
-
-<p>（由于视频不能使用外链，所以只能贴上视频链接了）</p>
-<p>每日玩法：</p>
-<p><a href="http://video.duowan.com/play/8856893.html">http://video.duowan.com/play/8856893.html</a></p>
-<!-- <embed id="8856893" name="8856893" src="http://assets.dwstatic.com/video/vppp.swf" wmode="transparent" allowFullScreen="true" quality="high"  height="498"  width="610" align="middle" allowScriptAccess="always" flashvars="auto_play=1&vid=8856893&channelId=wuxia&logo=dw" type="application/x-shockwave-flash">	</embed>  -->
-
-<br/>
-杀手和捕快身份玩法详解：
-
-<p><a href="http://video.duowan.com/play/8837225.html">http://video.duowan.com/play/8837225.html</a></p>
-<!-- <embed id="8837225" name="8837225" src="http://assets.dwstatic.com/video/vppp.swf" wmode="transparent" allowFullScreen="true" quality="high"  height="498"  width="610" align="middle" allowScriptAccess="always" flashvars="auto_play=1&vid=8837225&channelId=wuxia&logo=dw" type="application/x-shockwave-flash">	</embed>  -->
-<br/>
-游侠和猎户身份玩法详解：
-
-<p><a href="http://video.duowan.com/play/8842355.html">http://video.duowan.com/play/8842355.html</a></p>
-<!-- <embed id="8842355" name="8842355" src="http://assets.dwstatic.com/video/vppp.swf" wmode="transparent" allowFullScreen="true" quality="high"  height="498"  width="610" align="middle" allowScriptAccess="always" flashvars="auto_play=1&vid=8842355&channelId=wuxia&logo=dw" type="application/x-shockwave-flash">	</embed>  -->
-<br/>
-镖师、文士、乐伶身份玩法详解：
-
-<p><a href="http://video.duowan.com/play/8850543.html">http://video.duowan.com/play/8850543.html</a></p>
-<!-- <embed id="8850543" name="8850543" src="http://assets.dwstatic.com/video/vppp.swf" wmode="transparent" allowFullScreen="true" quality="high"  height="498"  width="610" align="middle" allowScriptAccess="always" flashvars="auto_play=1&vid=8850543&channelId=wuxia&logo=dw" type="application/x-shockwave-flash">	</embed>  -->
-<br/>
-雅集、拉镖、劫镖玩法详解：
-
-<p><a href="http://video.duowan.com/play/8858989.html">http://video.duowan.com/play/8858989.html</a></p>
-<!-- <embed id="8858989" name="8858989" src="http://assets.dwstatic.com/video/vppp.swf" wmode="transparent" allowFullScreen="true" quality="high"  height="498"  width="610" align="middle" allowScriptAccess="always" flashvars="auto_play=1&vid=8858989&channelId=wuxia&logo=dw" type="application/x-shockwave-flash">	</embed>  -->
-<br/>
-莲花、宝藏、快活王、钓鱼玩法详解：
-
-<p><a href="http://video.duowan.com/play/8862367.html">http://video.duowan.com/play/8862367.html</a></p>
-<!-- <embed id="8862367" name="8862367" src="http://assets.dwstatic.com/video/vppp.swf" wmode="transparent" allowFullScreen="true" quality="high"  height="498"  width="610" align="middle" allowScriptAccess="always" flashvars="auto_play=1&vid=8862367&channelId=wuxia&logo=dw" type="application/x-shockwave-flash">	</embed>  -->
-<br/>
-缉拿、江洋大盗玩法详解：
-
-<p><a href="http://video.duowan.com/play/8864355.html">http://video.duowan.com/play/8864355.html</a></p>
-<!-- <embed id="8864355" name="8864355" src="http://assets.dwstatic.com/video/vppp.swf" wmode="transparent" allowFullScreen="true" quality="high"  height="498"  width="610" align="middle" allowScriptAccess="always" flashvars="auto_play=1&vid=8864355&channelId=wuxia&logo=dw" type="application/x-shockwave-flash">	</embed>  -->
-<br/>
-]]></content>
-      <categories>
-        <category>游戏</category>
-      </categories>
-      <tags>
-        <tag>天涯明月刀</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>MySQL</title>
-    <url>/%E8%BF%90%E7%BB%B4/mysql/</url>
+    <title>MySQL学习笔记</title>
+    <url>/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[<blockquote><p>本篇摘录自黑马程序员的B站教学视频，由本人学习视频内容后总结并提取摘要制作而成的简要笔记。<br>本笔记只记录到进阶篇（大部分），剩下的进阶篇以及运维篇由于本人职业生涯没有用武之地，所以没有进行学习。</p>
 <footer><strong>黑马程序员</strong><cite><a href="https://www.bilibili.com/video/BV1Kr4y1i7ru/?share_source=copy_web&vd_source=e43c1de8e41e1499f7f3fdb03fba0eb6">黑马程序员 MySQL数据库入门到精通，从mysql安装到mysql高级、mysql优化全囊括</a></cite></footer></blockquote>
 
@@ -1226,7 +1101,7 @@
 </ul>
 <p>查看事务隔离级别：<br><code>SELECT @@TRANSACTION_ISOLATION;</code><br>设置事务隔离级别：<br><code>SET [ SESSION | GLOBAL ] TRANSACTION ISOLATION LEVEL &#123;READ UNCOMMITTED | READ COMMITTED | REPEATABLE READ | SERIALIZABLE &#125;;</code><br>SESSION 是会话级别，表示只针对当前会话有效，GLOBAL 表示对所有会话有效</p>
 <h1 id="进阶篇"><a href="#进阶篇" class="headerlink" title="进阶篇"></a>进阶篇</h1><h2 id="存储引擎"><a href="#存储引擎" class="headerlink" title="存储引擎"></a>存储引擎</h2><p>MySQL体系结构：</p>
-<p><img src="/%E8%BF%90%E7%BB%B4/mysql/MySQL%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84.png" alt="结构图" title="结构图"><br><img src="/%E8%BF%90%E7%BB%B4/mysql/MySQL%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E5%B1%82%E7%BA%A7%E5%90%AB%E4%B9%89.png" alt="层级描述" title="层级描述"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/MySQL%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84.png" alt="结构图" title="结构图"><br><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/MySQL%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E5%B1%82%E7%BA%A7%E5%90%AB%E4%B9%89.png" alt="层级描述" title="层级描述"></p>
 <p>存储引擎就是存储数据、建立索引、更新&#x2F;查询数据等技术的实现方式。存储引擎是基于表而不是基于库的，所以存储引擎也可以被称为表引擎。<br>默认存储引擎是InnoDB。</p>
 <p>相关操作：</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-- 查询建表语句</span><br><span class="line">show create table account;</span><br><span class="line">-- 建表时指定存储引擎</span><br><span class="line">CREATE TABLE 表名(</span><br><span class="line">	...</span><br><span class="line">) ENGINE=INNODB;</span><br><span class="line">-- 查看当前数据库支持的存储引擎</span><br><span class="line">show engines;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
@@ -1246,7 +1121,7 @@
 <p>知识点：</p>
 <p>查看 Mysql 变量：<br><code>show variables like &#39;innodb_file_per_table&#39;;</code></p>
 <p>从idb文件提取表结构数据：<br>（在cmd运行）<br><code>ibd2sdi xxx.ibd</code></p>
-<p>InnoDB 逻辑存储结构：<br><img src="/%E8%BF%90%E7%BB%B4/mysql/%E9%80%BB%E8%BE%91%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84.png" alt="InnoDB逻辑存储结构" title="InnoDB逻辑存储结构"></p>
+<p>InnoDB 逻辑存储结构：<br><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E9%80%BB%E8%BE%91%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84.png" alt="InnoDB逻辑存储结构" title="InnoDB逻辑存储结构"></p>
 <h3 id="MyISAM"><a href="#MyISAM" class="headerlink" title="MyISAM"></a>MyISAM</h3><p>MyISAM 是 MySQL 早期的默认存储引擎。</p>
 <p>特点：</p>
 <ul>
@@ -1433,15 +1308,15 @@
 <td>不支持</td>
 </tr>
 </tbody></table>
-<h4 id="B-Tree"><a href="#B-Tree" class="headerlink" title="B-Tree"></a>B-Tree</h4><p><img src="/%E8%BF%90%E7%BB%B4/mysql/%E4%BA%8C%E5%8F%89%E6%A0%91.png" alt="二叉树" title="二叉树"></p>
+<h4 id="B-Tree"><a href="#B-Tree" class="headerlink" title="B-Tree"></a>B-Tree</h4><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E4%BA%8C%E5%8F%89%E6%A0%91.png" alt="二叉树" title="二叉树"></p>
 <p>二叉树的缺点可以用红黑树来解决：<br><img src="https://learning-logs-1253130399.cos.ap-guangzhou.myqcloud.com/editor/%E7%BA%A2%E9%BB%91%E6%A0%91_20220316163142686602.png" alt="红黑树" title="红黑树"><br>红黑树也存在大数据量情况下，层级较深，检索速度慢的问题。</p>
 <p>为了解决上述问题，可以使用 B-Tree 结构。<br>B-Tree (多路平衡查找树) 以一棵最大度数（max-degree，指一个节点的子节点个数）为5（5阶）的 b-tree 为例（每个节点最多存储4个key，5个指针）</p>
-<p><img src="/%E8%BF%90%E7%BB%B4/mysql/B-Tree%E7%BB%93%E6%9E%84.png" alt="B-Tree结构" title="B-Tree结构"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/B-Tree%E7%BB%93%E6%9E%84.png" alt="B-Tree结构" title="B-Tree结构"></p>
 <blockquote>
 <p>B-Tree 的数据插入过程动画参照：<a href="https://www.bilibili.com/video/BV1Kr4y1i7ru?p=68">https://www.bilibili.com/video/BV1Kr4y1i7ru?p=68</a><br>演示地址：<a href="https://www.cs.usfca.edu/~galles/visualization/BTree.html">https://www.cs.usfca.edu/~galles/visualization/BTree.html</a></p>
 </blockquote>
 <h4 id="B-Tree-1"><a href="#B-Tree-1" class="headerlink" title="B+Tree"></a>B+Tree</h4><p>结构图：</p>
-<p><img src="/%E8%BF%90%E7%BB%B4/mysql/B+Tree%E7%BB%93%E6%9E%84%E5%9B%BE.png" alt="B+Tree结构图" title="B+Tree结构图"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/B+Tree%E7%BB%93%E6%9E%84%E5%9B%BE.png" alt="B+Tree结构图" title="B+Tree结构图"></p>
 <blockquote>
 <p>演示地址：<a href="https://www.cs.usfca.edu/~galles/visualization/BPlusTree.html">https://www.cs.usfca.edu/~galles/visualization/BPlusTree.html</a></p>
 </blockquote>
@@ -1451,7 +1326,7 @@
 <li>叶子节点形成一个单向链表</li>
 </ul>
 <p>MySQL 索引数据结构对经典的 B+Tree 进行了优化。在原 B+Tree 的基础上，增加一个指向相邻叶子节点的链表指针，就形成了带有顺序指针的 B+Tree，提高区间访问的性能。</p>
-<p><img src="/%E8%BF%90%E7%BB%B4/mysql/%E7%BB%93%E6%9E%84%E5%9B%BE.png" alt="MySQL B+Tree 结构图" title="MySQL B+Tree 结构图"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E7%BB%93%E6%9E%84%E5%9B%BE.png" alt="MySQL B+Tree 结构图" title="MySQL B+Tree 结构图"></p>
 <h4 id="Hash"><a href="#Hash" class="headerlink" title="Hash"></a>Hash</h4><p>哈希索引就是采用一定的hash算法，将键值换算成新的hash值，映射到对应的槽位上，然后存储在hash表中。<br>如果两个（或多个）键值，映射到一个相同的槽位上，他们就产生了hash冲突（也称为hash碰撞），可以通过链表来解决。</p>
 <p><img src="https://learning-logs-1253130399.cos.ap-guangzhou.myqcloud.com/editor/Hash%E7%B4%A2%E5%BC%95%E5%8E%9F%E7%90%86%E5%9B%BE_20220317143226150679.png" alt="Hash索引原理图" title="Hash索引原理图"></p>
 <p>特点：</p>
@@ -1528,7 +1403,7 @@
 </tr>
 </tbody></table>
 <p>演示图：</p>
-<p><img src="/%E8%BF%90%E7%BB%B4/mysql/%E5%8E%9F%E7%90%86%E5%9B%BE.png" alt="大致原理" title="大致原理"><br><img src="https://learning-logs-1253130399.cos.ap-guangzhou.myqcloud.com/editor/%E6%BC%94%E7%A4%BA%E5%9B%BE_20220319215403721066.png" alt="演示图" title="演示图"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%8E%9F%E7%90%86%E5%9B%BE.png" alt="大致原理" title="大致原理"><br><img src="https://learning-logs-1253130399.cos.ap-guangzhou.myqcloud.com/editor/%E6%BC%94%E7%A4%BA%E5%9B%BE_20220319215403721066.png" alt="演示图" title="演示图"></p>
 <p>聚集索引选取规则：</p>
 <ul>
 <li>如果存在主键，主键索引就是聚集索引</li>
@@ -2195,6 +2070,131 @@
       </categories>
       <tags>
         <tag>MySQL</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>VIM使用手册</title>
+    <url>/%E8%BF%90%E7%BB%B4/VIM%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/</url>
+    <content><![CDATA[<h1 id="查找"><a href="#查找" class="headerlink" title="查找"></a>查找</h1><p>在normal模式下按下<code>/</code>即可进入查找模式，输入要查找的字符串并按下回车。 Vim会跳转到第一个匹配。按下<code>n</code>查找下一个，按下<code>N</code>查找上一个。</p>
+<p>Vim查找支持正则表达式，例如<code>/vim$</code>匹配行尾的<code>&quot;vim&quot;</code>。 需要查找特殊字符需要转义，例如<code>/vim\$</code>匹配<code>&quot;vim$&quot;</code>。</p>
+<h2 id="大小写敏感查找"><a href="#大小写敏感查找" class="headerlink" title="大小写敏感查找"></a>大小写敏感查找</h2><p>在查找模式中加入<code>\c</code>表示大小写不敏感查找，<code>\C</code>表示大小写敏感查找。例如：</p>
+<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line">/foo\<span class="keyword">c</span></span><br></pre></td></tr></table></figure>
+
+<p>将会查找所有的<code>&quot;foo&quot;</code>,<code>&quot;FOO&quot;</code>,<code>&quot;Foo&quot;</code>等字符串。</p>
+<h2 id="大小写敏感配置"><a href="#大小写敏感配置" class="headerlink" title="大小写敏感配置"></a>大小写敏感配置</h2><p>Vim 默认采用大小写敏感的查找，为了方便我们常常将其配置为大小写不敏感：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot; 设置默认进行大小写不敏感查找</span><br><span class="line">set ignorecase</span><br><span class="line">&quot; 如果有一个大写字母，则切换到大小写敏感查找</span><br><span class="line">set smartcase</span><br></pre></td></tr></table></figure>
+
+<p>将上述设置粘贴到你的~&#x2F;.vimrc，重新打开Vim即可生效</p>
+<h2 id="查找当前单词"><a href="#查找当前单词" class="headerlink" title="查找当前单词"></a>查找当前单词</h2><p>在normal模式下按下<code>*</code>即可查找光标所在单词（word）， 要求每次出现的前后为空白字符或标点符号。例如当前为<code>foo</code>， 可以匹配<code>foo bar</code>中的<code>foo</code>，但不可匹配<code>foobar</code>中的<code>foo</code>。 这在查找函数名、变量名时非常有用。</p>
+<p>按下<code>g*</code>即可查找光标所在单词的字符序列，每次出现前后字符无要求。 即<code>foo bar</code>和<code>foobar</code>中的<code>foo</code>均可被匹配到。</p>
+<h1 id="替换"><a href="#替换" class="headerlink" title="替换"></a>替换</h1><p>语法为<code>:&#123;作用范围&#125;s/&#123;目标&#125;/&#123;替换&#125;/&#123;替换标志&#125;</code>，<br>全局替换：<code>:%s/源字符串/目的字符串/g</code>。</p>
+<p>例如<code>:%s/foo/bar/g</code>会在全局范围(<code>%</code>)查找<code>foo</code>并替换为<code>bar</code>，所有出现都会被替换（<code>g</code>）</p>
+<h2 id="基本的替换"><a href="#基本的替换" class="headerlink" title="基本的替换"></a>基本的替换</h2><p><code>:s/vivian/sky/</code> 替换当前行第一个 vivian 为 sky<br><code>:s/vivian/sky/g</code> 替换当前行所有 vivian 为 sky<br><code>:n,$s/vivian/sky/</code> 替换第 n 行开始到最后一行中每一行的第一个 vivian 为 sky<br><code>:n,$s/vivian/sky/g</code> 替换第 n 行开始到最后一行中每一行所有 vivian 为 sky<br>（n 为数字，若 n 为 .，表示从当前行开始到最后一行）<br><code>:%s/vivian/sky/</code>（等同于 :g&#x2F;vivian&#x2F;s&#x2F;&#x2F;sky&#x2F;）替换每一行的第一个 vivian 为 sky<br><code>:%s/vivian/sky/g</code>（等同于 :g&#x2F;vivian&#x2F;s&#x2F;&#x2F;sky&#x2F;g） 替换每一行中所有 vivian 为 sky<br>可以使用 # 作为分隔符，此时中间出现的 &#x2F; 不会作为分隔符<br><code>:s#vivian/#sky/#</code> 替换当前行第一个 vivian&#x2F; 为 sky&#x2F;<br><code>:%s+/oradata/apras/+/user01/apras1+</code> （使用+ 来替换 &#x2F; ）： &#x2F;oradata&#x2F;apras&#x2F;替换成&#x2F;user01&#x2F;apras1&#x2F;</p>
+<h2 id="作用范围"><a href="#作用范围" class="headerlink" title="作用范围"></a>作用范围</h2><p>作用范围分为当前行、全文、选区等等。</p>
+<p>当前行：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:s/foo/bar/g</span><br></pre></td></tr></table></figure>
+
+<p>全文：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:%s/foo/bar/g</span><br></pre></td></tr></table></figure>
+
+<p>选区，在Visual模式下选择区域后输入<code>:</code>，Vim即可自动补全为 <code>:&#39;&lt;,&#39;&gt;</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:&#x27;&lt;,&#x27;&gt;s/foo/bar/g</span><br></pre></td></tr></table></figure>
+
+<p>2-11行：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:5,12s/foo/bar/g</span><br></pre></td></tr></table></figure>
+
+<p>当前行.与接下来两行+2：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:.,+2s/foo/bar/g</span><br></pre></td></tr></table></figure>
+
+<h2 id="替换标志"><a href="#替换标志" class="headerlink" title="替换标志"></a>替换标志</h2><p>上文中命令结尾的<code>g</code>即是替换标志之一，表示全局global替换（即替换目标的所有出现）。 还有很多其他有用的替换标志：</p>
+<p>空替换标志表示只替换从光标位置开始，目标的第一次出现：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:%s/foo/bar</span><br></pre></td></tr></table></figure>
+
+<p><code>i</code>表示大小写不敏感查找，<code>I</code>表示大小写敏感：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:%s/foo/bar/i</span><br><span class="line"># 等效于模式中的\c（不敏感）或\C（敏感）</span><br><span class="line">:%s/foo\c/bar</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><code>c</code>表示需要确认，例如全局查找<code>&quot;foo&quot;</code>替换为<code>&quot;bar&quot;</code>并且需要确认：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">:%s/foo/bar/gc</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>回车后Vim会将光标移动到每一次<code>&quot;foo&quot;</code>出现的位置，并提示<code>replace with bar (y/n/a/q/l/^E/^Y)?</code>。<br>按下<code>y</code>表示替换，<code>n</code>表示不替换，<code>a</code>表示替换所有，<code>q</code>表示退出查找模式， <code>l</code>表示替换当前位置并退出。<code>^E</code>与<code>^Y</code>是光标移动快捷键，参考： <a href="http://harttle.com/2015/11/07/vim-cursor.html" title="Vim中如何快速进行光标移动">Vim中如何快速进行光标移动</a></p>
+<h1 id="设置缩进"><a href="#设置缩进" class="headerlink" title="设置缩进"></a>设置缩进</h1><p><code>set autoindent</code>设置自动缩进<br><code>set shiftwidth=4</code>设置自动缩进空格数<br><code>set tabstop=4</code>设置一个tab等于多少个空格的宽度<br><code>set softtabstop=4</code>设置软制表符，软制表符表示在Insert模式的时候按退格键时退回缩进的长度，当使用expandtab 时特别有用。<br><code>set expandtab</code>将tab变成空格<br><code>:%retab!</code>将文件中现有的tab变成空格</p>
+<h1 id="鼠标功能"><a href="#鼠标功能" class="headerlink" title="鼠标功能"></a>鼠标功能</h1><p><code>set mouse=a</code>启用鼠标功能<br><code>set mouse-=a</code>停用鼠标功能</p>
+<p>鼠标模式：</p>
+<ul>
+<li>n：普通模式</li>
+<li>v：可视模式</li>
+<li>i：插入模式</li>
+<li>c：命令行模式</li>
+<li>h：在帮助文件里，以上所有模式</li>
+<li>a：以上所有模式</li>
+<li>r：跳过|lit-enter|提示</li>
+<li>A：在可视模式下自动选择</li>
+</ul>
+<p>解决鼠标模式右键不能粘贴问题<br>用鼠标和可视模式复制&#x2F;粘贴 (‘mouse’ 选项必须设置，见上):</p>
+<ol>
+<li>在文本的第一个字符上按鼠标左键，移动鼠标到文本的最后一个字母，然后释放左<br>键。这会启动可视模式并高亮选择区域。</li>
+<li>按 “y” 抽出可视文本到无名寄存器里。</li>
+<li>在要插入的位置上按鼠标左键。</li>
+<li>按鼠标中键（滚轮）。</li>
+</ol>
+<h1 id="折叠代码"><a href="#折叠代码" class="headerlink" title="折叠代码"></a>折叠代码</h1><p><img src="/%E8%BF%90%E7%BB%B4/VIM%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/%E5%BF%AB%E6%8D%B7%E9%94%AE.png"></p>
+]]></content>
+      <categories>
+        <category>运维</category>
+      </categories>
+      <tags>
+        <tag>VIM</tag>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>天刀基本玩法</title>
+    <url>/%E6%B8%B8%E6%88%8F/%E5%A4%A9%E5%88%80%E5%9F%BA%E6%9C%AC%E7%8E%A9%E6%B3%95/</url>
+    <content><![CDATA[<p>天涯明月刀是我最近开始玩也比较喜欢玩的游戏，我也打算长玩，网上的人都将这个游戏简称为天刀，作为新手，每天上线不知道要做什么，作为一款比较大型的游戏，要想留住玩家，肯定需要有每日的玩法和任务给大家去做，我在网上也看到有人专门录了视频来讲解天刀每日的玩法都有些什么，于是我特意写这篇博客来归纳各种的天刀玩法。</p>
+<span id="more"></span>
+
+<p>（由于视频不能使用外链，所以只能贴上视频链接了）</p>
+<p>每日玩法：</p>
+<p><a href="http://video.duowan.com/play/8856893.html">http://video.duowan.com/play/8856893.html</a></p>
+<!-- <embed id="8856893" name="8856893" src="http://assets.dwstatic.com/video/vppp.swf" wmode="transparent" allowFullScreen="true" quality="high"  height="498"  width="610" align="middle" allowScriptAccess="always" flashvars="auto_play=1&vid=8856893&channelId=wuxia&logo=dw" type="application/x-shockwave-flash">	</embed>  -->
+
+<br/>
+杀手和捕快身份玩法详解：
+
+<p><a href="http://video.duowan.com/play/8837225.html">http://video.duowan.com/play/8837225.html</a></p>
+<!-- <embed id="8837225" name="8837225" src="http://assets.dwstatic.com/video/vppp.swf" wmode="transparent" allowFullScreen="true" quality="high"  height="498"  width="610" align="middle" allowScriptAccess="always" flashvars="auto_play=1&vid=8837225&channelId=wuxia&logo=dw" type="application/x-shockwave-flash">	</embed>  -->
+<br/>
+游侠和猎户身份玩法详解：
+
+<p><a href="http://video.duowan.com/play/8842355.html">http://video.duowan.com/play/8842355.html</a></p>
+<!-- <embed id="8842355" name="8842355" src="http://assets.dwstatic.com/video/vppp.swf" wmode="transparent" allowFullScreen="true" quality="high"  height="498"  width="610" align="middle" allowScriptAccess="always" flashvars="auto_play=1&vid=8842355&channelId=wuxia&logo=dw" type="application/x-shockwave-flash">	</embed>  -->
+<br/>
+镖师、文士、乐伶身份玩法详解：
+
+<p><a href="http://video.duowan.com/play/8850543.html">http://video.duowan.com/play/8850543.html</a></p>
+<!-- <embed id="8850543" name="8850543" src="http://assets.dwstatic.com/video/vppp.swf" wmode="transparent" allowFullScreen="true" quality="high"  height="498"  width="610" align="middle" allowScriptAccess="always" flashvars="auto_play=1&vid=8850543&channelId=wuxia&logo=dw" type="application/x-shockwave-flash">	</embed>  -->
+<br/>
+雅集、拉镖、劫镖玩法详解：
+
+<p><a href="http://video.duowan.com/play/8858989.html">http://video.duowan.com/play/8858989.html</a></p>
+<!-- <embed id="8858989" name="8858989" src="http://assets.dwstatic.com/video/vppp.swf" wmode="transparent" allowFullScreen="true" quality="high"  height="498"  width="610" align="middle" allowScriptAccess="always" flashvars="auto_play=1&vid=8858989&channelId=wuxia&logo=dw" type="application/x-shockwave-flash">	</embed>  -->
+<br/>
+莲花、宝藏、快活王、钓鱼玩法详解：
+
+<p><a href="http://video.duowan.com/play/8862367.html">http://video.duowan.com/play/8862367.html</a></p>
+<!-- <embed id="8862367" name="8862367" src="http://assets.dwstatic.com/video/vppp.swf" wmode="transparent" allowFullScreen="true" quality="high"  height="498"  width="610" align="middle" allowScriptAccess="always" flashvars="auto_play=1&vid=8862367&channelId=wuxia&logo=dw" type="application/x-shockwave-flash">	</embed>  -->
+<br/>
+缉拿、江洋大盗玩法详解：
+
+<p><a href="http://video.duowan.com/play/8864355.html">http://video.duowan.com/play/8864355.html</a></p>
+<!-- <embed id="8864355" name="8864355" src="http://assets.dwstatic.com/video/vppp.swf" wmode="transparent" allowFullScreen="true" quality="high"  height="498"  width="610" align="middle" allowScriptAccess="always" flashvars="auto_play=1&vid=8864355&channelId=wuxia&logo=dw" type="application/x-shockwave-flash">	</embed>  -->
+<br/>
+]]></content>
+      <categories>
+        <category>游戏</category>
+      </categories>
+      <tags>
+        <tag>天涯明月刀</tag>
       </tags>
   </entry>
   <entry>

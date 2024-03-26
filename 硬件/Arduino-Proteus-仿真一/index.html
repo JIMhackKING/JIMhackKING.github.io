@@ -23,12 +23,12 @@
     <meta name="description" content="玩过单片机的人应该都会知道，有一个系列的单片机叫 Arduino，总所周知的 Arduino 是对对单片机不熟悉，但是对单片机感兴趣的软件开发程序员非常友好的，他有一个专门的软件 Arduino IDE，用于开发 Arduino 系列的产品，他的特点是有许许多多的库和函数，编写程序控制单片机的时候不需要了解太多关于寄存器的知识，直接调用相应的函数就可以控制单片机，这就是为什么说对软件开发的程序员非">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Arduino + Proteus 仿真（一）">
-<meta property="og:url" content="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%B8%80%EF%BC%89/index.html">
+<meta property="og:url" content="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/Arduino-Proteus-%E4%BB%BF%E7%9C%9F%E4%B8%80/index.html">
 <meta property="og:site_name" content="智云知识">
 <meta property="og:description" content="玩过单片机的人应该都会知道，有一个系列的单片机叫 Arduino，总所周知的 Arduino 是对对单片机不熟悉，但是对单片机感兴趣的软件开发程序员非常友好的，他有一个专门的软件 Arduino IDE，用于开发 Arduino 系列的产品，他的特点是有许许多多的库和函数，编写程序控制单片机的时候不需要了解太多关于寄存器的知识，直接调用相应的函数就可以控制单片机，这就是为什么说对软件开发的程序员非">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%B8%80%EF%BC%89/setting1.png">
-<meta property="og:image" content="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%B8%80%EF%BC%89/setting2.png">
+<meta property="og:image" content="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/Arduino-Proteus-%E4%BB%BF%E7%9C%9F%E4%B8%80/setting1.png">
+<meta property="og:image" content="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/Arduino-Proteus-%E4%BB%BF%E7%9C%9F%E4%B8%80/setting2.png">
 <meta property="article:published_time" content="2018-05-27T07:35:12.000Z">
 <meta property="article:modified_time" content="2024-03-06T14:40:43.580Z">
 <meta property="article:author" content="DHC">
@@ -36,14 +36,14 @@
 <meta property="article:tag" content="AVR">
 <meta property="article:tag" content="Arduino">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%B8%80%EF%BC%89/setting1.png">
+<meta name="twitter:image" content="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/Arduino-Proteus-%E4%BB%BF%E7%9C%9F%E4%B8%80/setting1.png">
 
 
-<link rel="canonical" href="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%B8%80%EF%BC%89/">
+<link rel="canonical" href="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/Arduino-Proteus-%E4%BB%BF%E7%9C%9F%E4%B8%80/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%B8%80%EF%BC%89/","path":"硬件/arduino-proteus-仿真（一）/","title":"Arduino + Proteus 仿真（一）"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/Arduino-Proteus-%E4%BB%BF%E7%9C%9F%E4%B8%80/","path":"硬件/Arduino-Proteus-仿真一/","title":"Arduino + Proteus 仿真（一）"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>Arduino + Proteus 仿真（一） | 智云知识</title>
@@ -82,7 +82,7 @@
       <p class="site-title">智云知识</p>
       <i class="logo-line"></i>
     </a>
-      <p class="site-subtitle" itemprop="description">共享知识库</p>
+      <p class="site-subtitle" itemprop="description">共享学习笔记</p>
   </div>
 
   <div class="site-nav-right">
@@ -95,7 +95,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">9</span></a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">4</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">9</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">9</span></a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -152,7 +152,7 @@
         <div class="site-overview-wrap sidebar-panel">
           <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
   <p class="site-author-name" itemprop="name">DHC</p>
-  <div class="site-description" itemprop="description">知识以一种粗暴的方式进入了我的脑子</div>
+  <div class="site-description" itemprop="description">但行好事，莫问前程</div>
 </div>
 <div class="site-state-wrap animated">
   <nav class="site-state">
@@ -163,12 +163,14 @@
         </a>
       </div>
       <div class="site-state-item site-state-categories">
+          <a href="/categories/">
         <span class="site-state-item-count">4</span>
-        <span class="site-state-item-name">分类</span>
+        <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
+          <a href="/tags/">
         <span class="site-state-item-count">9</span>
-        <span class="site-state-item-name">标签</span>
+        <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>
@@ -217,7 +219,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%B8%80%EF%BC%89/">
+    <link itemprop="mainEntityOfPage" href="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/Arduino-Proteus-%E4%BB%BF%E7%9C%9F%E4%B8%80/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -226,7 +228,7 @@
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="智云知识">
-      <meta itemprop="description" content="知识以一种粗暴的方式进入了我的脑子">
+      <meta itemprop="description" content="但行好事，莫问前程">
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
@@ -235,7 +237,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Arduino + Proteus 仿真（一）
+          Arduino + Proteus 仿真（一）<a href="https://gitee.com/dhc_king/github-page/tree/master/source/_posts/Arduino-Proteus-%E4%BB%BF%E7%9C%9F%E4%B8%80.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
         </h1>
 
         <div class="post-meta-container">
@@ -281,8 +283,8 @@
       </span>
       <span class="post-meta-item-text">Changyan：</span>
     
-    <a title="Arduino + Proteus 仿真（一）" href="/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%B8%80%EF%BC%89/#SOHUCS" itemprop="discussionUrl">
-      <span id="sourceId::45befaa07abb1420b01e3a97e31bd858" class="cy_cmt_count" itemprop="commentCount"></span>
+    <a title="Arduino + Proteus 仿真（一）" href="/%E7%A1%AC%E4%BB%B6/Arduino-Proteus-%E4%BB%BF%E7%9C%9F%E4%B8%80/#SOHUCS" itemprop="discussionUrl">
+      <span id="sourceId::04a2f02451ff06cae434b82cc2addb1a" class="cy_cmt_count" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -320,17 +322,17 @@
 <p>** 好了，这里才是正话！ ** Arduino 通常情况下都是直接在 IDE 上传程序，之后 IDE 会自动完成程序的烧写，但是要使用 Proteus 的仿真必须要有编译器编译出来的 hex、bin、elf 文件，这三种文件都是烧写单片机的程序文件，而 Arduino 每次编译上传的时候都会创建一个临时文件夹存放 hex 文件，你是找不到他编译出来的 hex 文件的，我们需要进行设置，让 Arduino 编译的时候把 hex 文件存放在某个地方。</p>
 <p>Arduino 的设置方法：</p>
 <p>首先打开左上角 文件 -&gt; 首选项</p>
-<img src="/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%B8%80%EF%BC%89/setting1.png" class="">
+<img src="/%E7%A1%AC%E4%BB%B6/Arduino-Proteus-%E4%BB%BF%E7%9C%9F%E4%B8%80/setting1.png" class="">
 
 <br>
 然后点击下方的首选项编辑文件（如图所示的地方，蓝色字体的文件路径）
 
-<img src="/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%B8%80%EF%BC%89/setting2.png" class="">
+<img src="/%E7%A1%AC%E4%BB%B6/Arduino-Proteus-%E4%BB%BF%E7%9C%9F%E4%B8%80/setting2.png" class="">
 
 <br>
 打开文件之后在文件最下方添加一条语句：``` build.path=XXX ``` 其中 XXX 是你要保存编译后的文件的路径，改成自己的路径就好，注意：编辑改文件要先关闭 Arduino IDE 
 
-<p>然后此时你就可以编写你的程序并编译（验证），然后在你刚设置的路径下找到一个 hex 文件，之后就可以使用 Proteus 仿真了，<a href="/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89/" title="Arduino + Proteus 仿真（二）">下一篇</a>文章会进行一次实践，编写一个程序并仿真。</p>
+<p>然后此时你就可以编写你的程序并编译（验证），然后在你刚设置的路径下找到一个 hex 文件，之后就可以使用 Proteus 仿真了，<a href="/%E7%A1%AC%E4%BB%B6/Arduino-Proteus-%E4%BB%BF%E7%9C%9F%E4%BA%8C/" title="Arduino + Proteus 仿真（二）">下一篇</a>文章会进行一次实践，编写一个程序并仿真。</p>
 
     </div>
 
@@ -362,7 +364,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%B8%80%EF%BC%89/" title="Arduino + Proteus 仿真（一）">https://jimhackking.github.io/硬件/arduino-proteus-仿真（一）/</a>
+      <a href="https://jimhackking.github.io/%E7%A1%AC%E4%BB%B6/Arduino-Proteus-%E4%BB%BF%E7%9C%9F%E4%B8%80/" title="Arduino + Proteus 仿真（一）">https://jimhackking.github.io/硬件/Arduino-Proteus-仿真一/</a>
   </li>
   <li class="post-copyright-license">
       <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -429,7 +431,7 @@
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/%E7%A1%AC%E4%BB%B6/arduino-proteus-%E4%BB%BF%E7%9C%9F%EF%BC%88%E4%BA%8C%EF%BC%89/" rel="next" title="Arduino + Proteus 仿真（二）">
+                <a href="/%E7%A1%AC%E4%BB%B6/Arduino-Proteus-%E4%BB%BF%E7%9C%9F%E4%BA%8C/" rel="next" title="Arduino + Proteus 仿真（二）">
                   Arduino + Proteus 仿真（二） <i class="fa fa-angle-right"></i>
                 </a>
             </div>
@@ -453,7 +455,7 @@
               <div class="comments gitalk-container"></div>
             </div>
             <div class="tab-pane changyan" id="comment-changyan">
-              <div class="comments" id="SOHUCS" sid="45befaa07abb1420b01e3a97e31bd858"></div>
+              <div class="comments" id="SOHUCS" sid="04a2f02451ff06cae434b82cc2addb1a"></div>
             </div>
         </div>
       </div>
@@ -553,7 +555,7 @@
 <script src="/js/third-party/comments/changyan.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
-<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"JIMhackKING","repo":"JIMhackKING.github.io","client_id":"7ebc2cfea41386b00310","client_secret":"b56956858260f816994b4bf786041e059249e217","admin_user":"JIMhackKING","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"45befaa07abb1420b01e3a97e31bd858"}</script>
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"JIMhackKING","repo":"JIMhackKING.github.io","client_id":"7ebc2cfea41386b00310","client_secret":"b56956858260f816994b4bf786041e059249e217","admin_user":"JIMhackKING","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"04a2f02451ff06cae434b82cc2addb1a"}</script>
 <script src="/js/third-party/comments/gitalk.js"></script>
 
 </body>
