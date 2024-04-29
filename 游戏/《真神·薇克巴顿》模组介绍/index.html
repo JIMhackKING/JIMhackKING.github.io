@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"jimhackking.github.io","root":"/","images":"/images","scheme":"Mist","darkmode":true,"version":"8.19.2","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"changyan","storage":true,"lazyload":false,"nav":{"changyan":{"text":"畅言云评","order":-1},"gitalk":{"text":"GitTalk","order":-2}},"activeClass":"changyan"},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="饥荒联机版模组《真神·薇克巴顿》介绍">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《真神·薇克巴顿》模组介绍">
+<meta property="og:url" content="https://jimhackking.github.io/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/index.html">
+<meta property="og:site_name" content="智云知识">
+<meta property="og:description" content="饥荒联机版模组《真神·薇克巴顿》介绍">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://jimhackking.github.io/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/modicon.jpg">
+<meta property="og:image" content="https://jimhackking.github.io/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/%E6%96%B0%E6%9C%88%E7%A5%9E%E8%AF%9D.png">
+<meta property="og:image" content="https://jimhackking.github.io/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/%E6%98%9F%E4%B9%8B%E5%AE%88%E6%8A%A4.png">
+<meta property="og:image" content="https://jimhackking.github.io/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/%E7%BE%8E%E6%9D%9C%E8%8E%8E%E4%B9%8B%E7%9C%BC.png">
+<meta property="og:image" content="https://jimhackking.github.io/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/%E9%81%97%E8%BF%B9%E4%B9%8B%E9%97%A8.png">
+<meta property="og:image" content="https://jimhackking.github.io/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/%E6%81%90%E6%80%96%E6%95%85%E4%BA%8B.png">
+<meta property="og:image" content="https://jimhackking.github.io/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/%E6%A3%AE%E6%9E%97%E7%A7%98%E6%9C%AF.png">
+<meta property="og:image" content="https://jimhackking.github.io/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/%E6%98%A5%E5%9B%9E%E5%A4%A7%E5%9C%B0.png">
+<meta property="og:image" content="https://jimhackking.github.io/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/%E7%A5%88%E6%84%BF.png">
+<meta property="og:image" content="https://jimhackking.github.io/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/%E4%B8%B0%E6%94%B6%E4%B9%8B%E6%97%B6.png">
+<meta property="og:image" content="https://jimhackking.github.io/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/%E6%B2%83%E5%A7%86%E4%BC%8D%E5%BE%B7%E4%B9%8B%E9%AD%82.png">
+<meta property="og:image" content="https://jimhackking.github.io/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/%E9%BB%91%E6%9A%97%E9%99%8D%E4%B8%B4.png">
+<meta property="og:image" content="https://jimhackking.github.io/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/%E5%85%89%E6%98%8E%E9%87%8D%E7%8E%B0.png">
+<meta property="og:image" content="https://jimhackking.github.io/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/mb_book_assistant_20230624204750358536.png">
+<meta property="og:image" content="https://jimhackking.github.io/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/mb_book_protector_20230624204802643631.png">
+<meta property="og:image" content="https://jimhackking.github.io/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/mb_book_shadowattack_20230624204813729278.png">
+<meta property="og:image" content="https://jimhackking.github.io/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/mb_book_donquixote_20230624204830299262.png">
+<meta property="og:image" content="https://jimhackking.github.io/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/mb_book_grow_sapling_20230624204850602606.png">
+<meta property="og:image" content="https://jimhackking.github.io/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/mb_book_bcgm_20240429185031247741.png">
+<meta property="og:image" content="https://jimhackking.github.io/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/%E5%9B%BE%E5%B1%821_20230624204938224438.png">
+<meta property="og:image" content="https://jimhackking.github.io/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/%E5%9B%BE%E5%B1%822_20230624205106804974.png">
+<meta property="og:image" content="https://jimhackking.github.io/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/%E5%9B%BE%E5%B1%823_20230624205121418335.png">
+<meta property="og:image" content="https://jimhackking.github.io/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/%E5%9B%BE%E5%B1%822_20230701205352220855.png">
+<meta property="og:image" content="https://jimhackking.github.io/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/%E5%9B%BE%E5%B1%821_20230701205405909297.png">
+<meta property="og:image" content="https://jimhackking.github.io/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/mb_library_card_20230702213834689632.png">
+<meta property="og:image" content="https://jimhackking.github.io/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/mb_converter_20230624205157742943.png">
+<meta property="article:published_time" content="2024-04-29T11:43:18.000Z">
+<meta property="article:modified_time" content="2024-04-29T11:48:32.019Z">
+<meta property="article:author" content="DHC">
+<meta property="article:tag" content="饥荒">
+<meta property="article:tag" content="模组">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://jimhackking.github.io/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/modicon.jpg">
+
+
+<link rel="canonical" href="https://jimhackking.github.io/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://jimhackking.github.io/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/","path":"游戏/《真神·薇克巴顿》模组介绍/","title":"《真神·薇克巴顿》模组介绍"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>《真神·薇克巴顿》模组介绍 | 智云知识</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">智云知识</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">共享学习笔记</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">4</span></a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">11</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">11</span></a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A8%A1%E7%BB%84%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">模组简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A8%A1%E7%BB%84%E8%AE%BE%E7%BD%AE"><span class="nav-number">2.</span> <span class="nav-text">模组设置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%96%B0%E5%A2%9E%E4%B9%A6%E7%B1%8D"><span class="nav-number">3.</span> <span class="nav-text">新增书籍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B0%E6%9C%88%E7%A5%9E%E8%AF%9D"><span class="nav-number">3.1.</span> <span class="nav-text">新月神话</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%98%9F%E4%B9%8B%E5%AE%88%E6%8A%A4"><span class="nav-number">3.2.</span> <span class="nav-text">星之守护</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BE%8E%E6%9D%9C%E8%8E%8E%E4%B9%8B%E7%9C%BC"><span class="nav-number">3.3.</span> <span class="nav-text">美杜莎之眼</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%81%97%E8%BF%B9%E4%B9%8B%E9%97%A8"><span class="nav-number">3.4.</span> <span class="nav-text">遗迹之门</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%81%90%E6%80%96%E6%95%85%E4%BA%8B"><span class="nav-number">3.5.</span> <span class="nav-text">恐怖故事</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A3%AE%E6%9E%97%E7%A7%98%E6%9C%AF"><span class="nav-number">3.6.</span> <span class="nav-text">森林秘术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%98%A5%E5%9B%9E%E5%A4%A7%E5%9C%B0"><span class="nav-number">3.7.</span> <span class="nav-text">春回大地</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A5%88%E6%84%BF"><span class="nav-number">3.8.</span> <span class="nav-text">祈愿</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%B0%E6%94%B6%E4%B9%8B%E6%97%B6"><span class="nav-number">3.9.</span> <span class="nav-text">丰收之时</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B2%83%E5%A7%86%E4%BC%8D%E5%BE%B7%E4%B9%8B%E9%AD%82"><span class="nav-number">3.10.</span> <span class="nav-text">沃姆伍德之魂</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%BB%91%E6%9A%97%E9%99%8D%E4%B8%B4"><span class="nav-number">3.11.</span> <span class="nav-text">黑暗降临</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%89%E6%98%8E%E9%87%8D%E7%8E%B0"><span class="nav-number">3.12.</span> <span class="nav-text">光明重现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E4%BA%BA%E5%8F%AC%E5%94%A4%E6%9C%AF"><span class="nav-number">3.13.</span> <span class="nav-text">工具人召唤术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%88%E6%8A%A4%E8%80%85%E5%8F%AC%E5%94%A4%E6%9C%AF"><span class="nav-number">3.14.</span> <span class="nav-text">守护者召唤术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A9%E5%88%83%E5%8D%8E%E5%B0%94%E5%85%B9"><span class="nav-number">3.15.</span> <span class="nav-text">利刃华尔兹</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A0%82%E5%90%89%E7%8F%82%E5%BE%B7%E7%9A%84%E9%AA%91%E5%A3%AB%E7%B2%BE%E7%A5%9E"><span class="nav-number">3.16.</span> <span class="nav-text">堂吉珂德的骑士精神</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8B%94%E8%8B%97%E5%8A%A9%E9%95%BF%E7%9A%84%E6%95%85%E4%BA%8B"><span class="nav-number">3.17.</span> <span class="nav-text">拔苗助长的故事</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%AC%E8%8D%89%E7%BA%B2%E7%9B%AE"><span class="nav-number">3.18.</span> <span class="nav-text">本草纲目</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8E%9F%E7%89%88%E4%B9%A6%E7%B1%8D%E4%BF%AE%E6%94%B9"><span class="nav-number">4.</span> <span class="nav-text">原版书籍修改</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%AB%E6%97%A5%E5%B0%86%E8%87%B3%EF%BC%81"><span class="nav-number">4.1.</span> <span class="nav-text">末日将至！</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%84%8F%E5%BF%B5%E6%8E%A7%E7%81%AB%E6%9C%AF%E8%AF%A6%E8%A7%A3"><span class="nav-number">4.2.</span> <span class="nav-text">意念控火术详解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%8B%E6%9C%8D%E8%9B%9B%E5%BD%A2%E7%BA%B2%E6%81%90%E6%83%A7%E7%97%87"><span class="nav-number">4.3.</span> <span class="nav-text">克服蛛形纲恐惧症</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%BB%E8%9C%82%E7%AC%94%E8%AE%B0"><span class="nav-number">4.4.</span> <span class="nav-text">养蜂笔记</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B0%B8%E6%81%92%E4%B9%8B%E5%85%89%E4%B9%8B%E5%A4%8D%E5%85%B4"><span class="nav-number">4.5.</span> <span class="nav-text">永恒之光之复兴</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E7%89%B9%E6%AE%8A%E7%89%A9%E5%93%81"><span class="nav-number">5.</span> <span class="nav-text">其他特殊物品</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E4%B9%A6%E5%8C%85"><span class="nav-number">5.1.</span> <span class="nav-text">小书包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9C%E5%8F%A4%E9%92%A5%E5%8C%99"><span class="nav-number">5.2.</span> <span class="nav-text">远古钥匙</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%80%9F%E9%98%85%E8%AF%81"><span class="nav-number">5.3.</span> <span class="nav-text">借阅证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B4%A8%E8%83%BD%E8%BD%AC%E6%8D%A2%E5%99%A8"><span class="nav-number">5.4.</span> <span class="nav-text">质能转换器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%A2%9D%E5%A4%96%E8%AF%B4%E6%98%8E"><span class="nav-number">6.</span> <span class="nav-text">额外说明</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">DHC</p>
+  <div class="site-description" itemprop="description">但行好事，莫问前程</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/JIMhackKING" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;JIMhackKING" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/dhc_king" title="Gitee → https:&#x2F;&#x2F;gitee.com&#x2F;dhc_king" rel="noopener me" target="_blank"><i class="fa-brands fa-git-alt fa-fw"></i>Gitee</a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa-solid fa-earth-americas fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://dhc.pythonanywhere.com/" title="https:&#x2F;&#x2F;dhc.pythonanywhere.com&#x2F;" rel="noopener" target="_blank">自建知识库</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://jimhackking.github.io/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="DHC">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="智云知识">
+      <meta itemprop="description" content="但行好事，莫问前程">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="《真神·薇克巴顿》模组介绍 | 智云知识">
+      <meta itemprop="description" content="饥荒联机版模组《真神·薇克巴顿》介绍">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《真神·薇克巴顿》模组介绍<a href="https://gitee.com/dhc_king/github-page/tree/master/source/_posts/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D.md" class="post-edit-link" title="编辑" rel="noopener" target="_blank"><i class="fa fa-pen-nib"></i></a>
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2024-04-29 19:43:18 / 修改时间：19:48:32" itemprop="dateCreated datePublished" datetime="2024-04-29T19:43:18+08:00">2024-04-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%B8%B8%E6%88%8F/" itemprop="url" rel="index"><span itemprop="name">游戏</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Changyan：</span>
+    
+    <a title="《真神·薇克巴顿》模组介绍" href="/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/#SOHUCS" itemprop="discussionUrl">
+      <span id="sourceId::af5a0d43b6cae52e58915489963ac21e" class="cy_cmt_count" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.6k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>9 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">饥荒联机版模组《真神·薇克巴顿》介绍</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="模组简介"><a href="#模组简介" class="headerlink" title="模组简介"></a>模组简介</h1><p><img src="/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/modicon.jpg"></p>
+<p>这个模组新增了很多书籍，给老奶奶以及其他可以阅读书籍的任务增添了许多的可玩性。<br>模组设置里面可以对一些功能和游玩难度进行调整。<br>如果对本模组有什么想法或者建议，欢迎到本模组的Steam主页讨论组里面畅谈。</p>
+<h1 id="模组设置"><a href="#模组设置" class="headerlink" title="模组设置"></a>模组设置</h1><ul>
+<li>语言：中文&#x2F;English</li>
+<li>可恢复耐久：如果选是，则书本可以放入书架恢复耐久，并且能制作小书包</li>
+<li>制作难度：影响书籍制作材料所需的数量，简单*1、普通*2、困难*3、超级难*4。部分贵重物品数量固定，不会根据这个配置项改变，默认是普通难度</li>
+<li>书本耐久：本模组中的书籍可以阅读的次数，默认为3次</li>
+<li>需要科技解锁：默认为是，如果选否，则不需要靠近书架就能制作书籍，随机蓝图档可以开，其他档可以忽略</li>
+</ul>
+<h1 id="新增书籍"><a href="#新增书籍" class="headerlink" title="新增书籍"></a>新增书籍</h1><p><strong>下方书籍介绍中的制作材料，默认以简单制作难度来进行说明，如果玩家修改了该设置，请自行计算最终所需材料</strong></p>
+<h2 id="新月神话"><a href="#新月神话" class="headerlink" title="新月神话"></a>新月神话</h2><p><img src="/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/%E6%96%B0%E6%9C%88%E7%A5%9E%E8%AF%9D.png"></p>
+<p><strong>制作材料</strong>：通过月之魔典转换获得。<br><strong>功能</strong>：将当天的月相变为新月。</p>
+<h2 id="星之守护"><a href="#星之守护" class="headerlink" title="星之守护"></a>星之守护</h2><p><img src="/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/%E6%98%9F%E4%B9%8B%E5%AE%88%E6%8A%A4.png"></p>
+<p><strong>制作材料</strong>：莎草纸*2、硝石*4、月岩*4<br><strong>功能</strong>：在周围召唤8-15颗流星雨。<br><strong>使用转换器增强后</strong>：召唤出来的流星雨只会往范围内的生物身上砸。每次生成陨石，都会重新筛选一次范围内的生物，如果生物走出了你的范围，则不会落下陨石，重新进入返回会继续落陨石。哪怕最后都没有落下过一颗陨石，也会视为阅读了一次书本。<br><strong>范围</strong>：10，增强后增至20<br>升级后只会攻击敌对生物。</p>
+<h2 id="美杜莎之眼"><a href="#美杜莎之眼" class="headerlink" title="美杜莎之眼"></a>美杜莎之眼</h2><p><img src="/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/%E7%BE%8E%E6%9D%9C%E8%8E%8E%E4%B9%8B%E7%9C%BC.png"></p>
+<p><strong>制作材料</strong>：莎草纸*2、腐烂物*10、尘土块*2<br><strong>功能</strong>：使附近的树木变为石化状态。<br><strong>使用转换器增强后</strong>：不仅能石化树木，还能将范围内的敌对生物永久（差不多是永久）冰冻。<br><strong>范围</strong>：20</p>
+<h2 id="遗迹之门"><a href="#遗迹之门" class="headerlink" title="遗迹之门"></a>遗迹之门</h2><p><img src="/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/%E9%81%97%E8%BF%B9%E4%B9%8B%E9%97%A8.png"></p>
+<p><strong>制作材料</strong>：莎草纸*2、活木*4、大理石*5<br><strong>功能</strong>：像应用造林学那样催长大理石树，最高阶段的大理石树不会重新变回第一阶段。<br><strong>使用转化器增强后</strong>：能直接将大理石树催长到最高阶段，并且还会随机掉落1~2颗大理石豌豆。<br><strong>范围</strong>：30</p>
+<h2 id="恐怖故事"><a href="#恐怖故事" class="headerlink" title="恐怖故事"></a>恐怖故事</h2><p><img src="/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/%E6%81%90%E6%80%96%E6%95%85%E4%BA%8B.png"></p>
+<p><strong>制作材料</strong>：莎草纸*2、活木*2、噩梦燃料*4<br><strong>功能</strong>：获得一个减少50%san值消耗的buff，可以大大减少阅读模组书籍时扣的san值。<br><strong>使用转化器增强后</strong>：会获得一个“暗影护符”，除了包含原版梦魇护符的功能外，还拥有一个影怪不攻击（骨头头盔的作用）的效果。带着上下线、重启服务器后变回普通的梦魇护符。<br><strong>持续时间</strong>：5分钟</p>
+<h2 id="森林秘术"><a href="#森林秘术" class="headerlink" title="森林秘术"></a>森林秘术</h2><p><img src="/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/%E6%A3%AE%E6%9E%97%E7%A7%98%E6%9C%AF.png"></p>
+<p><strong>制作材料</strong>：莎草纸*2、金块*10、大理石甲*1<br><strong>功能</strong>：获得一个蒜味（增加25%防御）buff。<br><strong>使用转化器增强后</strong>：会另外获得一个增加25%移速的buff。<br><strong>持续时间</strong>：2分钟</p>
+<h2 id="春回大地"><a href="#春回大地" class="headerlink" title="春回大地"></a>春回大地</h2><p><img src="/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/%E6%98%A5%E5%9B%9E%E5%A4%A7%E5%9C%B0.png"></p>
+<p><strong>制作材料</strong>：莎草纸*2、空浇水壶*1、便便桶*1、堆肥*1、超级催长剂*1<br><strong>功能</strong>：将附近的10个农作物从腐烂状态变为未腐烂时的状态，其原来的生长阶段也会保留。<br><strong>使用转换器增强后</strong>：可以将身上随机一组有新鲜度的物品恢复至满新鲜度<br><strong>范围</strong>：30</p>
+<h2 id="祈愿"><a href="#祈愿" class="headerlink" title="祈愿"></a>祈愿</h2><p><img src="/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/%E7%A5%88%E6%84%BF.png"></p>
+<p><strong>制作材料</strong>：莎草纸*2、告密的心*2、重生护符*1<br><strong>功能</strong>：复活附近随机一名队友。<br><strong>使用转化器增强后</strong>：复活范围变为全图（但还是只能复活一名队友）。<br><strong>范围</strong>：20<br>灵魂状态可以作祟这本书，将会有10%的概率复活，并消耗本书一次耐久。</p>
+<h2 id="丰收之时"><a href="#丰收之时" class="headerlink" title="丰收之时"></a>丰收之时</h2><p><img src="/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/%E4%B8%B0%E6%94%B6%E4%B9%8B%E6%97%B6.png"></p>
+<p><strong>制作材料</strong>：莎草纸*2、食人花种子*2、懒人护符*2、空浇水壶*2<br><strong>功能</strong>：收获附近的作物。<br><strong>范围</strong>：20<br>可以收集食人花、蜂箱、烹饪锅、移植作物、农作物等等。</p>
+<h2 id="沃姆伍德之魂"><a href="#沃姆伍德之魂" class="headerlink" title="沃姆伍德之魂"></a>沃姆伍德之魂</h2><p><img src="/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/%E6%B2%83%E5%A7%86%E4%BC%8D%E5%BE%B7%E4%B9%8B%E9%AD%82.png"></p>
+<p><strong>制作材料</strong>：通过园艺学拓展版转换获得。<br><strong>功能</strong>：可以使得附近10个作物直接巨大化。<br><strong>范围</strong>：30<br>无法将刚种下的普通种子（未知作物的种子）催化到巨大化。</p>
+<h2 id="黑暗降临"><a href="#黑暗降临" class="headerlink" title="黑暗降临"></a>黑暗降临</h2><p><img src="/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/%E9%BB%91%E6%9A%97%E9%99%8D%E4%B8%B4.png"></p>
+<p><strong>科技</strong>：完整的远古塔<br><strong>制作材料</strong>：莎草纸*2、新月神话*2<br><strong>功能</strong>：使当天一整天都变成晚上。<br>如果当前已经是晚上则不可使用。</p>
+<h2 id="光明重现"><a href="#光明重现" class="headerlink" title="光明重现"></a>光明重现</h2><p><img src="/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/%E5%85%89%E6%98%8E%E9%87%8D%E7%8E%B0.png"></p>
+<p><strong>制作材料</strong>：通过黑暗降临转换获得。<br><strong>功能</strong>：使当天一整天都变成白天。<br>如果当前已经是白天则不可使用。</p>
+<h2 id="工具人召唤术"><a href="#工具人召唤术" class="headerlink" title="工具人召唤术"></a>工具人召唤术</h2><p><img src="/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/mb_book_assistant_20230624204750358536.png"></p>
+<p><strong>制作材料</strong>：莎草纸*2、猪皮*2、肉*4<br><strong>功能</strong>：召唤暗影仆从来帮助你干活。<br><strong>范围</strong>：可能是30，具体请查看老麦召唤时地上显示的范围<br>最多只能召唤6个，这个暗影仆从跟老麦的暗影仆从是一样的。<br>另外这个暗影仆从也是有工作范围的，你离他太远，他身上的东西就给不了你了。</p>
+<h2 id="守护者召唤术"><a href="#守护者召唤术" class="headerlink" title="守护者召唤术"></a>守护者召唤术</h2><p><img src="/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/mb_book_protector_20230624204802643631.png"></p>
+<p><strong>制作材料</strong>：通过工具人召唤术转换获得。<br><strong>功能</strong>：召唤暗影仆从来帮你打架。<br><strong>范围</strong>：可能是30，具体请查看老麦召唤时地上显示的范围<br>最多只能召唤6个，这个暗影仆从跟老麦的暗影仆从是一样的。</p>
+<h2 id="利刃华尔兹"><a href="#利刃华尔兹" class="headerlink" title="利刃华尔兹"></a>利刃华尔兹</h2><p><img src="/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/mb_book_shadowattack_20230624204813729278.png"></p>
+<p><strong>制作材料</strong>：莎草纸*2、暗影剑*1、暗影甲*1、暗影香炉*1、噩梦燃料*4<br><strong>功能</strong>：召唤暗影突袭不断攻击周围的可攻击对象。<br>没有增强的利刃华尔兹会攻击附近40范围内所有有生命的物体，包括玩家，每有一个可攻击目标则攻击次数 +40（最多160），每次攻击伤害 为 15~40 随机浮动。另外目标的选取是在读书的那一瞬间，读完书之后再跑开也没用。<br><strong>使用转化器增强后</strong>：只会攻击敌对生物，对玩家是安全的。<br><strong>范围</strong>：40</p>
+<h2 id="堂吉珂德的骑士精神"><a href="#堂吉珂德的骑士精神" class="headerlink" title="堂吉珂德的骑士精神"></a>堂吉珂德的骑士精神</h2><p><img src="/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/mb_book_donquixote_20230624204830299262.png"></p>
+<p><strong>制作材料</strong>：莎草纸*2、骨头头盔*1、铥矿皇冠*1<br><strong>功能</strong>：获得一个霸体的buff，被攻击不会硬直，但是同时会获得一个易伤（增加所受伤害的33.3%）debuff。<br><strong>使用转化器增强后</strong>：不再会获得易伤的debuff。<br><strong>持续时间</strong>：4分钟</p>
+<h2 id="拔苗助长的故事"><a href="#拔苗助长的故事" class="headerlink" title="拔苗助长的故事"></a>拔苗助长的故事</h2><p><img src="/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/mb_book_grow_sapling_20230624204850602606.png"></p>
+<p><strong>制作材料</strong>：通过应用造林学转换获得。<br><strong>功能</strong>：将附近的树苗以及大理石芽等成长至一阶段。除此之外还能将附近盐堆立即生长一个阶段。<br><strong>范围</strong>：20</p>
+<h2 id="本草纲目"><a href="#本草纲目" class="headerlink" title="本草纲目"></a>本草纲目</h2><p><img src="/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/mb_book_bcgm_20240429185031247741.png"></p>
+<p><strong>制作材料</strong>：莎草纸*2、彩虹糖豆*10<br><strong>功能</strong>：所有附近的队友都将获得彩虹糖豆buff。<br><strong>使用转化器增强后</strong>：范围变为全图。<br><strong>范围</strong>：20</p>
+<h1 id="原版书籍修改"><a href="#原版书籍修改" class="headerlink" title="原版书籍修改"></a>原版书籍修改</h1><p>开启本模组会对一部分原版书籍进行修改，主要是质能转换器的增强功能。</p>
+<h2 id="末日将至！"><a href="#末日将至！" class="headerlink" title="末日将至！"></a>末日将至！</h2><p><img src="/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/%E5%9B%BE%E5%B1%821_20230624204938224438.png"></p>
+<p><strong>使用转化器增强后</strong>：闪电优先选择范围内生物，不过还是有可能打到人的，要看避雷值。</p>
+<h2 id="意念控火术详解"><a href="#意念控火术详解" class="headerlink" title="意念控火术详解"></a>意念控火术详解</h2><p><img src="/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/%E5%9B%BE%E5%B1%822_20230624205106804974.png"></p>
+<p><strong>使用转化器增强后</strong>：不仅能灭火，还能获得驭火buff，持续两分钟免疫火焰伤害。<br>增强后，读书时不管有没有灭火都会扣除书籍耐久并获得buff。</p>
+<h2 id="克服蛛形纲恐惧症"><a href="#克服蛛形纲恐惧症" class="headerlink" title="克服蛛形纲恐惧症"></a>克服蛛形纲恐惧症</h2><p><img src="/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/%E5%9B%BE%E5%B1%823_20230624205121418335.png"></p>
+<p><strong>使用转化器增强后</strong>：额外获得一个蜘蛛伪装buff，并在持续时间之内蜘蛛友好，不会主动攻击你。<br><strong>持续时间</strong>：3分钟</p>
+<h2 id="养蜂笔记"><a href="#养蜂笔记" class="headerlink" title="养蜂笔记"></a>养蜂笔记</h2><p><img src="/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/%E5%9B%BE%E5%B1%822_20230701205352220855.png"></p>
+<p><strong>使用转化器增强后</strong>：召唤出来的蜜蜂会变成永久狂暴状态。</p>
+<h2 id="永恒之光之复兴"><a href="#永恒之光之复兴" class="headerlink" title="永恒之光之复兴"></a>永恒之光之复兴</h2><p><img src="/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/%E5%9B%BE%E5%B1%821_20230701205405909297.png"></p>
+<p><strong>使用转化器增强后</strong>：会在周围再生成4个天光。</p>
+<h1 id="其他特殊物品"><a href="#其他特殊物品" class="headerlink" title="其他特殊物品"></a>其他特殊物品</h1><h2 id="小书包"><a href="#小书包" class="headerlink" title="小书包"></a>小书包</h2><p><strong>制作材料</strong>：采下的草*4、树枝*4<br><strong>功能</strong>：移动的书架，有8格容量，只能放入书籍。<br>这个小书包可以放入物品栏，小书包里面的书会缓慢恢复耐久，恢复速度跟书架是一样的。但是没有书架的光环。</p>
+<h2 id="远古钥匙"><a href="#远古钥匙" class="headerlink" title="远古钥匙"></a>远古钥匙</h2><p><strong>科技</strong>：完整的远古科技塔<br><strong>制作材料</strong>：绝望石头盔*1、绝望石盔甲*1、金块*20、石砖*10、暗影心房*1<br>这是原版的物品，考虑到质能转换器需要远古钥匙制作，且远古钥匙是世界唯一物品，所以本模组开放了远古钥匙的制作。<br>开启本模组后，远古钥匙可以带到地上。</p>
+<h2 id="借阅证"><a href="#借阅证" class="headerlink" title="借阅证"></a>借阅证</h2><p><img src="/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/mb_library_card_20230702213834689632.png"></p>
+<p><strong>科技</strong>：炼金引擎<br><strong>制作栏</strong>：工具<br><strong>制作材料</strong>：莎草纸*8、重生护符*1、寒冰护符*1、梦魇护符*1<br><strong>功能</strong>：戴上后获得制作书籍以及阅读书籍的能力<br><strong>耐久</strong>：20<br>装备位置是身体部位，只有装备在身上时才会获得能力，每次制作书籍或者阅读书籍都会消耗一次耐久。</p>
+<h2 id="质能转换器"><a href="#质能转换器" class="headerlink" title="质能转换器"></a>质能转换器</h2><p><img src="/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/mb_converter_20230624205157742943.png"></p>
+<p><strong>科技</strong>：天体祭坛<br><strong>制作材料</strong>：远古钥匙*1、彩虹宝石*1<br><strong>使用方法</strong>：手持转换器放到书籍上。<br>模组内最重要的物品，能增强部分书籍，有一些无法制作的书籍也需要通过这个道具来进行转换获得。<br>转换后的物品无法再次使用该道具进行转换，并且书本的名字前会带有“永恒·”，可以通过这个方法来判断这本书是否被加强过。<br><strong>此物品不可被分解。</strong></p>
+<h1 id="额外说明"><a href="#额外说明" class="headerlink" title="额外说明"></a>额外说明</h1><ul>
+<li>使用拆解魔杖拆解本模组的书籍时会额外消耗一次耐久</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="DHC 微信">
+        <span>微信</span>
+      </div>
+
+  </div>
+</div>
+
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>DHC
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://jimhackking.github.io/%E6%B8%B8%E6%88%8F/%E3%80%8A%E7%9C%9F%E7%A5%9E%C2%B7%E8%96%87%E5%85%8B%E5%B7%B4%E9%A1%BF%E3%80%8B%E6%A8%A1%E7%BB%84%E4%BB%8B%E7%BB%8D/" title="《真神·薇克巴顿》模组介绍">https://jimhackking.github.io/游戏/《真神·薇克巴顿》模组介绍/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="https://github.com/JIMhackKING">
+            <span class="icon">
+              <i class="fab fa-github"></i>
+            </span>
+
+            <span class="label">GitHub</span>
+          </a>
+      </div>
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="https://gitee.com/dhc_king">
+            <span class="icon">
+              <i class="fa-brands fa-git-alt"></i>
+            </span>
+
+            <span class="label">Gitee</span>
+          </a>
+      </div>
+
+      <div class="social-item">
+          <a target="_blank" class="social-link" href="https://space.bilibili.com/384955267">
+            <span class="icon">
+              <i class="fa-brands fa-bilibili"></i>
+            </span>
+
+            <span class="label">BiliBili</span>
+          </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E9%A5%A5%E8%8D%92/" rel="tag"><i class="fa fa-tag"></i> 饥荒</a>
+              <a href="/tags/%E6%A8%A1%E7%BB%84/" rel="tag"><i class="fa fa-tag"></i> 模组</a>
+          </div>
+
+        
+  <div class="social-like a2a_kit a2a_kit_size_32 a2a_default_style">
+    <a class="a2a_dd" target="_blank" rel="noopener" href="https://www.addtoany.com/share"></a>
+      <a class="a2a_button_facebook"></a>
+      <a class="a2a_button_twitter"></a>
+      <a class="a2a_button_wechat"></a>
+      <a class="a2a_button_qzone"></a>
+  </div>
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/%E8%BF%90%E7%BB%B4/%E7%A8%8B%E5%BA%8F%E5%91%98%E6%89%8B%E8%AE%B0/" rel="prev" title="程序员手记">
+                  <i class="fa fa-angle-left"></i> 程序员手记
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/%E6%B8%B8%E6%88%8F/Mod-guide-of-God-Wickerbottom/" rel="next" title="Mod guide of "God-Wickerbottom"">
+                  Mod guide of "God-Wickerbottom" <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+      <div class="tabs tabs-comment">
+        <ul class="nav-tabs">
+            <li class="tab"><a href="#comment-gitalk">GitTalk</a></li>
+            <li class="tab"><a href="#comment-changyan">畅言云评</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane gitalk" id="comment-gitalk">
+              <div class="comments gitalk-container"></div>
+            </div>
+            <div class="tab-pane changyan" id="comment-changyan">
+              <div class="comments" id="SOHUCS" sid="af5a0d43b6cae52e58915489963ac21e"></div>
+            </div>
+        </div>
+      </div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 2018 – 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">DHC</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">30k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">1:49</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+  <script src="/js/third-party/addtoany.js"></script>
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+<script class="next-config" data-name="changyan" type="application/json">{"enable":true,"appid":"cyxbA0JJC","appkey":"prod_92bb5d5522847ce24a9096867876c0b8","count":true}</script>
+<script src="/js/third-party/comments/changyan.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"JIMhackKING","repo":"JIMhackKING.github.io","client_id":"7ebc2cfea41386b00310","client_secret":"b56956858260f816994b4bf786041e059249e217","admin_user":"JIMhackKING","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"af5a0d43b6cae52e58915489963ac21e"}</script>
+<script src="/js/third-party/comments/gitalk.js"></script>
+
+</body>
+</html>
