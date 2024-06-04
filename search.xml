@@ -2152,7 +2152,7 @@
   </entry>
   <entry>
     <title>VIM使用手册</title>
-    <url>/%E8%BF%90%E7%BB%B4/VIM%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/</url>
+    <url>//%E8%BF%90%E7%BB%B4/vim%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/</url>
     <content><![CDATA[<h1 id="查找"><a href="#查找" class="headerlink" title="查找"></a>查找</h1><p>在normal模式下按下<code>/</code>即可进入查找模式，输入要查找的字符串并按下回车。 Vim会跳转到第一个匹配。按下<code>n</code>查找下一个，按下<code>N</code>查找上一个。</p>
 <p>Vim查找支持正则表达式，例如<code>/vim$</code>匹配行尾的<code>&quot;vim&quot;</code>。 需要查找特殊字符需要转义，例如<code>/vim\$</code>匹配<code>&quot;vim$&quot;</code>。</p>
 <h2 id="大小写敏感查找"><a href="#大小写敏感查找" class="headerlink" title="大小写敏感查找"></a>大小写敏感查找</h2><p>在查找模式中加入<code>\c</code>表示大小写不敏感查找，<code>\C</code>表示大小写敏感查找。例如：</p>
@@ -2215,7 +2215,7 @@
 <li>在要插入的位置上按鼠标左键。</li>
 <li>按鼠标中键（滚轮）。</li>
 </ol>
-<h1 id="折叠代码"><a href="#折叠代码" class="headerlink" title="折叠代码"></a>折叠代码</h1><p><img src="/%E8%BF%90%E7%BB%B4/VIM%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/%E5%BF%AB%E6%8D%B7%E9%94%AE.png"></p>
+<h1 id="折叠代码"><a href="#折叠代码" class="headerlink" title="折叠代码"></a>折叠代码</h1><p><img src="/%E8%BF%90%E7%BB%B4/vim%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C/%E5%BF%AB%E6%8D%B7%E9%94%AE.png"></p>
 ]]></content>
       <categories>
         <category>运维</category>
