@@ -1764,8 +1764,8 @@
 <p>基本操作：</p>
 <p>使用全局锁：<code>flush tables with read lock</code><br>释放全局锁：<code>unlock tables</code></p>
 <p>演示图：</p>
-<p><img src="https://cdn.nlark.com/yuque/0/2025/png/42508201/1739105402389-a9594e4b-4da0-4464-9130-d7732b90dea4.png?x-oss-process=image/format,webp/resize,w_937,limit_0" alt="image.png"></p>
-<p><img src="https://cdn.nlark.com/yuque/0/2025/png/42508201/1739105050715-fd5095d3-aff0-4c3a-8c47-2916d7f00973.png?x-oss-process=image/format,webp/resize,w_937,limit_0" alt="image.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/51083972978.png" alt="image.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/fqweqwegqg.png" alt="image.png"></p>
 <p>特点：</p>
 <p>数据库中加全局锁，是一个比较重的操作，存在以下问题:</p>
 <ol>
@@ -1838,10 +1838,8 @@
 <p>加锁方式：</p>
 <p>意向共享锁：（先在表上加上意向共享锁，然后对读取的记录加共享锁）<br>由 <code>select ... lock in share mode</code> 添加</p>
 <p>意向独占锁：（先表上加上意向独占锁，然后对读取的记录加独占锁）<br>由 <code>insert、update、delete、select ... for update </code>添加</p>
-<h4 id="AUTO-INC锁（补充）"><a href="#AUTO-INC锁（补充）" class="headerlink" title="AUTO-INC锁（补充）"></a>AUTO-INC锁（补充）</h4><img src="https://cdn.nlark.com/yuque/0/2025/png/42508201/1739174974076-7fbc456e-9b86-4614-81fd-ec8f3a8a4a30.png?x-oss-process=image%2Fformat%2Cwebp%2Fresize%2Cw_937%2Climit_0" alt="image.png" style="zoom:80%;" />
-
-<img src="https://cdn.nlark.com/yuque/0/2025/png/42508201/1739174955391-4efd8c54-e640-461f-9b41-8e61102995aa.png?x-oss-process=image%2Fformat%2Cwebp%2Fresize%2Cw_937%2Climit_0" alt="image.png" style="zoom:80%;" />
-
+<h4 id="AUTO-INC锁（补充）"><a href="#AUTO-INC锁（补充）" class="headerlink" title="AUTO-INC锁（补充）"></a>AUTO-INC锁（补充）</h4><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/qrer231r123r.png" alt="qrer231r123r.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/qewf23f.png" alt="qewf23f.png"></p>
 <h3 id="行级锁"><a href="#行级锁" class="headerlink" title="行级锁"></a>行级锁</h3><p>行级锁，每次操作锁住对应的行数据。锁定粒度最小，发生锁冲突的概率最低，并发度最高。应用在InnoDB存储引擎中。</p>
 <ol>
 <li>行锁(Record Lock):锁定单个行记录的锁，防止其他事务对此行进行update和delete。在RC、RR隔离级别下都支持。</li>
@@ -1910,27 +1908,24 @@
 </ol>
 <p>查看意向锁及行锁的加锁情况：</p>
 <p><code>select object_schema,object_name,index_name,lock_type,lock_mode,lock_data from peformance_schema.data_locks;</code></p>
-<h4 id="Gap-Lock（间隙锁）"><a href="#Gap-Lock（间隙锁）" class="headerlink" title="Gap Lock（间隙锁）"></a>Gap Lock（间隙锁）</h4><img src="https://cdn.nlark.com/yuque/0/2025/png/42508201/1739179849542-e9619d8a-431b-40da-9eae-f91997724655.png?x-oss-process=image%2Fformat%2Cwebp" alt="image.png" style="zoom:80%;" />
-
-<h4 id="Next-Key-Lock（临键锁）"><a href="#Next-Key-Lock（临键锁）" class="headerlink" title="Next-Key Lock（临键锁）"></a>Next-Key Lock（临键锁）</h4><img src="https://cdn.nlark.com/yuque/0/2025/png/42508201/1739179816690-f90f43e9-d28a-442b-8958-1f4a7ddacfd7.png?x-oss-process=image%2Fformat%2Cwebp%2Fresize%2Cw_937%2Climit_0" alt="image.png" style="zoom:80%;" />
-
+<h4 id="Gap-Lock（间隙锁）"><a href="#Gap-Lock（间隙锁）" class="headerlink" title="Gap Lock（间隙锁）"></a>Gap Lock（间隙锁）</h4><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/qweg2431123qw.png" alt="qweg2431123qw.png"></p>
+<h4 id="Next-Key-Lock（临键锁）"><a href="#Next-Key-Lock（临键锁）" class="headerlink" title="Next-Key Lock（临键锁）"></a>Next-Key Lock（临键锁）</h4><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/qwegfqew24.png" alt="qwegfqew24.png"></p>
 <p>默认情况下，InnODB在 REPEATABLE READ事务隔离级别运行，InnoDB使用 next-key 锁进行搜索和索引扫描，以防止幻读。</p>
 <ol>
 <li>索引上的等值查询(唯一索引)，给不存在的记录加锁时,优化为间隙锁 。</li>
 <li>索引上的等值查询(普通索引)，向右遍历时最后一个值不满足查询需求时，next-keylock退化为间隙锁。</li>
 <li>索引上的范围查询(唯一索引)–会访问到不满足条件的第一个值为止。</li>
 </ol>
-<h2 id="InnoDB引擎"><a href="#InnoDB引擎" class="headerlink" title="InnoDB引擎"></a>InnoDB引擎</h2><h3 id="逻辑存储结构"><a href="#逻辑存储结构" class="headerlink" title="逻辑存储结构"></a>逻辑存储结构</h3><p><img src="https://cdn.nlark.com/yuque/0/2025/png/42508201/1739188040740-b676e580-0823-488c-81f4-88c768f3ddbe.png?x-oss-process=image/format,webp/resize,w_937,limit_0" alt="image.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/%25%5B%40W%29Z0%404V6RIJ9JT3KM%29PP.png" alt="image.png"></p>
-<h3 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h3><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/VB7%5DBO348UT%7EN2Q%5B9O0%240M2.png" alt="架构图.png" style="zoom:80%;" />
-
-<h4 id="内存架构"><a href="#内存架构" class="headerlink" title="内存架构"></a>内存架构</h4><p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/61W%7BHZB%29JT2%29BNR782KD%40UY.png" alt="文件无法预览。"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/%24G8%7EQ6Q_4QPF%249%7B_%5BO7%60K%28F.png" alt="文件无法预览。"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/JLJRMG73H4VGROQ6V%29TFUFY.png" alt="文件无法预览。"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/0W55%7DO9QMWG_2O8%7B25M%60DVF.png"></p>
-<h4 id="磁盘结构"><a href="#磁盘结构" class="headerlink" title="磁盘结构"></a>磁盘结构</h4><p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/%24BN%249X%7EEJI%28%25%40ML94V9%60ITS.png" alt="文件无法预览。"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/F0%5BL%7B%25Q%7DDXI%5D2M1%7D%5B%40DC%29KD.png"></p>
-<h4 id="后台线程"><a href="#后台线程" class="headerlink" title="后台线程"></a>后台线程</h4><p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/ANA%7BWME%7BRP8T%40%7E%24LRP%60%28%7EZU.png"></p>
+<h2 id="InnoDB引擎"><a href="#InnoDB引擎" class="headerlink" title="InnoDB引擎"></a>InnoDB引擎</h2><h3 id="逻辑存储结构"><a href="#逻辑存储结构" class="headerlink" title="逻辑存储结构"></a>逻辑存储结构</h3><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/ewqqeg423.png" alt="image.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/ewqg1341.png" alt="image.png"></p>
+<h3 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h3><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/qewg13g423f.png" alt="架构图.png"></p>
+<h4 id="内存架构"><a href="#内存架构" class="headerlink" title="内存架构"></a>内存架构</h4><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/qwef12t132r.png" alt="文件无法预览。"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/910310644164.png" alt="文件无法预览。"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/2633356152.png" alt="文件无法预览。"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/21810694716.png"></p>
+<h4 id="磁盘结构"><a href="#磁盘结构" class="headerlink" title="磁盘结构"></a>磁盘结构</h4><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/71896219103.png" alt="文件无法预览。"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/6345845897.png"></p>
+<h4 id="后台线程"><a href="#后台线程" class="headerlink" title="后台线程"></a>后台线程</h4><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/1192969375.png"></p>
 <h3 id="事务原理"><a href="#事务原理" class="headerlink" title="事务原理"></a>事务原理</h3><p>事务：</p>
 <p>事务 是一组操作的集合，它是一个不可分割的工作单位，事务会把所有的操作作为一个整体一起向系统提交或撤销操作请求，即这些操作要么同时成功，要么同时失败。</p>
 <p>特征：</p>
@@ -1941,11 +1936,11 @@
 <li>持久性(Durability)：事务一旦提交或回滚，它对数据库中的数据的改变就是永久的。</li>
 </ul>
 <p>特性原理分类图：</p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/FJ%25%7B1%25GW1_ZVZNTX_QWO%5B%24B.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/10723932987.png"></p>
 <h4 id="redo-log"><a href="#redo-log" class="headerlink" title="redo log"></a>redo log</h4><p>重做日志，记录的是事务提交时数据页的物理修改，是用来实现事务的<strong>持久性</strong>。</p>
 <p>该日志文件由两部分组成:重做日志缓冲(redo log buffer)以及重做日志文件(redo log file),前者是在内存中，后者在磁盘中。当事务提交之后会把所有修改信息都存到该日志文件中,用于在刷新脏页到磁盘,发生错误时,进行数据恢复使用。</p>
 <p>Buffer Pool在产生脏页数据的时候，会先将数据存储到 redo log buffer 再存储到 redo log 中进行磁盘持久化存储，在内存出现异常（比如突然断电）时，通过redo log中持久化的数据进行回滚。过程如下图：</p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/_%29%7DYX21%28TXEW%25%7E3%5DDP42IW2.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/7521579557.png"></p>
 <p>redo log 要写到磁盘，数据也要写磁盘，为什么要多此一举?</p>
 <p>写入 redo log 的方式使用了追加操作，所以磁盘操作是<strong>顺序写</strong>，而写入数据需要先找到写入位置，然后才写到磁盘，所以磁盘操作是<strong>随机写</strong>。</p>
 <h4 id="undo-log"><a href="#undo-log" class="headerlink" title="undo log"></a>undo log</h4><p>回滚日志，用于记录数据被修改前的信息，作用包含两个:提供回滚 和 MVCC(多版本并发控制)。</p>
@@ -1963,7 +1958,7 @@
 </ul>
 <p><strong>MVCC：</strong></p>
 <p>全称 Multi-Version Concurrency Control，多版本并发控制。指维护一个数据的多个版本，使得读写操作没有冲突，快照读为MVSOL实现MVCC提供了一个非阻塞读功能。MVCC的具体实现，还需要依赖于数据库记录中的三个隐式字段、undo log日志、read View。</p>
-<h4 id="三个隐藏字段"><a href="#三个隐藏字段" class="headerlink" title="三个隐藏字段"></a>三个隐藏字段</h4><p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/UC%60K7%7EWNPD52WIDN%29UYN%7D%60K.png"></p>
+<h4 id="三个隐藏字段"><a href="#三个隐藏字段" class="headerlink" title="三个隐藏字段"></a>三个隐藏字段</h4><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/9225237599.png"></p>
 <h4 id="undo-log-1"><a href="#undo-log-1" class="headerlink" title="undo log"></a>undo log</h4><p>回滚日志，在insert、update、delete的时候产生的便于数据回滚的日志。</p>
 <p>当insert的时候，产生的undoloq日志只在回滚时需要，在事务提交后，可被立即删除。</p>
 <p>而update、delete的时候，产生的undo log日志不仅在回滚时需要，在快照读时也需要，不会立即被删除。</p>
@@ -1979,7 +1974,7 @@
 </ul>
 </li>
 </ul>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/LO%28KE0WN735UM%5DDPYIQ%29R%7B4.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/921810810932.png"></p>
 <h4 id="readview"><a href="#readview" class="headerlink" title="readview"></a>readview</h4><p>ReadView(读视图)是 快照读 SOL执行时MVCC提取数据的依据，记录并维护系统当前活跃的事务(未提交的)id。</p>
 <p>ReadView中包含了四个核心字段:</p>
 <table>
@@ -2006,8 +2001,8 @@
 <td align="center">ReadView创建者的事务ID</td>
 </tr>
 </tbody></table>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/LF%5DY1%29JFT4YZJA%7E%7D%7D%7BVB%5B%5DD.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/83%7E%7EM8QI%40VOS_%7B%25J%7E%243SMNW.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/84711022753.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/6934998817.png"></p>
 <p>依次比较 undo log 日志中版本数据链，找到可以进行访问的版本数据。</p>
 <h2 id="MySQL管理"><a href="#MySQL管理" class="headerlink" title="MySQL管理"></a>MySQL管理</h2><h3 id="系统数据库介绍"><a href="#系统数据库介绍" class="headerlink" title="系统数据库介绍"></a>系统数据库介绍</h3><p>Mysql数据库安装完成后，自带了一下四个数据库，具体作用如下：</p>
 <table>
@@ -2034,12 +2029,12 @@
 <td>包含了一系列方便 DBA和开发人员利用 performance_schema性能数据库进行性能调优和诊断的视图</td>
 </tr>
 </tbody></table>
-<h3 id="常用工具"><a href="#常用工具" class="headerlink" title="常用工具"></a>常用工具</h3><h4 id="mysql"><a href="#mysql" class="headerlink" title="mysql"></a>mysql</h4><p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/W_BNP3%7DFK1PJH%5B1F%5DD%24W1%248.png"></p>
-<h4 id="mysqladmin"><a href="#mysqladmin" class="headerlink" title="mysqladmin"></a>mysqladmin</h4><p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/Y18IN8XHZACT%24%28%5DB2SME1GN.png"></p>
-<h4 id="mysqlbinlog"><a href="#mysqlbinlog" class="headerlink" title="mysqlbinlog"></a>mysqlbinlog</h4><p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/X3CW1%5BTHB52%2822R5FE%7BC%7E02.png"></p>
-<h4 id="mysqlshow"><a href="#mysqlshow" class="headerlink" title="mysqlshow"></a>mysqlshow</h4><p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/U%60%28_I9J1V6BE%7B_R%5BD%29SN1GV.png"></p>
-<h4 id="mysqldump"><a href="#mysqldump" class="headerlink" title="mysqldump"></a>mysqldump</h4><p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/HC%292L82A69%7E%5D%28ZVW80EMP65.png"></p>
-<h4 id="mysqlimport-source"><a href="#mysqlimport-source" class="headerlink" title="mysqlimport&#x2F;source"></a>mysqlimport&#x2F;source</h4><p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/7N%2829%7BDRL%60ZMQ%7EL%5DDG2X_NP.png"></p>
+<h3 id="常用工具"><a href="#常用工具" class="headerlink" title="常用工具"></a>常用工具</h3><h4 id="mysql"><a href="#mysql" class="headerlink" title="mysql"></a>mysql</h4><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/3233394951.png"></p>
+<h4 id="mysqladmin"><a href="#mysqladmin" class="headerlink" title="mysqladmin"></a>mysqladmin</h4><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/10103131010198.png"></p>
+<h4 id="mysqlbinlog"><a href="#mysqlbinlog" class="headerlink" title="mysqlbinlog"></a>mysqlbinlog</h4><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/1285451886.png"></p>
+<h4 id="mysqlshow"><a href="#mysqlshow" class="headerlink" title="mysqlshow"></a>mysqlshow</h4><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/8210310352105.png"></p>
+<h4 id="mysqldump"><a href="#mysqldump" class="headerlink" title="mysqldump"></a>mysqldump</h4><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/479211610103.png"></p>
+<h4 id="mysqlimport-source"><a href="#mysqlimport-source" class="headerlink" title="mysqlimport&#x2F;source"></a>mysqlimport&#x2F;source</h4><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/34108898837.png"></p>
 <h1 id="运维篇"><a href="#运维篇" class="headerlink" title="运维篇"></a>运维篇</h1><h2 id="日志"><a href="#日志" class="headerlink" title="日志"></a>日志</h2><h3 id="错误日志"><a href="#错误日志" class="headerlink" title="错误日志"></a>错误日志</h3><p>错误日志是 MySQL 中最重要的日志之一，它记录了当 mysqld 启动和停止时，以及服务器在运行过程中发生任何严重错误时的相关信息当数据库出现任何故障导致无法正常使用时，建议首先查看此日志。</p>
 <p>该日志是默认开启的，默认存放目录 &#x2F;var&#x2F;log&#x2F;，默认的日志文件名为 mysqld.log 。查看日志位置：</p>
 <p><code>show variables like &#39;%log_error%&#39;</code></p>
@@ -2109,33 +2104,32 @@
 <p>默认情况下，不会记录管理语句，也不会记录不使用索引进行查找的查询。可以使用log_slow_admin_statements和更改此行为log_queries_not_using_indexes，如下所述。</p>
 <figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">#记录执行较慢的管理语句</span><br><span class="line">log_slow_admin_statements <span class="operator">=</span> <span class="number">1</span></span><br><span class="line">#记录执行较慢的未使用索引的语句</span><br><span class="line">log_queries_not_using_indexes <span class="operator">=</span> <span class="number">1</span></span><br></pre></td></tr></table></figure>
 
-<h2 id="主从复制"><a href="#主从复制" class="headerlink" title="主从复制"></a>主从复制</h2><p> <img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/ZX6PL%7EDH46I%29AS%5DFKXCMRD5.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/O2%28%29%40R%7D6HML1FF_%7B5OH%28Q_1.png"></p>
-<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/33K%24Y605%7DIZ%5BY%24F97YCJ_73.png"></p>
-<h3 id="搭建实现"><a href="#搭建实现" class="headerlink" title="搭建实现"></a>搭建实现</h3><h4 id="主库配置"><a href="#主库配置" class="headerlink" title="主库配置"></a>主库配置</h4><p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/M32%60%24_WD1S6JGIWR03PGDG3.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/LS%7B%29EC1%29CTE%7E%25JC3G9%7D%5BM%7B7.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/%40DQOXV_G%7E3Z%5B0%290%7B%25%5BK3UJK.png"></p>
-<h4 id="从库配置"><a href="#从库配置" class="headerlink" title="从库配置"></a>从库配置</h4><p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/%256I_J4%24SMOSPMEN1UKA6%40OA.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/UK%24%60%5D%284MCCDW%7D_3UF%28O%2860N.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/TABQIUJH8X9KPR47B%25%5D%7DN%29T.png"></p>
+<h2 id="主从复制"><a href="#主从复制" class="headerlink" title="主从复制"></a>主从复制</h2><p> <img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/58131011726.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/4454682776.png"></p>
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/7410105910882.png"></p>
+<h3 id="搭建实现"><a href="#搭建实现" class="headerlink" title="搭建实现"></a>搭建实现</h3><h4 id="主库配置"><a href="#主库配置" class="headerlink" title="主库配置"></a>主库配置</h4><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/21103533211.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/24794193710.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/91294866110.png"></p>
+<h4 id="从库配置"><a href="#从库配置" class="headerlink" title="从库配置"></a>从库配置</h4><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/10617439921.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/21053341798.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/6153782135.png"></p>
 <h4 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h4><p>1、在主库上创建数据库、表，并插入数据</p>
 <figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">create</span> database db01;</span><br><span class="line">use db01;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> tb_use(</span><br><span class="line">	id <span class="type">int</span>(<span class="number">11</span>) <span class="keyword">primary</span> key <span class="keyword">not</span> <span class="keyword">null</span> auto_increment,</span><br><span class="line">	name <span class="type">varchar</span>(<span class="number">50</span>) <span class="keyword">not</span> <span class="keyword">null</span>,</span><br><span class="line">	sex <span class="type">varchar</span>(<span class="number">1</span>)</span><br><span class="line">)engine<span class="operator">=</span>innodb <span class="keyword">default</span> charset<span class="operator">=</span>utf8mb4;</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> tb_user(id, name, sex) valurs (<span class="keyword">null</span>, <span class="string">&#x27;Tom&#x27;</span>, <span class="string">&#x27;1&#x27;</span>), (<span class="keyword">null</span>, <span class="string">&#x27;Trigger&#x27;</span>, <span class="string">&#x27;0&#x27;</span>), (<span class="keyword">null</span>, <span class="string">&#x27;Dawn&#x27;</span>, <span class="string">&#x27;1&#x27;</span>);</span><br></pre></td></tr></table></figure>
 
 <p>2、在从库中查询数据，验证主从是否同步。</p>
-<h2 id="分库分表"><a href="#分库分表" class="headerlink" title="分库分表"></a>分库分表</h2><h3 id="介绍-1"><a href="#介绍-1" class="headerlink" title="介绍"></a>介绍</h3><p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/JM6EYC8%7E%609%5BYCKY%7E%2525%24MO1.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/VR6%29PG%40GE4GHUYZ25%28EM6P6.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/3%240P%5DW5%7B%5DKB%60KKASN%5D%7DF%7B%25W.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/%29%40XI%7B%40%5B4OBG2OK%25%60UT%7BFW%28H.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/46N5TY%7DT0%7B%7BFXRKCB%25LRQUA.png"></p>
-<h3 id="Mycat概述"><a href="#Mycat概述" class="headerlink" title="Mycat概述"></a>Mycat概述</h3><p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/RT7ZMRPIK1GH9%7DEDXTTBN0S.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/3NOD6%7ETM7%407%7D6%5DP%28IFDPUQ0.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/2%29%60P5%5BQG4H%28X%25H%7BHRU%5D%5DHMF.png"></p>
-<h3 id="Mycat入门"><a href="#Mycat入门" class="headerlink" title="Mycat入门"></a>Mycat入门</h3><p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/BH9H%5BMNO%24DCXH%24%25%7E6V%24T%24VF.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/PPYX9%5D4MRE%28DM%28V2J1G%60XX1.png"></p>
-<img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/87%40B1VQZTT%5B%25%609I_JT4KF%29I.png" style="zoom:80%;" />
-
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/%7EP7YD9ES2JYU65VF%5BJ%7D%7DOHG.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/O%7DC9D2Y%60OTBV%29%7E8CY2O%28RSB.png"></p>
+<h2 id="分库分表"><a href="#分库分表" class="headerlink" title="分库分表"></a>分库分表</h2><h3 id="介绍-1"><a href="#介绍-1" class="headerlink" title="介绍"></a>介绍</h3><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/4765397657.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/35239910325.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/106169108266.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/4616215143.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/86213810658.png"></p>
+<h3 id="Mycat概述"><a href="#Mycat概述" class="headerlink" title="Mycat概述"></a>Mycat概述</h3><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/81010325101039.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/6382138721.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/101795210673.png"></p>
+<h3 id="Mycat入门"><a href="#Mycat入门" class="headerlink" title="Mycat入门"></a>Mycat入门</h3><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/96457210797.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/1891042610310.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/qwe1324t14t.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/10197188896.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/59710648531.png"></p>
 <h3 id="Mycat配置"><a href="#Mycat配置" class="headerlink" title="Mycat配置"></a>Mycat配置</h3><h4 id="schema-xml"><a href="#schema-xml" class="headerlink" title="schema.xml"></a>schema.xml</h4><p>schema.xml作为MyCat中最重要的配置文件之一,涵盖了MyCat的逻辑库 、逻辑表 、分片规则、分片节点及数据源的配置.</p>
 <p>主要包含以下三组标签:</p>
 <ul>
@@ -2143,61 +2137,61 @@
 <li>datanode标签</li>
 <li>datahost标签</li>
 </ul>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/D2%7D%28%5B%40O_7257%60I%29%5D%7DLBN8GV.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/GG%7BF3HE9G%25L%60O2TXW%7B5%60%5B71.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/%24CQTUGN8WEW43CC%28%5BD8%7DZO7.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/BZV2%60M%7EE%7D805%7B6SAFKGFYZU.png"></p>
-<h4 id="rule-xml"><a href="#rule-xml" class="headerlink" title="rule.xml"></a>rule.xml</h4><p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/5NLS6%60%7BV%290IACITR64HE0HM.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/SP%5DI0TFR6PVQL%24TFGKQ1E%7DL.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/KHBU%5D7CHYK%7B9%7EVJTUB%60JC%401.png"></p>
-<h3 id="Mycat分片"><a href="#Mycat分片" class="headerlink" title="Mycat分片"></a>Mycat分片</h3><h4 id="垂直分库"><a href="#垂直分库" class="headerlink" title="垂直分库"></a>垂直分库</h4><p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/%5BRTBCK%7D%28CFX0J%7BJ%602OX4X%5BX.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/D026B%40R%7BTQ2QE_DE%406%7DHL_I.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/CS7G2R7O8%60XDL03T05CKSYB.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/_ZQSG73%24C9EI7%60JW%29%5B%5D5943.png"></p>
-<h4 id="水平分表"><a href="#水平分表" class="headerlink" title="水平分表"></a>水平分表</h4><p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/T3SF_%285ZH1N0Q9%25%5BRC8U8_P.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/OH%60OYYR1N7_5VEY%5D%6088B3JY.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/9HALN%25UYY%7DQ27_%2573II1K0M.png"></p>
-<h4 id="分片规则"><a href="#分片规则" class="headerlink" title="分片规则"></a>分片规则</h4><h5 id="范围分片"><a href="#范围分片" class="headerlink" title="范围分片"></a>范围分片</h5><p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/ZP%28Y%29ISDY8QR96OYFBDN%7E34.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/%40H%7BNF_AG%7E2371IU%28%40F%7BG%7D%5BW.png"></p>
-<h5 id="取模分片"><a href="#取模分片" class="headerlink" title="取模分片"></a>取模分片</h5><p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/%7B%40O7%60OH3%25D5P%7BRFV%5B9%40%28FES.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/W%5BZ7_%25K%24M%60%5DX3C%7E%7DG%5DXCN40.png"></p>
-<h5 id="一致性hash算法"><a href="#一致性hash算法" class="headerlink" title="一致性hash算法"></a>一致性hash算法</h5><p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/VZ%298S%7B%7DT76%40WJ%29WQSOX%7D%7ESS.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/T%40T0%7EN6YBEX%5D%604FCSUI%28WM8.png"></p>
-<h5 id="枚举分片"><a href="#枚举分片" class="headerlink" title="枚举分片"></a>枚举分片</h5><p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/XQ%24GBW9%7BRC%5D%24PY5U%5DBTHI81.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/0PT%24C%7DQ70C5%2860XW1%5B9%28Y60.png"></p>
-<h5 id="应用指定算法"><a href="#应用指定算法" class="headerlink" title="应用指定算法"></a>应用指定算法</h5><p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/%289_%24S5X9WSXRT9%605%7B71%25GOT.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/P%7E9H22%5D%7ESUP%5B5%5BP%7BTRP2W2X.png"></p>
-<h5 id="固定hash算法"><a href="#固定hash算法" class="headerlink" title="固定hash算法"></a>固定hash算法</h5><p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/NJPV%40Z%28PF6WF85P8%7BJHLR%5BG.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/9_OG%7EA69%60UOJ%25QSS5FF%24FOV.png"></p>
-<h5 id="字符串hash解析"><a href="#字符串hash解析" class="headerlink" title="字符串hash解析"></a>字符串hash解析</h5><p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/G%24DAGY8LD5S_QR0WPEJ%7DX%7B4.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/F1R%283M%241_B%24%29YV%7EIT3%5D7TWU.png"></p>
-<h5 id="按天分片"><a href="#按天分片" class="headerlink" title="按天分片"></a>按天分片</h5><p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/UDIPI79%7EC0T54E92%40NKA%5D81.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/AU%7BWS_3UA%25QAGSBEJAPFHPR.png"></p>
-<h5 id="按自然月分片"><a href="#按自然月分片" class="headerlink" title="按自然月分片"></a>按自然月分片</h5><p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/NIW_A2967%40R4AMT4GGWSK%60G.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/%28%25RQF%60HMM%25S%5BOSW%7E%7BG%5B%7EVQ8.png"></p>
-<h3 id="Mycat管理及监控"><a href="#Mycat管理及监控" class="headerlink" title="Mycat管理及监控"></a>Mycat管理及监控</h3><p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/WTE%40%24QI4NNL_%7EY3TF78YR7E.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/F%5BJMZM7%7DON%5D1C9V%60%28%7DUWB2D.png"></p>
-<h2 id="读写分离"><a href="#读写分离" class="headerlink" title="读写分离"></a>读写分离</h2><p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/O%5B%5BQM0VS9%400TRNJ%7B%7D3ZZ_Y5.png"></p>
-<h3 id="介绍-2"><a href="#介绍-2" class="headerlink" title="介绍"></a>介绍</h3><p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/K%7EM%246Y%60K%24H3%253E3YL286%7D%28F.png"></p>
-<h3 id="一主一从读写分离"><a href="#一主一从读写分离" class="headerlink" title="一主一从读写分离"></a>一主一从读写分离</h3><p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/9Y5OTPSD%24J%28P%24%60FOXSZR%29BF.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/PDO_B4J1RP2Z%7EG25KVA%409SI.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/32368131027.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/7484479134.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/10769359339.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/91315810623.png"></p>
+<h4 id="rule-xml"><a href="#rule-xml" class="headerlink" title="rule.xml"></a>rule.xml</h4><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/951010415971.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/84271093639.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/3853211256.png"></p>
+<h3 id="Mycat分片"><a href="#Mycat分片" class="headerlink" title="Mycat分片"></a>Mycat分片</h3><h4 id="垂直分库"><a href="#垂直分库" class="headerlink" title="垂直分库"></a>垂直分库</h4><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/9325751819.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/21931016227.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/9852726692.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/58109378671.png"></p>
+<h4 id="水平分表"><a href="#水平分表" class="headerlink" title="水平分表"></a>水平分表</h4><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/1269361453.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/9977715254.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/131081045236.png"></p>
+<h4 id="分片规则"><a href="#分片规则" class="headerlink" title="分片规则"></a>分片规则</h4><h5 id="范围分片"><a href="#范围分片" class="headerlink" title="范围分片"></a>范围分片</h5><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/34510781883.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/2654319698.png"></p>
+<h5 id="取模分片"><a href="#取模分片" class="headerlink" title="取模分片"></a>取模分片</h5><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/22173110191.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/7347361194.png"></p>
+<h5 id="一致性hash算法"><a href="#一致性hash算法" class="headerlink" title="一致性hash算法"></a>一致性hash算法</h5><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/73610917872.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/3171425417.png"></p>
+<h5 id="枚举分片"><a href="#枚举分片" class="headerlink" title="枚举分片"></a>枚举分片</h5><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/667103121103.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/11088699372.png"></p>
+<h5 id="应用指定算法"><a href="#应用指定算法" class="headerlink" title="应用指定算法"></a>应用指定算法</h5><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/2632725279.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/1452119317.png"></p>
+<h5 id="固定hash算法"><a href="#固定hash算法" class="headerlink" title="固定hash算法"></a>固定hash算法</h5><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/2375113118.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/1368697562.png"></p>
+<h5 id="字符串hash解析"><a href="#字符串hash解析" class="headerlink" title="字符串hash解析"></a>字符串hash解析</h5><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/53710618932.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/8619959324.png"></p>
+<h5 id="按天分片"><a href="#按天分片" class="headerlink" title="按天分片"></a>按天分片</h5><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/1010769110977.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/109109981999.png"></p>
+<h5 id="按自然月分片"><a href="#按自然月分片" class="headerlink" title="按自然月分片"></a>按自然月分片</h5><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/4762746916.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/22673141012.png"></p>
+<h3 id="Mycat管理及监控"><a href="#Mycat管理及监控" class="headerlink" title="Mycat管理及监控"></a>Mycat管理及监控</h3><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/73451065142.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/7348156477.png"></p>
+<h2 id="读写分离"><a href="#读写分离" class="headerlink" title="读写分离"></a>读写分离</h2><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/52510452433.png"></p>
+<h3 id="介绍-2"><a href="#介绍-2" class="headerlink" title="介绍"></a>介绍</h3><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/10918829811.png"></p>
+<h3 id="一主一从读写分离"><a href="#一主一从读写分离" class="headerlink" title="一主一从读写分离"></a>一主一从读写分离</h3><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/52287271210.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/4564143383.png"></p>
 <!--  -->
-<h3 id="双主双从"><a href="#双主双从" class="headerlink" title="双主双从"></a>双主双从</h3><p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/6E9_%24QC%7D%5BSX%24HQ%28G5%7DN9PXK.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/%7BX%24FC1%5D8K%60%5DD%5BETK%28%7DRQVR2.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/459N%7D%5DMPZCJ4%29%407UO%5B3%40B%7B0.png"></p>
+<h3 id="双主双从"><a href="#双主双从" class="headerlink" title="双主双从"></a>双主双从</h3><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/245101066682.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/6338368756.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/2677654314.png"></p>
 <!-- -->
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/CB69%29SG%7DD4_G384KTO%60%25U1H.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/HPS%7ENHSM%24_5JFM3A6_%60_8M7.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/%5DHY2CXI5%5B12%7D6UD8ZC%7D36TH.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/LX%29H9VNF%7B%25XU4%24C%5DOB8%602%7EE.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/105101448841.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/7237222812.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/6246592973.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/12919109752.png"></p>
 <p>测试：</p>
 <p>分别在两台主库Master1、Master2上执行DDL、DML语句，查看涉及到的数据库服务器的数据同步情况。</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">create database db01;</span><br><span class="line">use db01;</span><br><span class="line">create table tb_user(</span><br><span class="line">	id in(11)not null primary key,</span><br><span class="line">	name varchar(50) not null,</span><br><span class="line">	sex varcahr(1)</span><br><span class="line">)engine=innodb default charset=utf8mb4</span><br><span class="line"></span><br><span class="line">insert into tb user(id,name,sex) values(l,&#x27;Tom&#x27;,&#x27;1&#x27;);</span><br><span class="line">insert into tb user(id,name,sex) values(2,&#x27;Trigger&#x27;,&#x27;0&#x27;);</span><br><span class="line">insert into tb user(id,name,sex) values(3,&#x27;Dawn&#x27;,&#x27;1&#x27;);</span><br><span class="line">insert into tb user(id,name,sex) values(4,&quot;ack Ma&#x27;,&#x27;1&#x27;);</span><br><span class="line">insertinto tb user(id,name,sex) values(5,&#x27;Coco&#x27;,&#x27;0&#x27;);</span><br><span class="line">insert into tb user(id,name,sex) values(6,&#x27;erry&#x27;,&#x27;1&#x27;);</span><br></pre></td></tr></table></figure>
 
 
 
-<h3 id="双主双从读写分离"><a href="#双主双从读写分离" class="headerlink" title="双主双从读写分离"></a>双主双从读写分离</h3><p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/%24%299A360%25SGZYXW%25RH03%5DBCP.png"></p>
-<p><img src="https://wenlh.oss-cn-shenzhen.aliyuncs.com/mysql_study/%5DERMCTJFG0%40PK%7ES1FA%5BJT7N.png"></p>
+<h3 id="双主双从读写分离"><a href="#双主双从读写分离" class="headerlink" title="双主双从读写分离"></a>双主双从读写分离</h3><p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/8536419478.png"></p>
+<p><img src="/%E8%BF%90%E7%BB%B4/MySQL%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/15610682864.png"></p>
 <p>测试：</p>
 <p>登录MyCat，测试查询及更新操作，判定是否能够进行读写分离，以及读写分离的策略是否正确。</p>
 <p>当主库挂掉一个之后，是否能够自动切换。</p>
