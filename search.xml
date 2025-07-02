@@ -1038,7 +1038,7 @@
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">start transaction;</span><br><span class="line">select * from account where name = &#x27;张三&#x27;;</span><br><span class="line">update account set money = money - 1000 where name = &#x27;张三&#x27;;</span><br><span class="line">update account set money = money + 1000 where name = &#x27;李四&#x27;;</span><br><span class="line">commit;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <h3 id="四大特性ACID"><a href="#四大特性ACID" class="headerlink" title="四大特性ACID"></a>四大特性ACID</h3><ul>
-<li>原子性(Atomicity)：事务是不可分割的最小操作但愿，要么全部成功，要么全部失败</li>
+<li>原子性(Atomicity)：事务是不可分割的最小操作单元，要么全部成功，要么全部失败</li>
 <li>一致性(Consistency)：事务完成时，必须使所有数据都保持一致状态</li>
 <li>隔离性(Isolation)：数据库系统提供的隔离机制，保证事务在不受外部并发操作影响的独立环境下运行</li>
 <li>持久性(Durability)：事务一旦提交或回滚，它对数据库中的数据的改变就是永久的</li>
